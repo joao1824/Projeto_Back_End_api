@@ -1,4 +1,4 @@
-# Projeta_Back_End_api
+# Projeto_Back_End_api
 
 ## Integrantes
 
