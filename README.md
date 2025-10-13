@@ -18,4 +18,5 @@
   - Implementação da API do Spotify.
 
 ### Modelo
-  <img width="250" height="300" alt="image" src="https://github.com/user-attachments/assets/84a22140-e299-49c8-a36a-a8704124d170" />
+  <img width="500" height="250" alt="image" src="https://github.com/user-attachments/assets/6c915892-190f-4d1f-ad78-96aeff9004b6" />
+
