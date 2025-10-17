@@ -3,9 +3,14 @@ package com.projeto.api.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Artista {
 
@@ -20,16 +25,6 @@ public class Artista {
     private ArrayList<String> imagens;
     public String perfil_spotify;
 
-    //Construtores
-
-    public Artista(String nome, ArrayList<String> generos, int popularidade, int seguidores, ArrayList<String> imagens, String perfil_spotify) {
-        this.nome = nome;
-        this.generos = generos;
-        this.popularidade = popularidade;
-        this.seguidores = seguidores;
-        this.imagens = imagens;
-        this.perfil_spotify = perfil_spotify;
-    }
 
     //Geters e Setters
 
