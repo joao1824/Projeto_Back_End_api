@@ -1,11 +1,11 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.models.Artista;
-import com.projeto.api.service.ApiService;
+import com.projeto.api.service.AlbumService;
 
 // dependencia spotify-web-api-java
+import com.projeto.api.service.ArtistaService;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,19 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ApiController {
 
-    private final ApiService apiService;
+    private final AlbumService albumService;
+    private final ArtistaService artistaService;
 
-    public ApiController(ApiService apiService) {
-        this.apiService = apiService;
+    public ApiController(AlbumService albumService, ArtistaService artistaService) {
+        this.albumService = albumService;
+        this.artistaService = artistaService;
     }
 
     @GetMapping("/artista")
-    public Artista[] buscarArtista(@RequestParam String nome) {
-        return apiService.buscarArtista(nome);
+    public Artista buscarArtista(@RequestParam String nome) {
+        return artistaService.buscarArtista(nome);
     }
 
     @GetMapping("/album")
     public AlbumSimplified[] buscarAlbum(@RequestParam String nome) {
-        return apiService.buscarAlbum(nome);
+        return albumService.buscarAlbum(nome);
     }
 }
