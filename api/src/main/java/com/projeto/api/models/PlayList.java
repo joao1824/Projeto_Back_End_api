@@ -35,10 +35,61 @@ public class PlayList {
     //Construtor
 
 
+    public PlayList(String nome, String descricao, Usuario usuario, List<Musica> musicas) {
+        this.id = IdGerador.Gerar();
+        this.nome = nome;
+        this.descricao = descricao;
+        this.usuario = usuario;
+        this.musicas = musicas;
+    }
+
     public PlayList(String nome, String descricao, Usuario usuario) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.descricao = descricao;
         this.usuario = usuario;
+    }
+
+    //Geters e Setters
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<Musica> getMusicas() {
+        return musicas;
+    }
+
+    public void setMusicas(List<Musica> musicas) {
+        this.musicas = musicas;
     }
 }

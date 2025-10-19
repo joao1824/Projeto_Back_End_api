@@ -14,6 +14,8 @@ import java.util.List;
 @Entity
 public class Tag {
 
+    //Atributos
+
     @Id
     private String id;
 
@@ -23,9 +25,46 @@ public class Tag {
     @JoinColumn(name = "id")
     private List<Review> reviews = new ArrayList<>();
 
+
+
+    //construtor
+
+    public Tag(String nome) {
+        this.id = IdGerador.Gerar();
+        this.nome = nome;
+    }
+
+
     public Tag(String nome, List<Review> reviews) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
+        this.reviews = reviews;
+    }
+
+    //Geters e Setters
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 }
