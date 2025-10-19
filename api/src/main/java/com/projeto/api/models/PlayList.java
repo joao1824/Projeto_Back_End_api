@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class PlayList {
@@ -34,6 +34,11 @@ public class PlayList {
 
     //Construtor
 
+    public PlayList() {
+        this.id = IdGerador.Gerar();
+    }
+
+
 
     public PlayList(String nome, String descricao, Usuario usuario, List<Musica> musicas) {
         this.id = IdGerador.Gerar();
@@ -48,6 +53,16 @@ public class PlayList {
         this.nome = nome;
         this.descricao = descricao;
         this.usuario = usuario;
+    }
+
+    //Método personalizado
+
+    public void addMusica(Musica musica){
+        this.musicas.add(musica);
+    }
+
+    public void removeMusica(Musica musica){
+        this.musicas.remove(musica);
     }
 
     //Geters e Setters
