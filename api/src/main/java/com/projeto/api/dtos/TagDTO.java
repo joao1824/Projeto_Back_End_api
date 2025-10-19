@@ -1,43 +1,26 @@
-package com.projeto.api.models;
+package com.projeto.api.dtos;
 
-
-import com.projeto.api.util.IdGerador;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import com.projeto.api.models.Review;
+import com.projeto.api.models.Tag;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class Tag {
-
+public class TagDTO {
     //Atributos
 
-    @Id
     private String id;
     private String nome;
-
-    @OneToMany
-    @JoinColumn(name = "id")
     private List<Review> reviews = new ArrayList<>();
 
+    //Construtor
 
-
-    //construtor
-
-    public Tag(String nome) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-    }
-
-
-    public Tag(String nome, List<Review> reviews) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.reviews = reviews;
+    public TagDTO(Tag tag) {
+        this.id = tag.getId();
+        this.nome = tag.getNome();
+        this.reviews = tag.getReviews();
     }
 
     //Geters e Setters

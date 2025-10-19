@@ -1,22 +1,18 @@
-package com.projeto.api.models;
+package com.projeto.api.dtos;
 
-import com.projeto.api.util.IdGerador;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import com.projeto.api.models.Album;
+import com.projeto.api.models.Artista;
+import com.projeto.api.models.Musica;
+import com.projeto.api.models.Review;
+import jakarta.persistence.ElementCollection;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class Album {
-
-
+public class AlbumDTO {
     //Atributos
-
-    @Id
     private String id;
     private String nome;
     private int total_faixas;
@@ -24,55 +20,29 @@ public class Album {
     private String gravadora;
     private String perfil_spotify;
     private int popularidade;
-
-    @ElementCollection
     private List<String> imagens = new ArrayList<>();
-    @ElementCollection
     private List<String> generos = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "album_artista",
-            joinColumns = @JoinColumn(name = "id_album"),
-            inverseJoinColumns = @JoinColumn(name = "id_artista")
-    )
     private List<Artista> artistas = new ArrayList<>();
-
-
-    @OneToMany(mappedBy = "album")
     private List<Musica> musicas = new ArrayList<>();
-
-    @OneToMany(mappedBy = "album")
     private List<Review> reviews = new ArrayList<>();
 
 
     //Construtor
-
-
-    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.total_faixas = total_faixas;
-        this.lancamento = lancamento;
-        this.gravadora = gravadora;
-        this.perfil_spotify = perfil_spotify;
-        this.popularidade = popularidade;
-        this.imagens = imagens;
-        this.generos = generos;
-        this.artistas = artistas;
-        this.musicas = musicas;
-        this.reviews = reviews;
+    public AlbumDTO(Album album) {
+        this.id = album.getId();
+        this.nome = album.getNome();
+        this.total_faixas = album.getTotal_faixas();
+        this.lancamento = album.getLancamento();
+        this.gravadora = album.getGravadora();
+        this.perfil_spotify = album.getPerfil_spotify();
+        this.popularidade = album.getPopularidade();
+        this.imagens = album.getImagens();
+        this.generos = album.getGeneros();
+        this.artistas = album.getArtistas();
+        this.musicas = album.getMusicas();
+        this.reviews = album.getReviews();
     }
 
-    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.total_faixas = total_faixas;
-        this.lancamento = lancamento;
-        this.gravadora = gravadora;
-        this.perfil_spotify = perfil_spotify;
-        this.popularidade = popularidade;
-    }
 
     //Geters e Setters
 

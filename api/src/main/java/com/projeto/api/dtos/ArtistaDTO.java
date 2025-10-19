@@ -1,60 +1,40 @@
-package com.projeto.api.models;
+package com.projeto.api.dtos;
 
-
+import com.projeto.api.models.Album;
+import com.projeto.api.models.Artista;
 import com.projeto.api.util.IdGerador;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.ElementCollection;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class Artista {
+public class ArtistaDTO {
 
     //Atributos
 
-    @Id
     private String id;
     private String nome;
     private int popularidade;
     private int seguidores;
     public String perfil_spotify;
-
-    @ElementCollection
     private List<String> generos = new ArrayList<>();
-    @ElementCollection
     private List<String> imagens = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "artistas")
     private List<Album> albuns = new ArrayList<>();
-
 
     //Construtor
 
-
-    public Artista(String nome, int popularidade, int seguidores, String perfil_spotify, List<String> generos, List<String> imagens, List<Album> albuns) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.popularidade = popularidade;
-        this.seguidores = seguidores;
-        this.perfil_spotify = perfil_spotify;
-        this.generos = generos;
-        this.imagens = imagens;
-        this.albuns = albuns;
+    public ArtistaDTO(Artista artista) {
+        this.id = artista.getId();
+        this.nome = artista.getNome();
+        this.popularidade = artista.getPopularidade();
+        this.seguidores = artista.getSeguidores();
+        this.perfil_spotify = artista.getPerfil_spotify();
+        this.imagens = artista.getImagens();
+        this.generos = artista.getGeneros();
+        this.albuns = artista.getAlbuns();
     }
-
-    public Artista(String nome, int popularidade, int seguidores, String perfil_spotify) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.popularidade = popularidade;
-        this.seguidores = seguidores;
-        this.perfil_spotify = perfil_spotify;
-    }
-
 
     //Geters e Setters
 

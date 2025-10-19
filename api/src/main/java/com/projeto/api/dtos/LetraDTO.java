@@ -1,31 +1,24 @@
-package com.projeto.api.models;
+package com.projeto.api.dtos;
 
+import com.projeto.api.models.Letra;
+import com.projeto.api.models.Musica;
 import com.projeto.api.util.IdGerador;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class Letra {
+public class LetraDTO {
+
     //Atributos
-    @Id
     private String id;
     private String letras;
-
-    @ManyToOne
-    @JoinColumn(name = "id_musica")
     private Musica musica;
-
-
 
     //Construtor
 
-    public Letra(Musica musica, String letras) {
+    public LetraDTO(Letra letra) {
         this.id = IdGerador.Gerar();
-        this.musica = musica;
-        this.letras = letras;
+        this.letras = letra.getLetras();
+        this.musica = letra.getMusica();
     }
 
     //Geters e Setters
@@ -39,19 +32,19 @@ public class Letra {
         this.id = id;
     }
 
-    public Musica getMusica() {
-        return musica;
-    }
-
-    public void setMusica(Musica musica) {
-        this.musica = musica;
-    }
-
     public String getLetras() {
         return letras;
     }
 
     public void setLetras(String letras) {
         this.letras = letras;
+    }
+
+    public Musica getMusica() {
+        return musica;
+    }
+
+    public void setMusica(Musica musica) {
+        this.musica = musica;
     }
 }

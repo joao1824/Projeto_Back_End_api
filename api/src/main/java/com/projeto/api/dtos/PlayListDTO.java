@@ -1,53 +1,34 @@
-package com.projeto.api.models;
+package com.projeto.api.dtos;
 
-
+import com.projeto.api.models.Musica;
+import com.projeto.api.models.PlayList;
+import com.projeto.api.models.Usuario;
 import com.projeto.api.util.IdGerador;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.ElementCollection;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class PlayList {
-    //Atribuos
-    @Id
+public class PlayListDTO {
+
+    //Atributos
+
     private String id;
     private String nome;
     private String descricao;
-
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
-
-    @ManyToMany
-    @JoinTable(
-            name = "playlist_musica",
-            joinColumns = @JoinColumn(name = "playlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "musica_id")
-    )
     private List<Musica> musicas = new ArrayList<>();
-
 
     //Construtor
 
-
-    public PlayList(String nome, String descricao, Usuario usuario, List<Musica> musicas) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.descricao = descricao;
-        this.usuario = usuario;
-        this.musicas = musicas;
-    }
-
-    public PlayList(String nome, String descricao, Usuario usuario) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.descricao = descricao;
-        this.usuario = usuario;
+    public PlayListDTO(PlayList playList) {
+        this.id = playList.getId();
+        this.nome = playList.getNome();
+        this.descricao = playList.getDescricao();
+        this.usuario = playList.getUsuario();
+        this.musicas = playList.getMusicas();
     }
 
     //Geters e Setters
