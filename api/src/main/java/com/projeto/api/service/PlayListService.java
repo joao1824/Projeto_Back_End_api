@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class PlayListService {
 
-    private PlayListRepository playListRepository;
-    private MusicaRepository musicaRepository;
+    private final PlayListRepository playListRepository;
+    private final MusicaRepository musicaRepository;
 
     public PlayListService(PlayListRepository playListRepository, MusicaRepository musicaRepository) {
         this.playListRepository = playListRepository;
@@ -30,7 +30,7 @@ public class PlayListService {
         List<PlayList> playlist = playListRepository.findAll();
 
         if (playlist.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum playlist encontrada ); .");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada ); .");
         }
         return playlist.stream().map(PlayListDTO::new).collect(Collectors.toList());
     }
@@ -60,7 +60,7 @@ public class PlayListService {
 
     //Update
     public PlayListDTO Update(PlayListDTO playListDTO,String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
 
         //Esperar a estar pronto musica e usuario PARA FUNCIONAR
 
@@ -83,32 +83,34 @@ public class PlayListService {
     //Deletar
 
     public void Delete(String id){
-        PlayList playList = playListRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playList = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
         playListRepository.delete(playList);
     }
 
     //buscar por id
 
     public  PlayListDTO GetPlayListById(String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
         return new PlayListDTO(playlist);
     }
 
     //adicionar musica
 
     public PlayListDTO AddMusica(String id_musica, String id_playlist){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new EntityNotFoundException("Nenhum playlist encontrada com esse ID ); ."));
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new EntityNotFoundException("Nenhuma música encontrada com esse ID ); ."));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
         playList.addMusica(musica);
+        playListRepository.save(playList);
         return new PlayListDTO(playList);
     }
 
     //remover musica
 
     public void RemoveMusica(String id_musica, String id_playlist){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new EntityNotFoundException("Nenhum playlist encontrada com esse ID ); ."));
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new EntityNotFoundException("Nenhuma música encontrada com esse ID ); ."));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
         playList.removeMusica(musica);
+        playListRepository.save(playList);
     }
 
 
