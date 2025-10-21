@@ -11,8 +11,6 @@ import java.util.List;
 
 
 
-
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Usuario {
@@ -31,6 +29,8 @@ public class Usuario {
     private List<PlayList> PlayLists = new ArrayList<>();
 
     //construtor
+
+
 
 
     public Usuario( String nome, String email, List<Review> reviewList, List<PlayList> playLists) {

@@ -4,6 +4,7 @@ import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.ElementCollection;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,13 +15,45 @@ public class ArtistaDTO {
 
     //Atributos
 
+    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "ID não pode estar em vazio")
+    @NotNull(message = "O id não pode ser nulo")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
+    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
+
+    @NotBlank(message = "popularidade não pode estar em branco")
+    @Positive(message = "popularidade não pode ser negativa")
+    @NotNull(message = "popularidade não pode ser nulo")
     private int popularidade;
+
+    @NotBlank(message = "seguidores não pode estar em branco")
+    @Positive(message = "seguidores não pode ser negativa")
+    @NotNull(message = "seguidores não pode ser nulo")
     private int seguidores;
+
+    @NotBlank(message = "O perfil não pode estar vazio")
+    @NotNull(message = "o perfil não pode ser nulo")
     public String perfil_spotify;
+
+    @NotNull(message = ("generos não pode ser nula"))
+    @NotEmpty(message = ("generos não pode estar vazia"))
     private List<String> generos = new ArrayList<>();
+<<<<<<< Updated upstream
     private String imagem;
+=======
+
+    @NotNull(message = ("imagens não pode ser nula"))
+    @NotEmpty(message = ("imagens não pode estar vazia"))
+    private List<String> imagens = new ArrayList<>();
+
+    @NotNull(message = ("albuns não pode ser nula"))
+    @NotEmpty(message = ("albuns não pode estar vazia"))
+>>>>>>> Stashed changes
     private List<Album> albuns = new ArrayList<>();
 
     //Construtor

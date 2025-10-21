@@ -4,17 +4,37 @@ import com.projeto.api.models.Album;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class ReviewDTO {
 
     //Atributos
+    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "ID não pode estar em vazio")
+    @NotNull(message = "O id não pode ser nulo")
     private String id;
+
+    @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
+    @NotNull(message = "O nome não pode ser nulo")
     private String avaliacao;
+
+    @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "ID não pode estar em vazio")
+    @NotNull(message = "O id não pode ser nulo")
     private int nota;
+
+    @NotNull(message = "O tag não pode ser nulo")
     private Tag tag;
+
+    @NotNull(message = "O album não pode ser nulo")
     private Album album;
+
+    @NotNull(message = "O usuario não pode ser nulo")
     private Usuario usuario;
 
     //Construtor

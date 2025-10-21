@@ -39,7 +39,6 @@ public class PlayList {
     }
 
 
-
     public PlayList(String nome, String descricao, Usuario usuario, List<Musica> musicas) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
@@ -48,12 +47,6 @@ public class PlayList {
         this.musicas = musicas;
     }
 
-    public PlayList(String nome, String descricao, Usuario usuario) {
-        this.id = IdGerador.Gerar();
-        this.nome = nome;
-        this.descricao = descricao;
-        this.usuario = usuario;
-    }
 
     //Método personalizado
 

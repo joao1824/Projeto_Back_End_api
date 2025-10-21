@@ -2,6 +2,7 @@ package com.projeto.api.dtos;
 
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Tag;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,8 +12,19 @@ import java.util.List;
 public class TagDTO {
     //Atributos
 
+    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "ID não pode estar em vazio")
+    @NotNull(message = "O id não pode ser nulo")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
+    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
+
+    @NotNull(message = ("reviews não pode ser nula"))
+    @NotEmpty(message = ("reviews não pode estar vazia"))
     private List<Review> reviews = new ArrayList<>();
 
     //Construtor

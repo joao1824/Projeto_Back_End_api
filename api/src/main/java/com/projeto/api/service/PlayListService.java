@@ -5,9 +5,7 @@ import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.repository.MusicaRepository;
 import com.projeto.api.repository.PlayListRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
