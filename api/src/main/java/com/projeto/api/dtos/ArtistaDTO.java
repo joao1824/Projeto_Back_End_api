@@ -43,17 +43,13 @@ public class ArtistaDTO {
     @NotNull(message = ("generos não pode ser nula"))
     @NotEmpty(message = ("generos não pode estar vazia"))
     private List<String> generos = new ArrayList<>();
-<<<<<<< Updated upstream
-    private String imagem;
-=======
 
     @NotNull(message = ("imagens não pode ser nula"))
-    @NotEmpty(message = ("imagens não pode estar vazia"))
-    private List<String> imagens = new ArrayList<>();
+    @NotBlank(message = ("imagens não pode estar em branco"))
+    private String imagem;
 
     @NotNull(message = ("albuns não pode ser nula"))
     @NotEmpty(message = ("albuns não pode estar vazia"))
->>>>>>> Stashed changes
     private List<Album> albuns = new ArrayList<>();
 
     //Construtor

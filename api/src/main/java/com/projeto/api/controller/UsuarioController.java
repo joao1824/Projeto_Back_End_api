@@ -19,6 +19,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+
     @GetMapping
     public List<UsuarioDTO> getAll(){
         return usuarioService.GetAll();

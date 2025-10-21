@@ -4,11 +4,13 @@ import com.projeto.api.dtos.UsuarioDTO;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;

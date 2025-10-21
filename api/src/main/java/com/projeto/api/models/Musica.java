@@ -31,21 +31,14 @@ public class Musica {
     @JoinColumn(name = "id_album")
     private Album album;
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     @ManyToMany(mappedBy = "musicas")
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor
 
 
-<<<<<<< Updated upstream
+
     public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, List<PlayList> playLists) {
-=======
-    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, String letra, List<PlayList> playLists) {
->>>>>>> Stashed changes
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.duracao = duracao;
@@ -53,15 +46,11 @@ public class Musica {
         this.faixa_numero = faixa_numero;
         this.perfil_spotify = perfil_spotify;
         this.album = album;
-
         this.playLists = playLists;
     }
 
-<<<<<<< Updated upstream
+
     public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album) {
-=======
-    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, String letra) {
->>>>>>> Stashed changes
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.duracao = duracao;
@@ -132,17 +121,6 @@ public class Musica {
         this.album = album;
     }
 
-<<<<<<< Updated upstream
-=======
-    public String getLetra() {
-        return letra;
-    }
-
-    public void setLetra(String letra) {
-        this.letra = letra;
-    }
-
->>>>>>> Stashed changes
     public List<PlayList> getPlayLists() {
         return playLists;
     }
