@@ -45,16 +45,9 @@ public class MusicaDTO {
     @NotNull(message = ("album não pode ser nula"))
     @NotBlank(message = "album não pode estar vazio")
     private Album album;
-<<<<<<< Updated upstream
-=======
-
-    @NotBlank(message = "O letra não pode estar vazio")
-    @NotNull(message = "o letra não pode ser nulo")
-    private String letra;
 
     @NotNull(message = ("playLists não pode ser nula"))
     @NotEmpty(message = ("playLists não pode estar vazia"))
->>>>>>> Stashed changes
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor
@@ -129,17 +122,6 @@ public class MusicaDTO {
         this.album = album;
     }
 
-<<<<<<< Updated upstream
-=======
-    public String getLetra() {
-        return letra;
-    }
-
-    public void setLetra(String letra) {
-        this.letra = letra;
-    }
-
->>>>>>> Stashed changes
     public List<PlayList> getPlayLists() {
         return playLists;
     }
