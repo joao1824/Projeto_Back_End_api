@@ -47,6 +47,7 @@ public class ArtistaService {
         List<String> imagens = Arrays.stream(apiArtista.getImages())
                 .map(Image::getUrl)
                 .collect(Collectors.toList());
+        String imagem = imagens.get(0);
 
         // listar generos
         List<String> generos = Arrays.asList(apiArtista.getGenres());
@@ -62,8 +63,8 @@ public class ArtistaService {
                 apiArtista.getFollowers().getTotal(),
                 apiArtista.getExternalUrls().get("spotify"),
                 generos,
-                imagens,
-                Collections.emptyList()
+                imagem,
+                Collections.emptyList() // A FAZER: MOSTRAR ALBUNS DO ARTISTA
         );
 
     }

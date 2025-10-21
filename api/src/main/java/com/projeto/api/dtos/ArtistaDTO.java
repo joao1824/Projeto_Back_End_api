@@ -20,7 +20,7 @@ public class ArtistaDTO {
     private int seguidores;
     public String perfil_spotify;
     private List<String> generos = new ArrayList<>();
-    private List<String> imagens = new ArrayList<>();
+    private String imagem;
     private List<Album> albuns = new ArrayList<>();
 
     //Construtor
@@ -31,7 +31,7 @@ public class ArtistaDTO {
         this.popularidade = artista.getPopularidade();
         this.seguidores = artista.getSeguidores();
         this.perfil_spotify = artista.getPerfil_spotify();
-        this.imagens = artista.getImagens();
+        this.imagem = artista.getImagem();
         this.generos = artista.getGeneros();
         this.albuns = artista.getAlbuns();
     }
@@ -87,12 +87,12 @@ public class ArtistaDTO {
         this.generos = generos;
     }
 
-    public List<String> getImagens() {
-        return imagens;
+    public String getImagem() {
+        return imagem;
     }
 
-    public void setImagens(List<String> imagens) {
-        this.imagens = imagens;
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 
     public List<Album> getAlbuns() {

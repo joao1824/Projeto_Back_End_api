@@ -26,8 +26,8 @@ public class Artista {
 
     @ElementCollection
     private List<String> generos = new ArrayList<>();
-    @ElementCollection
-    private List<String> imagens = new ArrayList<>();
+
+    private String imagem;
 
     @ManyToMany(mappedBy = "artistas")
     private List<Album> albuns = new ArrayList<>();
@@ -36,14 +36,14 @@ public class Artista {
     //Construtor
 
 
-    public Artista(String nome, int popularidade, int seguidores, String perfil_spotify, List<String> generos, List<String> imagens, List<Album> albuns) {
+    public Artista(String nome, int popularidade, int seguidores, String perfil_spotify, List<String> generos, String imagem, List<Album> albuns) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.popularidade = popularidade;
         this.seguidores = seguidores;
         this.perfil_spotify = perfil_spotify;
         this.generos = generos;
-        this.imagens = imagens;
+        this.imagem = imagem;
         this.albuns = albuns;
     }
 
@@ -107,12 +107,12 @@ public class Artista {
         this.generos = generos;
     }
 
-    public List<String> getImagens() {
-        return imagens;
+    public String getImagem() {
+        return imagem;
     }
 
-    public void setImagens(List<String> imagens) {
-        this.imagens = imagens;
+    public void setImagens(String imagem) {
+        this.imagem = imagem;
     }
 
     public List<Album> getAlbuns() {

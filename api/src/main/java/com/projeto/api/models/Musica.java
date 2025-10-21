@@ -30,16 +30,13 @@ public class Musica {
     @JoinColumn(name = "id_album")
     private Album album;
 
-    @OneToMany(mappedBy = "musica")
-    private List<Letra> letra = new ArrayList<>();
-
     @ManyToMany(mappedBy = "musicas")
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor
 
 
-    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, List<Letra> letra, List<PlayList> playLists) {
+    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, List<PlayList> playLists) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.duracao = duracao;
@@ -47,11 +44,11 @@ public class Musica {
         this.faixa_numero = faixa_numero;
         this.perfil_spotify = perfil_spotify;
         this.album = album;
-        this.letra = letra;
+
         this.playLists = playLists;
     }
 
-    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, Letra letra) {
+    public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.duracao = duracao;
@@ -119,14 +116,6 @@ public class Musica {
 
     public void setAlbum(Album album) {
         this.album = album;
-    }
-
-    public List<Letra> getLetra() {
-        return letra;
-    }
-
-    public void setLetra(List<Letra> letra) {
-        this.letra = letra;
     }
 
     public List<PlayList> getPlayLists() {

@@ -1,7 +1,6 @@
 package com.projeto.api.dtos;
 
 import com.projeto.api.models.Album;
-import com.projeto.api.models.Letra;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ public class MusicaDTO {
     private int faixa_numero;
     private String perfil_spotify;
     private Album album;
-    private List<Letra> letra = new ArrayList<>();
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor
@@ -34,7 +32,6 @@ public class MusicaDTO {
         this.faixa_numero = musica.getFaixa_numero();
         this.perfil_spotify = musica.getPerfil_spotify();
         this.album = musica.getAlbum();
-        this.letra = musica.getLetra();
         this.playLists = musica.getPlayLists();
     }
 
@@ -95,14 +92,6 @@ public class MusicaDTO {
 
     public void setAlbum(Album album) {
         this.album = album;
-    }
-
-    public List<Letra> getLetra() {
-        return letra;
-    }
-
-    public void setLetra(List<Letra> letra) {
-        this.letra = letra;
     }
 
     public List<PlayList> getPlayLists() {
