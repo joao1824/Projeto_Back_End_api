@@ -3,6 +3,7 @@ package com.projeto.api.dtos;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Usuario;
+import com.projeto.api.security.UsuarioRole;
 import com.projeto.api.util.IdGerador;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
@@ -14,28 +15,27 @@ import java.util.List;
 public class UsuarioDTO {
 
     //Atributos
-    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
 
-    @Email
+    @Email(message = "Formato do e-mail invalido")
     @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
     private String email;
 
-    @NotNull(message = ("reviews não pode ser nula"))
-    @NotEmpty(message = ("reviews não pode estar vazia"))
+    @Size(min = 8,max = 100, message = "senha não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "senha não pode estar em vazio")
+    private String senha;
+
+    @NotBlank(message = "role não pode estar vazia")
+    private UsuarioRole role; //não sei como vai funcionar em dto
+
     private List<Review> reviewList = new ArrayList<>();
 
-    @NotNull(message = ("playLists não pode ser nula"))
-    @NotEmpty(message = ("playLists não pode estar vazia"))
     private List<PlayList> playLists = new ArrayList<>();
 
     //construtor
@@ -44,9 +44,12 @@ public class UsuarioDTO {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
+        this.senha = usuario.getSenha();
         this.reviewList = usuario.getReviewList();
         this.playLists = usuario.getPlayLists();
     }
+
+
 
     //Geters e Setters
 
@@ -65,6 +68,21 @@ public class UsuarioDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public UsuarioRole getRole() {
+        return role;
+    }
+    public void setRole(UsuarioRole role) {
+        this.role = role;
     }
 
     public String getEmail() {

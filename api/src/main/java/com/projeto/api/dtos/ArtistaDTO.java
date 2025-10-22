@@ -15,20 +15,17 @@ public class ArtistaDTO {
 
     //Atributos
 
-    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
+
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
 
     @NotBlank(message = "popularidade não pode estar em branco")
     @Positive(message = "popularidade não pode ser negativa")
-    @NotNull(message = "popularidade não pode ser nulo")
     private int popularidade;
 
     @NotBlank(message = "seguidores não pode estar em branco")
@@ -37,7 +34,6 @@ public class ArtistaDTO {
     private int seguidores;
 
     @NotBlank(message = "O perfil não pode estar vazio")
-    @NotNull(message = "o perfil não pode ser nulo")
     public String perfil_spotify;
 
     @NotNull(message = ("generos não pode ser nula"))

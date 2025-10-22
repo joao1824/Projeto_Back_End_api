@@ -1,19 +1,24 @@
 package com.projeto.api.models;
 
 
+import com.projeto.api.security.UsuarioRole;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
 
     //Atributos
 
@@ -21,6 +26,8 @@ public class Usuario {
     private String id;
     private String nome;
     private String email;
+    private String senha;
+    private UsuarioRole role;
 
     @OneToMany(mappedBy = "usuario")
     private List<Review> reviewList = new ArrayList<>();
@@ -30,21 +37,22 @@ public class Usuario {
 
     //construtor
 
-
-
-
-    public Usuario( String nome, String email, List<Review> reviewList, List<PlayList> playLists) {
+    public Usuario( String nome, String email,String senha,UsuarioRole role, List<Review> reviewList, List<PlayList> playLists) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.email = email;
+        this.senha = senha;
+        this.role = role;
         this.reviewList = reviewList;
         PlayLists = playLists;
     }
 
-    public Usuario(String nome, String email) {
+    public Usuario(String nome, String email, String encrypedPassoword, UsuarioRole role) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.email = email;
+        this.senha = encrypedPassoword;
+        this.role = role;
     }
 
     //Geters e Setters
@@ -90,4 +98,58 @@ public class Usuario {
         PlayLists = playLists;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public UsuarioRole getRole() {
+        return role;
+    }
+
+    public void setRole(UsuarioRole role) {
+        this.role = role;
+    }
+
+    //Metodos do security
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == UsuarioRole.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;    }
 }

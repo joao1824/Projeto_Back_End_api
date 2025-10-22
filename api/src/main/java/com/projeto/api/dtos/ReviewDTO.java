@@ -11,15 +11,12 @@ import lombok.NoArgsConstructor;
 public class ReviewDTO {
 
     //Atributos
-    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
     @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String avaliacao;
 
     @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")

@@ -14,14 +14,12 @@ public class MusicaDTO {
 
     //Atributos
 
-    @Size(max = 27, min = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
 
     @NotBlank(message = "duracao não pode estar em branco")
@@ -39,7 +37,6 @@ public class MusicaDTO {
     private int faixa_numero;
 
     @NotBlank(message = "perfil_spotifynão pode estar vazio")
-    @NotNull(message = "perfil_spotify não pode ser nulo")
     private String perfil_spotify;
 
     @NotNull(message = ("album não pode ser nula"))

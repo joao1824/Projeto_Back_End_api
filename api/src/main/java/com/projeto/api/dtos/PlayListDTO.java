@@ -16,20 +16,16 @@ public class PlayListDTO {
 
     //Atributos
 
-    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
 
     @Size(min = 0, max = 500,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "O lancamento não pode estar vazio")
-    @NotNull(message = "O lancamento não pode ser nulo")
     private String descricao;
 
     @NotNull(message = ("usuario não pode ser nula"))
