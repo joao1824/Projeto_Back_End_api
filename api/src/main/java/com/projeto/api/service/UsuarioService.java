@@ -31,6 +31,7 @@ public class UsuarioService {
         return usuarios.stream().map(UsuarioDTO::new).collect(Collectors.toList());
     }
 
+    //post novo usuario esta no AuthenticationController
 
 
 

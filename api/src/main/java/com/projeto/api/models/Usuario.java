@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Usuario implements UserDetails {
     private String email;
     private String senha;
     private UsuarioRole role;
+    private LocalDateTime ultima_atualizacao_senha;
 
     @OneToMany(mappedBy = "usuario")
     private List<Review> reviewList = new ArrayList<>();
@@ -44,6 +46,7 @@ public class Usuario implements UserDetails {
         this.senha = senha;
         this.role = role;
         this.reviewList = reviewList;
+        this.ultima_atualizacao_senha = LocalDateTime.now();
         PlayLists = playLists;
     }
 
@@ -52,6 +55,7 @@ public class Usuario implements UserDetails {
         this.nome = nome;
         this.email = email;
         this.senha = encrypedPassoword;
+        this.ultima_atualizacao_senha = LocalDateTime.now();
         this.role = role;
     }
 
@@ -152,4 +156,12 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;    }
+
+    public LocalDateTime getUltima_atualizacao_senha() {
+        return ultima_atualizacao_senha;
+    }
+
+    public void setUltima_atualizacao_senha(LocalDateTime ultima_atualizacao_senha) {
+        this.ultima_atualizacao_senha = ultima_atualizacao_senha;
+    }
 }

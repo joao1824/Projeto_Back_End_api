@@ -40,8 +40,8 @@ public class PlayListController {
         return playListService.Update(playListDTO,id);
     }
 
-    @PatchMapping("/adicionar-musica/{id_playlist}/{id_musica}")
-    public PlayListDTO addMusica(@PathVariable("id_musica") String id_musica,@PathVariable("id_playlist") String id_playlist){
+    @PatchMapping("/adicionar-musica/{id_playlist}")
+    public PlayListDTO addMusica(@RequestBody String id_musica,@PathVariable("id_playlist") String id_playlist){
         return playListService.AddMusica(id_musica,id_playlist);
     }
 

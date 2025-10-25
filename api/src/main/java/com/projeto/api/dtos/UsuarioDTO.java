@@ -6,8 +6,10 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.security.UsuarioRole;
 import com.projeto.api.util.IdGerador;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class UsuarioDTO {
     @NotBlank(message = "role não pode estar vazia")
     private UsuarioRole role; //não sei como vai funcionar em dto
 
+    private LocalDateTime ultima_atualizacao_senha;
+
     private List<Review> reviewList = new ArrayList<>();
 
     private List<PlayList> playLists = new ArrayList<>();
@@ -47,6 +51,7 @@ public class UsuarioDTO {
         this.senha = usuario.getSenha();
         this.reviewList = usuario.getReviewList();
         this.playLists = usuario.getPlayLists();
+        this.ultima_atualizacao_senha = usuario.getUltima_atualizacao_senha();
     }
 
 
@@ -107,5 +112,13 @@ public class UsuarioDTO {
 
     public void setPlayLists(List<PlayList> playLists) {
         this.playLists = playLists;
+    }
+
+    public LocalDateTime getUltima_atualizacao_senha() {
+        return ultima_atualizacao_senha;
+    }
+
+    public void setUltima_atualizacao_senha(LocalDateTime ultima_atualizacao_senha) {
+        this.ultima_atualizacao_senha = ultima_atualizacao_senha;
     }
 }
