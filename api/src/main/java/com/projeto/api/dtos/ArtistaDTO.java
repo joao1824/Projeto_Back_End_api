@@ -4,6 +4,7 @@ import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
@@ -14,38 +15,13 @@ import java.util.List;
 public class ArtistaDTO {
 
     //Atributos
-
-
-    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @NotBlank(message = "popularidade não pode estar em branco")
-    @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
-
-    @NotBlank(message = "seguidores não pode estar em branco")
-    @Positive(message = "seguidores não pode ser negativa")
-    @NotNull(message = "seguidores não pode ser nulo")
     private int seguidores;
-
-    @NotBlank(message = "O perfil não pode estar vazio")
     public String perfil_spotify;
-
-    @NotNull(message = ("generos não pode ser nula"))
-    @NotEmpty(message = ("generos não pode estar vazia"))
     private List<String> generos = new ArrayList<>();
-
-    @NotNull(message = ("imagens não pode ser nula"))
-    @NotBlank(message = ("imagens não pode estar em branco"))
     private String imagem;
-
-    @NotNull(message = ("albuns não pode ser nula"))
-    @NotEmpty(message = ("albuns não pode estar vazia"))
     private List<Album> albuns = new ArrayList<>();
 
     //Construtor

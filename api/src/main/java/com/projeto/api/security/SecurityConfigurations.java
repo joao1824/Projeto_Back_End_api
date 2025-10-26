@@ -1,6 +1,5 @@
 package com.projeto.api.security;
 
-import com.projeto.api.controller.AuthenticationController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,9 +33,10 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/logar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "conta/logar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "conta/registrar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/conta").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

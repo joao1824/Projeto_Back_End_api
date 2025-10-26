@@ -3,6 +3,10 @@ package com.projeto.api.models;
 
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -15,14 +19,26 @@ import java.util.List;
 public class PlayList {
     //Atribuos
     @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @Size(min = 0, max = 500,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "O lancamento não pode estar vazio")
     private String descricao;
 
+    @NotNull(message = ("usuario não pode ser nula"))
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    @NotNull(message = ("musicas não pode ser nula"))
+    @NotEmpty(message = ("musicas não pode estar vazia"))
     @ManyToMany
     @JoinTable(
             name = "playlist_musica",

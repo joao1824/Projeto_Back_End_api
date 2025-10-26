@@ -2,6 +2,7 @@ package com.projeto.api.models;
 
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -17,19 +18,40 @@ public class Album {
     //Atributos
 
     @Id
+    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar em vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @Positive(message = "total_faixas não pode ser negativa")
     private int total_faixas;
+
+    @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
     private String lancamento;
+
+    @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
     private String gravadora;
+
+    @NotBlank(message = "O perfil_spotify não pode estar vazio")
     private String perfil_spotify;
+
+
+    @NotBlank(message = "popularidade não pode estar em branco")
+    @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
+
 
     @ElementCollection
     private List<String> imagens = new ArrayList<>();
+
+    @NotEmpty(message = ("generos não pode estar vazia"))
     @ElementCollection
     private List<String> generos = new ArrayList<>();
 
+    @NotEmpty(message = ("artistas não pode estar vazia"))
     @ManyToMany
     @JoinTable(
             name = "album_artista",
@@ -38,7 +60,7 @@ public class Album {
     )
     private List<Artista> artistas = new ArrayList<>();
 
-
+    @NotEmpty(message = ("musicas não pode estar vazia"))
     @OneToMany(mappedBy = "album")
     private List<Musica> musicas = new ArrayList<>();
 

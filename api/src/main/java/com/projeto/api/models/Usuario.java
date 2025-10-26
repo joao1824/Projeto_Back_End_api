@@ -4,6 +4,10 @@ package com.projeto.api.models;
 import com.projeto.api.security.UsuarioRole;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +28,32 @@ public class Usuario implements UserDetails {
     //Atributos
 
     @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Column(unique = true)
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @Column(unique = true)
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
+    @Email
     private String email;
+
+    @Size(min = 8,max = 100, message = "senha não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "senha não pode estar em vazio")
     private String senha;
+
+    @NotNull(message = "Role não pode ser nulo")
     private UsuarioRole role;
+
+
     private LocalDateTime ultima_atualizacao_senha;
+
+    private LocalDateTime ultima_atualizacao_email;
 
     @OneToMany(mappedBy = "usuario")
     private List<Review> reviewList = new ArrayList<>();
@@ -47,6 +71,7 @@ public class Usuario implements UserDetails {
         this.role = role;
         this.reviewList = reviewList;
         this.ultima_atualizacao_senha = LocalDateTime.now();
+        this.ultima_atualizacao_email = LocalDateTime.now();
         PlayLists = playLists;
     }
 
@@ -56,6 +81,7 @@ public class Usuario implements UserDetails {
         this.email = email;
         this.senha = encrypedPassoword;
         this.ultima_atualizacao_senha = LocalDateTime.now();
+        this.ultima_atualizacao_email = LocalDateTime.now();
         this.role = role;
     }
 
@@ -115,6 +141,14 @@ public class Usuario implements UserDetails {
 
     public void setRole(UsuarioRole role) {
         this.role = role;
+    }
+
+    public LocalDateTime getUltima_atualizacao_email() {
+        return ultima_atualizacao_email;
+    }
+
+    public void setUltima_atualizacao_email(LocalDateTime ultima_atualizacao_email) {
+        this.ultima_atualizacao_email = ultima_atualizacao_email;
     }
 
     //Metodos do security

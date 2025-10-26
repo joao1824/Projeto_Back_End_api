@@ -4,20 +4,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.projeto.api.dtos.UsuarioDTO;
-import com.auth0.jwt.JWTVerifier;
+import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 
 @Service
 public class TokenService {
@@ -36,6 +33,7 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("auth-api")
                     .withClaim("ultimaSenha_data", usuario.getUltima_atualizacao_senha().toString())
+                    .withClaim("ultimoEmail_data", usuario.getUltima_atualizacao_email().toString())
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
@@ -57,13 +55,21 @@ public class TokenService {
 
             String email = decoded.getSubject();
             String ultima_atualizacao_senha = decoded.getClaim("ultimaSenha_data").asString();
+            String ultimo_atualizacao_email = decoded.getClaim("ultimoEmail_data").asString();
 
             Usuario usuario = usuarioRepository.findUsuarioByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
             if (ultima_atualizacao_senha == null || !ultima_atualizacao_senha.equals(usuario.getUltima_atualizacao_senha().toString())) {
                 throw new JWTVerificationException("Token inválido (senha atualizada)");
             }
+
+            if (ultimo_atualizacao_email == null || !ultimo_atualizacao_email.equals(usuario.getUltima_atualizacao_email().toString())){
+                throw new JWTVerificationException("Token inválido (email atualizado)");
+            }
+
+
             return email;
+
         } catch (JWTVerificationException exception) {
             return "";
         }

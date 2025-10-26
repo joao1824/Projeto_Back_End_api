@@ -3,6 +3,7 @@ package com.projeto.api.models;
 
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -13,18 +14,31 @@ public class Review {
 
     //Atributos
     @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String avaliacao;
+
+    @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotBlank(message = "ID não pode estar em vazio")
     private int nota;
 
+
+    @NotNull(message = "O tag não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_tag")
     private Tag tag;
 
+    @NotNull(message = "O album não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_album")
     private Album album;
 
+    @NotNull(message = "O usuario não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;

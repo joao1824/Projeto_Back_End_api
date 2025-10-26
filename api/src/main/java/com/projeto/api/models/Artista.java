@@ -3,6 +3,7 @@ package com.projeto.api.models;
 
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -18,10 +19,21 @@ public class Artista {
     //Atributos
 
     @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
+
+    @Positive(message = "seguidores não pode ser negativa")
     private int seguidores;
+
+    @NotBlank(message = "O perfil não pode estar vazio")
     public String perfil_spotify;
 
     @ElementCollection

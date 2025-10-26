@@ -5,6 +5,7 @@ import com.projeto.api.models.Artista;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Review;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
@@ -15,61 +16,17 @@ import java.util.List;
 public class AlbumDTO {
     //Atributos
 
-    @Max(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 27, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "ID não pode estar em vazio")
-    @NotNull(message = "O id não pode ser nulo")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
-    @NotNull(message = "O nome não pode ser nulo")
     private String nome;
-
-
-    @NotBlank(message = "total_faixas não pode estar em branco")
-    @Positive(message = "total_faixas não pode ser negativa")
-    @NotNull(message = "total_faixas não pode ser nulo")
     private int total_faixas;
-
-    @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
-    @NotBlank(message = "O lancamento não pode estar vazio")
-    @NotNull(message = "O lancamento não pode ser nulo")
     private String lancamento;
-
-    @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
-    @NotBlank(message = "A gravadora não pode estar vazio")
-    @NotNull(message = "A gravadora não pode ser nulo")
     private String gravadora;
-
-    @NotBlank(message = "O perfil_spotify não pode estar vazio")
-    @NotNull(message = "o perfil_spotify não pode ser nulo")
     private String perfil_spotify;
-
-
-    @NotBlank(message = "popularidade não pode estar em branco")
-    @Positive(message = "popularidade não pode ser negativa")
-    @NotNull(message = "popularidade não pode ser nulo")
     private int popularidade;
-
-    @NotNull(message = ("imagens não pode ser nula"))
-    @NotEmpty(message = ("imagens não pode estar vazia"))
     private List<String> imagens = new ArrayList<>();
-
-    @NotNull(message = ("generos não pode ser nula"))
-    @NotEmpty(message = ("generos não pode estar vazia"))
     private List<String> generos = new ArrayList<>();
-
-    @NotNull(message = ("artistas não pode ser nula"))
-    @NotEmpty(message = ("artistas não pode estar vazia"))
     private List<Artista> artistas = new ArrayList<>();
-
-    @NotNull(message = ("musicas não pode ser nula"))
-    @NotEmpty(message = ("musicas não pode estar vazia"))
     private List<Musica> musicas = new ArrayList<>();
-
-    @NotNull(message = ("reviews não pode ser nula"))
-    @NotEmpty(message = ("reviews não pode estar vazia"))
     private List<Review> reviews = new ArrayList<>();
 
 

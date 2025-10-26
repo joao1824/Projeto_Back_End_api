@@ -3,6 +3,7 @@ package com.projeto.api.models;
 
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -19,18 +20,35 @@ public class Musica {
     //Atributos
 
     @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @NotBlank(message = "duracao não pode estar em branco")
+    @Positive(message = "duracao não pode ser negativa")
     private int duracao;
+
+    @NotBlank(message = "explicito não pode estar em branco")
     private boolean explicito; //se é +18 ou não
+
+    @NotBlank(message = "faixa_numero não pode estar em branco")
+    @Positive(message = "faixa_numero não pode ser negativa")
     private int faixa_numero;
+
+    @NotBlank(message = "perfil_spotifynão pode estar vazio")
     private String perfil_spotify;
     private String letra;
 
+    @NotBlank(message = "album não pode estar vazio")
     @ManyToOne
     @JoinColumn(name = "id_album")
     private Album album;
 
+    @NotEmpty(message = ("playLists não pode estar vazia"))
     @ManyToMany(mappedBy = "musicas")
     private List<PlayList> playLists = new ArrayList<>();
 

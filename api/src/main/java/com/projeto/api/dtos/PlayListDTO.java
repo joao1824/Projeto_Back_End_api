@@ -5,6 +5,7 @@ import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
@@ -15,24 +16,10 @@ import java.util.List;
 public class PlayListDTO {
 
     //Atributos
-
-    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @Size(min = 0, max = 500,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "O lancamento não pode estar vazio")
     private String descricao;
-
-    @NotNull(message = ("usuario não pode ser nula"))
     private Usuario usuario;
-
-    @NotNull(message = ("musicas não pode ser nula"))
-    @NotEmpty(message = ("musicas não pode estar vazia"))
     private List<Musica> musicas = new ArrayList<>();
 
     //Construtor

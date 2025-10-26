@@ -1,12 +1,12 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.UsuarioDTOs;
 
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.security.UsuarioRole;
-import com.projeto.api.util.IdGerador;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -17,26 +17,14 @@ import java.util.List;
 public class UsuarioDTO {
 
     //Atributos
-    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @Email(message = "Formato do e-mail invalido")
-    @NotBlank(message = "ID não pode estar em vazio")
     private String email;
-
-    @Size(min = 8,max = 100, message = "senha não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "senha não pode estar em vazio")
     private String senha;
-
-    @NotBlank(message = "role não pode estar vazia")
-    private UsuarioRole role; //não sei como vai funcionar em dto
-
+    private UsuarioRole role;
     private LocalDateTime ultima_atualizacao_senha;
+    private LocalDateTime ultima_atualizacao_email;
 
     private List<Review> reviewList = new ArrayList<>();
 
@@ -52,7 +40,10 @@ public class UsuarioDTO {
         this.reviewList = usuario.getReviewList();
         this.playLists = usuario.getPlayLists();
         this.ultima_atualizacao_senha = usuario.getUltima_atualizacao_senha();
+        this.ultima_atualizacao_email = usuario.getUltima_atualizacao_email();
+        this.role = usuario.getRole();
     }
+
 
 
 
@@ -120,5 +111,13 @@ public class UsuarioDTO {
 
     public void setUltima_atualizacao_senha(LocalDateTime ultima_atualizacao_senha) {
         this.ultima_atualizacao_senha = ultima_atualizacao_senha;
+    }
+
+    public LocalDateTime getUltima_atualizacao_email() {
+        return ultima_atualizacao_email;
+    }
+
+    public void setUltima_atualizacao_email(LocalDateTime ultima_atualizacao_email) {
+        this.ultima_atualizacao_email = ultima_atualizacao_email;
     }
 }
