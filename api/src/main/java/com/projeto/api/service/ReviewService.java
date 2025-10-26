@@ -23,13 +23,11 @@ import java.util.List;
 public class ReviewService {
     // Injeção do controlador de reviews
 
-    private final ReviewController reviewController;
     private final TagRepository tagRepository;
     private final AlbumRepository albumRepository;
     private final ReviewRepository reviewRepository;
 
-    public ReviewService(ReviewController reviewController, TagRepository tagRepository, AlbumRepository albumRepository, ReviewRepository reviewRepository) {
-        this.reviewController = reviewController;
+    public ReviewService( TagRepository tagRepository, AlbumRepository albumRepository, ReviewRepository reviewRepository) {
         this.tagRepository = tagRepository;
         this.albumRepository = albumRepository;
         this.reviewRepository = reviewRepository;
