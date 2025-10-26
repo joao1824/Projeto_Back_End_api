@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,7 @@ public class PlayListService {
         this.musicaRepository = musicaRepository;
     }
 
-    //Retorna todos
+    // Retorna todos
     public Page<PlayListDTO> getAll(Pageable pageable) {
         Page<PlayList> playlists = playListRepository.findAll(pageable);
 
@@ -39,8 +38,8 @@ public class PlayListService {
         return playlists.map(PlayListDTO::new);
     }
 
-    //Adiciona um novo
-    public ResponseEntity<String> novaPlaylist(PlayListDTO data){
+    // Adiciona um novo
+    public PlayListDTO novaPlaylist(PlayListDTO data){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -56,11 +55,11 @@ public class PlayListService {
 
         playListRepository.save(playlist);
 
-        return ResponseEntity.ok().body("PlayList registrado com sucesso");
+        return new PlayListDTO(playlist);
     }
 
     //Update
-    public ResponseEntity<String> update(String id_playlist, PlayListDTO data){
+    public PlayListDTO update(String id_playlist, PlayListDTO data){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -80,7 +79,7 @@ public class PlayListService {
 
         playListRepository.save(playlist);
 
-        return ResponseEntity.ok().body("PlayList registrado com sucesso");
+        return new PlayListDTO(playlist);
     }
 
     //Deletar
@@ -102,14 +101,14 @@ public class PlayListService {
 
     //buscar por id
 
-    public  PlayListDTO getPlayListById(String id){
+    public PlayListDTO getPlayListById(String id){
         PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
         return new PlayListDTO(playlist);
     }
 
     //adicionar musica
 
-    public ResponseEntity<String> addMusica(String id_playlist, String id_musica){
+    public PlayListDTO addMusica(String id_playlist, String id_musica){
         PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
 
         // pega usuario logado
@@ -125,12 +124,12 @@ public class PlayListService {
         playList.addMusica(musica);
         playListRepository.save(playList);
 
-        return ResponseEntity.ok().body("Musica adicionada com sucesso");
+        return new PlayListDTO(playList);
     }
 
     //remover musica
 
-    public ResponseEntity<String> removeMusica(String id_playlist, String id_musica){
+    public void removeMusica(String id_playlist, String id_musica){
         PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -144,8 +143,6 @@ public class PlayListService {
         Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
         playList.removeMusica(musica);
         playListRepository.save(playList);
-
-        return ResponseEntity.ok().body("Musica removida com sucesso");
     }
 
 

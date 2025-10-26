@@ -39,9 +39,13 @@ public class Album {
     private String perfil_spotify;
 
 
-    @NotBlank(message = "popularidade não pode estar em branco")
     @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
+
+    @DecimalMax(value = "100.0", message = "A nota media não pode ser maior que 10.0")
+    @DecimalMin(value = "0.0", message = "A nota media não pode ser menor que 0.0")
+    @Positive
+    private float nota_media;
 
 
     @ElementCollection
@@ -71,7 +75,7 @@ public class Album {
     //Construtor
 
 
-    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
+    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade,Float nota_media, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.total_faixas = total_faixas;
@@ -79,6 +83,7 @@ public class Album {
         this.gravadora = gravadora;
         this.perfil_spotify = perfil_spotify;
         this.popularidade = popularidade;
+        this.nota_media = nota_media;
         this.imagens = imagens;
         this.generos = generos;
         this.artistas = artistas;
@@ -193,5 +198,13 @@ public class Album {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public float getNota_media() {
+        return nota_media;
+    }
+
+    public void setNota_media(float nota_media) {
+        this.nota_media = nota_media;
     }
 }

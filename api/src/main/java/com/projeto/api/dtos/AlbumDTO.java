@@ -23,6 +23,7 @@ public class AlbumDTO {
     private String gravadora;
     private String perfil_spotify;
     private int popularidade;
+    private Float nota_media;
     private List<String> imagens = new ArrayList<>();
     private List<String> generos = new ArrayList<>();
     private List<Artista> artistas = new ArrayList<>();
@@ -39,6 +40,7 @@ public class AlbumDTO {
         this.gravadora = album.getGravadora();
         this.perfil_spotify = album.getPerfil_spotify();
         this.popularidade = album.getPopularidade();
+        this.nota_media = album.getNota_media();
         this.imagens = album.getImagens();
         this.generos = album.getGeneros();
         this.artistas = album.getArtistas();
@@ -144,5 +146,13 @@ public class AlbumDTO {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public Float getNota_media() {
+        return nota_media;
+    }
+
+    public void setNota_media(Float nota_media) {
+        this.nota_media = nota_media;
     }
 }

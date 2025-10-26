@@ -55,6 +55,10 @@ public class Review {
         this.nota = nota;
     }
 
+    public Review() {
+        this.id = IdGerador.Gerar();
+    }
+
 
     //Geters e Setters
 
