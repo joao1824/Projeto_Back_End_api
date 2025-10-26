@@ -1,12 +1,17 @@
 package com.projeto.api.service;
 
-import com.projeto.api.dtos.PlayListDTO;
+import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
+import com.projeto.api.dtos.PlaylistDTOs.PlaylistAddDeleteMusicaDTO;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
+import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.MusicaRepository;
 import com.projeto.api.repository.PlayListRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -24,7 +29,7 @@ public class PlayListService {
     }
 
     //Retorna todos
-    public List<PlayListDTO> GetAll() {
+    public List<PlayListDTO> getAll() {
         List<PlayList> playlist = playListRepository.findAll();
 
         if (playlist.isEmpty()) {
@@ -34,81 +39,111 @@ public class PlayListService {
     }
 
     //Adiciona um novo
-    public PlayListDTO CreateNew(PlayListDTO playListDTO){
+    public ResponseEntity<String> novaPlaylist(PlayListDTO data){
+
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
         PlayList playlist = new PlayList();
 
-        //Esperar a estar pronto musica e usuario PARA FUNCIONAR
+        playlist.setNome(data.getNome());
+        playlist.setUsuario(usuarioLogado);
+        playlist.setDescricao(data.getDescricao());
+        playlist.setMusicas(data.getMusicas());
 
-//        if (playListDTO.getNome() == null || playListDTO.getNome().isBlank() ||
-//                playListDTO.getUsuario() == null ||
-//                    playListDTO.getMusicas() == null ||
-//                        playListDTO.getDescricao() == null || playListDTO.getDescricao().isBlank()
-//        ){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Campo não pode ser nulo ou vazio ); .");
-//        }
+        playListRepository.save(playlist);
 
-
-        playlist.setNome(playListDTO.getNome());
-        playlist.setUsuario(playListDTO.getUsuario());
-        playlist.setDescricao(playListDTO.getDescricao());
-        playlist.setMusicas(playListDTO.getMusicas());
-
-        return new PlayListDTO(playListRepository.save(playlist));
+        return ResponseEntity.ok().body("PlayList registrado com sucesso");
     }
 
     //Update
-    public PlayListDTO Update(PlayListDTO playListDTO,String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+    public ResponseEntity<String> update(String id_playlist, PlayListDTO data){
 
-        //Esperar a estar pronto musica e usuario PARA FUNCIONAR
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
+        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
 
-//        if (playListDTO.getNome() == null || playListDTO.getNome().isBlank() ||
-//                playListDTO.getDescricao() == null || playListDTO.getDescricao().isBlank() ||
-//                playListDTO.getUsuario() == null ||
-//                playListDTO.getMusicas() == null) {
-//             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Campo não pode ser nulo ou vazio ); .");
-//        }
+        //Ve se é o mesmo id do usuário da playlist
+        if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da playlist");
+        }
 
-        playlist.setId(id);
-        playlist.setNome(playListDTO.getNome());
-        playlist.setDescricao(playListDTO.getDescricao());
-        playlist.setMusicas(playListDTO.getMusicas());
+        playlist.setNome(data.getNome());
+        playlist.setDescricao(data.getDescricao());
+        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(Musica::getId).collect(Collectors.toList()));
+        playlist.setMusicas(musicas);
 
-        return new PlayListDTO(playListRepository.save(playlist));
+        playListRepository.save(playlist);
+
+        return ResponseEntity.ok().body("PlayList registrado com sucesso");
     }
 
     //Deletar
 
-    public void Delete(String id){
-        PlayList playList = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
-        playListRepository.delete(playList);
+    public void delete(String id){
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+
+        //Ve se é o mesmo id do usuário da playlist
+        if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da playlist");
+        }
+
+        playListRepository.delete(playlist);
     }
 
     //buscar por id
 
-    public  PlayListDTO GetPlayListById(String id){
+    public  PlayListDTO getPlayListById(String id){
         PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
         return new PlayListDTO(playlist);
     }
 
     //adicionar musica
 
-    public PlayListDTO AddMusica(String id_musica, String id_playlist){
+    public ResponseEntity<String> addMusica(String id_playlist, String id_musica){
         PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        //Ve se é o mesmo id do usuário da playlist
+        if (!usuarioLogado.getId().equals(playList.getUsuario().getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
+        }
+
         Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
         playList.addMusica(musica);
         playListRepository.save(playList);
-        return new PlayListDTO(playList);
+
+        return ResponseEntity.ok().body("Musica adicionada com sucesso");
     }
 
     //remover musica
 
-    public void RemoveMusica(String id_musica, String id_playlist){
+    public ResponseEntity<String> removeMusica(String id_playlist, String id_musica){
         PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        //Ve se é o mesmo id do usuário da playlist
+        if (!usuarioLogado.getId().equals(playList.getUsuario().getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
+        }
+
         Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
         playList.removeMusica(musica);
         playListRepository.save(playList);
+
+        return ResponseEntity.ok().body("Musica removida com sucesso");
     }
 
 

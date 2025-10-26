@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -72,33 +73,41 @@ public class UsuarioService {
     //mudar senha
 
     public ResponseEntity<String> MudarSenha(SenhaNovaDTO data){
+        // Autentica usuário com senha antiga
         this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(data.email(), data.senha())
         );
 
-        Usuario usuario = usuarioRepository.findUsuarioByEmail(data.email()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        // Pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        String senhaNova = this.password_encoder.encode(data.novasenha());
-        usuario.setSenha(senhaNova);
-        usuario.setUltima_atualizacao_senha(LocalDateTime.now());
-        this.usuarioRepository.save(usuario);
+        // Atuaiza a senha
+        String senhaNova = password_encoder.encode(data.novasenha());
+        usuarioLogado.setSenha(senhaNova);
+        usuarioLogado.setUltima_atualizacao_senha(LocalDateTime.now());
 
-        return ResponseEntity.ok().body("Usuario atualizado com sucesso");
+        usuarioRepository.save(usuarioLogado);
+
+        return ResponseEntity.ok("Senha atualizada com sucesso");
     }
 
     // trocar email
     public ResponseEntity<String> MudarEmail(EmailNovoDTO data){
 
+        // Autentica usuário com senha
         this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(data.email(), data.senha())
         );
 
-        Usuario usuario = usuarioRepository.findUsuarioByEmail(data.email()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        String emailNovo = data.email_novo();
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        usuario.setEmail(emailNovo);
-        usuario.setUltima_atualizacao_email(LocalDateTime.now());
-        this.usuarioRepository.save(usuario);
+        // Atualiza e-mail
+        usuarioLogado.setEmail(data.email_novo());
+        usuarioLogado.setUltima_atualizacao_email(LocalDateTime.now());
+        this.usuarioRepository.save(usuarioLogado);
 
         return ResponseEntity.ok().body("Usuario atualizado com sucesso");
 
@@ -112,10 +121,13 @@ public class UsuarioService {
                 new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
         );
 
-        Usuario usuario = usuarioRepository.findUsuarioByEmail(data.getEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        usuario.setNome(data.getNome());
-        this.usuarioRepository.save(usuario);
+
+        usuarioLogado.setNome(data.getNome());
+        this.usuarioRepository.save(usuarioLogado);
 
         return ResponseEntity.ok().body("Usuario atualizado com sucesso");
 
@@ -129,9 +141,11 @@ public class UsuarioService {
                 new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
         );
 
-        Usuario usuario = usuarioRepository.findUsuarioByEmail(data.getEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        usuarioRepository.delete(usuario);
+        usuarioRepository.delete(usuarioLogado);
 
         return ResponseEntity.ok().body("Usuario deletado com sucesso");
     }

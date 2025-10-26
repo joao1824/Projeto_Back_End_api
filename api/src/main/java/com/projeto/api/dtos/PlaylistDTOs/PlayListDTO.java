@@ -1,12 +1,8 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.PlaylistDTOs;
 
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
-import com.projeto.api.util.IdGerador;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -74,4 +70,5 @@ public class PlayListDTO {
     public void setMusicas(List<Musica> musicas) {
         this.musicas = musicas;
     }
+
 }
