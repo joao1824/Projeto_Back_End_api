@@ -198,4 +198,8 @@ public class Usuario implements UserDetails {
     public void setUltima_atualizacao_senha(LocalDateTime ultima_atualizacao_senha) {
         this.ultima_atualizacao_senha = ultima_atualizacao_senha;
     }
+
+    public boolean getIsAdmin() {
+        return this.role == UsuarioRole.ADMIN;
+    }
 }

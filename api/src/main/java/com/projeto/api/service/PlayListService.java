@@ -1,19 +1,20 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
-import com.projeto.api.dtos.PlaylistDTOs.PlaylistAddDeleteMusicaDTO;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.MusicaRepository;
 import com.projeto.api.repository.PlayListRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,13 +30,13 @@ public class PlayListService {
     }
 
     //Retorna todos
-    public List<PlayListDTO> getAll() {
-        List<PlayList> playlist = playListRepository.findAll();
+    public Page<PlayListDTO> getAll(Pageable pageable) {
+        Page<PlayList> playlists = playListRepository.findAll(pageable);
 
-        if (playlist.isEmpty()) {
+        if (playlists.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada ); .");
         }
-        return playlist.stream().map(PlayListDTO::new).collect(Collectors.toList());
+        return playlists.map(PlayListDTO::new);
     }
 
     //Adiciona um novo
@@ -50,7 +51,8 @@ public class PlayListService {
         playlist.setNome(data.getNome());
         playlist.setUsuario(usuarioLogado);
         playlist.setDescricao(data.getDescricao());
-        playlist.setMusicas(data.getMusicas());
+        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(Musica::getId).collect(Collectors.toList()));
+        playlist.setMusicas(musicas);
 
         playListRepository.save(playlist);
 

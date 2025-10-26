@@ -1,12 +1,14 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
-import com.projeto.api.dtos.PlaylistDTOs.PlaylistAddDeleteMusicaDTO;
 import com.projeto.api.service.PlayListService;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/playlist")
@@ -21,12 +23,12 @@ public class PlayListController {
     }
 
     @GetMapping()
-    public List<PlayListDTO> getPlayLists(){
-        return playListService.getAll();
+    public Page<PlayListDTO> getPlayLists(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+        return playListService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
-    public PlayListDTO getPlayList(@PathVariable String id){
+    public PlayListDTO getPlayListById(@PathVariable String id){
         return playListService.getPlayListById(id);
     }
 

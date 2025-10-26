@@ -29,10 +29,7 @@ public class Tag {
     @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
 
-    @NotNull(message = ("reviews não pode ser nula"))
-    @NotEmpty(message = ("reviews não pode estar vazia"))
     @OneToMany
-    @JoinColumn(name = "id")
     private List<Review> reviews = new ArrayList<>();
 
 
