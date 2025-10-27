@@ -25,5 +25,5 @@
     - Popularidade, com mais reviews positivas/negativas, quantidade de acessos, etc...
 
 ### Modelo
-  <img width="500" height="250" alt="image" src="https://github.com/user-attachments/assets/6c915892-190f-4d1f-ad78-96aeff9004b6" />
+  <img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/220f4de0-2d33-4021-ae10-c5fdd4026162" />
 
