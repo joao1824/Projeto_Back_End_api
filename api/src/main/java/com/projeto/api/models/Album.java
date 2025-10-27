@@ -75,6 +75,8 @@ public class Album {
     //Construtor
 
 
+
+
     public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade,Float nota_media, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
         this.id = IdGerador.Gerar();
         this.nome = nome;

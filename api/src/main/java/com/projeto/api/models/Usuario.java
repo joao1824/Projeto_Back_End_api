@@ -63,6 +63,8 @@ public class Usuario implements UserDetails {
 
     //construtor
 
+    public Usuario(){}
+
     public Usuario( String nome, String email,String senha,UsuarioRole role, List<Review> reviewList, List<PlayList> playLists) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
