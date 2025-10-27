@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class Tag {
@@ -35,6 +35,10 @@ public class Tag {
 
 
     //construtor
+
+    public Tag(){
+        this.id = IdGerador.Gerar();
+    }
 
     public Tag(String nome) {
         this.id = IdGerador.Gerar();
