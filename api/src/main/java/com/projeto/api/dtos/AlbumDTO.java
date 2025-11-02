@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AlbumDTO {
     private String id;
     private String nome;
     private int total_faixas;
-    private String lancamento;
+    private LocalDate lancamento;
     private String gravadora;
     private String perfil_spotify;
     private int popularidade;
@@ -76,11 +77,11 @@ public class AlbumDTO {
         this.total_faixas = total_faixas;
     }
 
-    public String getLancamento() {
+    public LocalDate getLancamento() {
         return lancamento;
     }
 
-    public void setLancamento(String lancamento) {
+    public void setLancamento(LocalDate lancamento) {
         this.lancamento = lancamento;
     }
 

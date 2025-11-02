@@ -1,6 +1,8 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +32,7 @@ public class Tag {
     private String nome;
 
     @OneToMany
+    @JsonManagedReference("tag-reviews")
     private List<Review> reviews = new ArrayList<>();
 
 

@@ -1,11 +1,19 @@
 package com.projeto.api.service;
 
+import com.projeto.api.dtos.ArtistaDTO;
+import com.projeto.api.models.Usuario;
+import com.projeto.api.repository.ArtistaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.models.Artista;
 
 // spotify-web-api-java
+import org.springframework.web.server.ResponseStatusException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -20,9 +28,11 @@ import java.util.stream.Collectors;
 public class ArtistaService {
 
     private final SpotifyApi spotifyApi;
+    private final ArtistaRepository artistaRepository;
 
-    public ArtistaService(SpotifyClient spotifyClient) {
+    public ArtistaService(SpotifyClient spotifyClient, ArtistaRepository artistaRepository) {
         this.spotifyApi = spotifyClient.getApi();
+        this.artistaRepository = artistaRepository;
     }
 
     public Artista buscarArtista(String nome) {
@@ -69,4 +79,76 @@ public class ArtistaService {
 
     }
 
+    // Retorna todos os artistas com paginação
+    public Page<ArtistaDTO> getAllArtistas(Pageable pageable) {
+          Page<Artista> Artistas = artistaRepository.findAll(pageable);
+
+          return Artistas.map(ArtistaDTO::new);
+    }
+
+    // Retorna um artista por ID
+    public ArtistaDTO getArtistaById(String id) {
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        return new ArtistaDTO(artista);
+    }
+
+    public ArtistaDTO novoArtista(ArtistaDTO artistaDTO) {
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        // verifica se é admin
+        if (!usuarioLogado.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+        }
+
+        Artista artista = new Artista();
+        artista.setNome(artistaDTO.getNome());
+        artista.setPopularidade(artistaDTO.getPopularidade());
+        artista.setSeguidores(artistaDTO.getSeguidores());
+        artista.setPerfil_spotify(artistaDTO.getPerfil_spotify());
+        artista.setGeneros(artistaDTO.getGeneros());
+        artista.setImagem(artistaDTO.getImagem());
+        artistaRepository.save(artista);
+        return new ArtistaDTO(artista);
+    }
+
+    public ArtistaDTO atualizarArtista(String id, ArtistaDTO artistaDTO) {
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        // verifica se é admin
+        if (!usuarioLogado.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+        }
+
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        artista.setNome(artistaDTO.getNome());
+        artista.setPopularidade(artistaDTO.getPopularidade());
+        artista.setSeguidores(artistaDTO.getSeguidores());
+        artista.setPerfil_spotify(artistaDTO.getPerfil_spotify());
+        artista.setGeneros(artistaDTO.getGeneros());
+        artista.setImagem(artistaDTO.getImagem());
+        artistaRepository.save(artista);
+        return new ArtistaDTO(artista);
+
+
+    }
+
+
+    public void deletarArtista(String id) {
+        // pega usuario logado
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        // verifica se é admin
+        if (!usuarioLogado.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem deletar tags.");
+        }
+
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        artistaRepository.delete(artista);
+    }
 }
+

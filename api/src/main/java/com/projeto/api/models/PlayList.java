@@ -1,6 +1,8 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +37,7 @@ public class PlayList {
     @NotNull(message = ("usuario não pode ser nula"))
     @ManyToOne
     @JoinColumn(name = "id_usuario")
+    @JsonBackReference("usuario-playlists")
     private Usuario usuario;
 
     @NotNull(message = ("musicas não pode ser nula"))

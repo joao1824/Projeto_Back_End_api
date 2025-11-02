@@ -1,6 +1,7 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -30,16 +31,19 @@ public class Review {
     @NotNull(message = "O tag não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_tag")
+    @JsonBackReference("tag-reviews")
     private Tag tag;
 
     @NotNull(message = "O album não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_album")
+    @JsonBackReference("album-reviews")
     private Album album;
 
     @NotNull(message = "O usuario não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_usuario")
+    @JsonBackReference("usuario-reviews")
     private Usuario usuario;
 
 

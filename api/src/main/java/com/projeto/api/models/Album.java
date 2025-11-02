@@ -1,15 +1,18 @@
 package com.projeto.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class Album {
@@ -18,7 +21,7 @@ public class Album {
     //Atributos
 
     @Id
-    @Size(min = 27, max = 27, message = "ID deve possuir exatamente 27 caracteres")
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
     @NotBlank(message = "ID não pode estar em vazio")
     private String id;
 
@@ -30,7 +33,7 @@ public class Album {
     private int total_faixas;
 
     @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
-    private String lancamento;
+    private LocalDate lancamento;
 
     @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
     private String gravadora;
@@ -42,16 +45,13 @@ public class Album {
     @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
 
-    @DecimalMax(value = "100.0", message = "A nota media não pode ser maior que 10.0")
-    @DecimalMin(value = "0.0", message = "A nota media não pode ser menor que 0.0")
-    @Positive
+    @PositiveOrZero
     private float nota_media;
 
 
     @ElementCollection
     private List<String> imagens = new ArrayList<>();
 
-    @NotEmpty(message = ("generos não pode estar vazia"))
     @ElementCollection
     private List<String> generos = new ArrayList<>();
 
@@ -62,22 +62,26 @@ public class Album {
             joinColumns = @JoinColumn(name = "id_album"),
             inverseJoinColumns = @JoinColumn(name = "id_artista")
     )
+    @JsonIgnore
     private List<Artista> artistas = new ArrayList<>();
 
-    @NotEmpty(message = ("musicas não pode estar vazia"))
     @OneToMany(mappedBy = "album")
+    @JsonManagedReference("album-musicas")
     private List<Musica> musicas = new ArrayList<>();
 
     @OneToMany(mappedBy = "album")
+    @JsonManagedReference("album-reviews")
     private List<Review> reviews = new ArrayList<>();
 
 
     //Construtor
 
+    public Album(){
+        this.id = IdGerador.Gerar();
+    }
 
 
-
-    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade,Float nota_media, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
+    public Album(String nome, int total_faixas, LocalDate lancamento, String gravadora, String perfil_spotify, int popularidade,Float nota_media, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.total_faixas = total_faixas;
@@ -93,7 +97,7 @@ public class Album {
         this.reviews = reviews;
     }
 
-    public Album(String nome, int total_faixas, String lancamento, String gravadora, String perfil_spotify, int popularidade) {
+    public Album(String nome, int total_faixas, LocalDate lancamento, String gravadora, String perfil_spotify, int popularidade) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.total_faixas = total_faixas;
@@ -102,6 +106,18 @@ public class Album {
         this.perfil_spotify = perfil_spotify;
         this.popularidade = popularidade;
     }
+
+    public Album(String name, int totalFaixas, String releaseDate, String gravadora, String spotify, int popularidade) {
+        this.id = IdGerador.Gerar();
+        this.nome = name;
+        this.total_faixas = totalFaixas;
+        this.lancamento = LocalDate.parse(releaseDate);
+        this.gravadora = gravadora;
+        this.perfil_spotify = spotify;
+        this.popularidade = popularidade;
+        this.lancamento = LocalDate.parse(releaseDate);
+    }
+
 
     //Geters e Setters
 
@@ -130,11 +146,11 @@ public class Album {
         this.total_faixas = total_faixas;
     }
 
-    public String getLancamento() {
+    public LocalDate getLancamento() {
         return lancamento;
     }
 
-    public void setLancamento(String lancamento) {
+    public void setLancamento(LocalDate lancamento) {
         this.lancamento = lancamento;
     }
 

@@ -1,6 +1,7 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projeto.api.security.UsuarioRole;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
@@ -20,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class Usuario implements UserDetails {
@@ -56,9 +57,11 @@ public class Usuario implements UserDetails {
     private LocalDateTime ultima_atualizacao_email;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference("usuario-reviews")
     private List<Review> reviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference("usuario-playlists")
     private List<PlayList> PlayLists = new ArrayList<>();
 
     //construtor

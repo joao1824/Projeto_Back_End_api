@@ -1,6 +1,7 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class Artista {
@@ -46,6 +47,10 @@ public class Artista {
 
 
     //Construtor
+
+    public Artista(){
+        this.id = IdGerador.Gerar();
+    }
 
 
     public Artista(String nome, int popularidade, int seguidores, String perfil_spotify, List<String> generos, String imagem, List<Album> albuns) {
@@ -123,7 +128,7 @@ public class Artista {
         return imagem;
     }
 
-    public void setImagens(String imagem) {
+    public void setImagem(String imagem) {
         this.imagem = imagem;
     }
 

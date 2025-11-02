@@ -1,6 +1,8 @@
 package com.projeto.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -46,10 +48,12 @@ public class Musica {
     @NotBlank(message = "album não pode estar vazio")
     @ManyToOne
     @JoinColumn(name = "id_album")
+    @JsonBackReference("album-musicas")
     private Album album;
 
     @NotEmpty(message = ("playLists não pode estar vazia"))
     @ManyToMany(mappedBy = "musicas")
+    @JsonIgnore
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor

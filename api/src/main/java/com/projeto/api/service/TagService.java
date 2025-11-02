@@ -76,12 +76,15 @@ public class TagService {
 
     //Deleta tag
     public void deletarTag(String id) {
+        // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
+        // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
         }
+
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum tag encontrado."));
         tagRepository.delete(tag);
     }
