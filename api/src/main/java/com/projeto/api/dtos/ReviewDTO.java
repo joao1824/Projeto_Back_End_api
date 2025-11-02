@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 public class ReviewDTO {
 
@@ -16,9 +18,11 @@ public class ReviewDTO {
     private String id;
     private String avaliacao;
     private int nota;
+    private LocalDateTime data;
     private Tag tag;
     private Album album;
     private Usuario usuario;
+
 
     //Construtor
 
@@ -26,6 +30,7 @@ public class ReviewDTO {
         this.id = review.getId();
         this.avaliacao = review.getAvaliacao();
         this.nota = review.getNota();
+        this.data = review.getData();
         this.tag = review.getTag();
         this.album = review.getAlbum();
         this.usuario = review.getUsuario();
@@ -59,6 +64,10 @@ public class ReviewDTO {
     public void setNota(int nota) {
         this.nota = nota;
     }
+
+    public LocalDateTime getData() { return data; }
+
+    public void setData(LocalDateTime data) { this.data = data; }
 
     public Tag getTag() {
         return tag;

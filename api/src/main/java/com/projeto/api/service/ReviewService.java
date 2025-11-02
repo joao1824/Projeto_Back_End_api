@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -74,6 +75,7 @@ public class ReviewService {
         review.setAlbum(albumRepository.getReferenceById(reviewDTO.getAlbum().getId()));
         review.setUsuario(usuarioLogado);
         review.setTag(tagRepository.getReferenceById(reviewDTO.getTag().getId()));
+        review.setData(LocalDateTime.now());
         reviewRepository.save(review);
         return new ReviewDTO(review);
     }

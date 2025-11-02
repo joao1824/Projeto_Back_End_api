@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 
 @AllArgsConstructor
@@ -27,6 +30,7 @@ public class Review {
     @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
     private int nota;
 
+    private LocalDateTime data; // cartao-desafio
 
     @NotNull(message = "O tag não pode ser nulo")
     @ManyToOne
@@ -57,6 +61,7 @@ public class Review {
         this.usuario = usuario;
         this.avaliacao = avaliacao;
         this.nota = nota;
+        this.data = LocalDateTime.now();
     }
 
     public Review() {
@@ -90,6 +95,10 @@ public class Review {
     public void setNota(int nota) {
         this.nota = nota;
     }
+
+    public LocalDateTime getData() { return data; }
+
+    public void setData(LocalDateTime data) { this.data = data; }
 
     public Tag getTag() {
         return tag;
