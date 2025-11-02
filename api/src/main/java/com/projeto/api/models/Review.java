@@ -2,6 +2,7 @@ package com.projeto.api.models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.projeto.api.util.IdGerador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,7 +12,7 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @AllArgsConstructor
 @Entity
 public class Review {

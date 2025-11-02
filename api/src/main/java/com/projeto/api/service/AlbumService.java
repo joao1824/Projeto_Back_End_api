@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -29,11 +30,14 @@ public class AlbumService {
     private final SpotifyApi spotifyApi;
     private final AlbumRepository albumRepository;
     private final ArtistaRepository artistaRepository;
+    private final ArtistaService artistaService;
 
-    public AlbumService(SpotifyClient spotifyClient, AlbumRepository albumRepository, ArtistaRepository artistaRepository) {
+
+    public AlbumService(SpotifyClient spotifyClient, AlbumRepository albumRepository, ArtistaRepository artistaRepository, ArtistaService artistaService) {
         this.spotifyApi = spotifyClient.getApi();
         this.albumRepository = albumRepository;
         this.artistaRepository = artistaRepository;
+        this.artistaService = artistaService;
     }
 
     // GET ALBUM usando dependencia
@@ -165,4 +169,42 @@ public class AlbumService {
         Album album = albumRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhum album encontrado."));
         albumRepository.delete(album);
     }
+
+    public Album getOrCreateAlbum(String nomeAlbum, String nomeArtista) {
+        Optional<Album> albumExistente = albumRepository.findByNome(nomeAlbum);
+        if (albumExistente.isPresent()) {
+            return albumExistente.get();
+        }
+
+        Artista artista = artistaRepository.findByNome(nomeArtista)
+                .orElseGet(() -> artistaService.getOrCreateArtista(nomeArtista));
+
+        AlbumSimplified[] apiAlbums;
+        try {
+            apiAlbums = spotifyApi.searchAlbums(nomeAlbum)
+                    .limit(1)
+                    .build()
+                    .execute()
+                    .getItems();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar álbum no Spotify: " + e.getMessage(), e);
+        }
+
+        if (apiAlbums.length == 0) {
+            throw new RuntimeException("Álbum não encontrado no Spotify");
+        }
+
+        AlbumSimplified spotifyAlbum = apiAlbums[0];
+
+        Album album = new Album();
+        album.setNome(spotifyAlbum.getName());
+        //album.setTotal_faixas(spotifyAlbum.getTotalTracks());
+        //album.setLancamento(spotifyAlbum.getReleaseDate());
+        album.setPerfil_spotify(spotifyAlbum.getExternalUrls().get("spotify"));
+        //album.setArtistas(Collections.singletonList(artista));
+        album.setNota_media(0);
+
+        return albumRepository.save(album);
+    }
+
 }

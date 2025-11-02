@@ -79,6 +79,22 @@ public class ArtistaService {
 
     }
 
+    // procurar artista requisitado (se nao tiver cadastrado no banco, cadastrar
+    public Artista getOrCreateArtista(String nome) {
+        var artistaExistente = artistaRepository.findByNome(nome);
+        if (artistaExistente.isPresent()) {
+            return artistaExistente.get();
+        }
+
+        Artista spotifyArtista = buscarArtista(nome);
+        if (spotifyArtista == null) {
+            throw new RuntimeException("Artista não encontrado no Spotify");
+        }
+
+        return artistaRepository.save(spotifyArtista);
+    }
+
+
     // Retorna todos os artistas com paginação
     public Page<ArtistaDTO> getAllArtistas(Pageable pageable) {
           Page<Artista> Artistas = artistaRepository.findAll(pageable);
