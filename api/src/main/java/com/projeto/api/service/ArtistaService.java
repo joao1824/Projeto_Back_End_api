@@ -123,7 +123,7 @@ public class ArtistaService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
         }
 
-        
+
         Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
         artista.setNome(artistaDTO.getNome());
         artista.setPopularidade(artistaDTO.getPopularidade());

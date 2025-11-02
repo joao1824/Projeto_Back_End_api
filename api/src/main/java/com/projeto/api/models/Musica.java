@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 public class Musica {
@@ -30,34 +30,35 @@ public class Musica {
     @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
 
-    @NotBlank(message = "duracao não pode estar em branco")
+    @NotNull(message = "A duração não pode ser nula")
     @Positive(message = "duracao não pode ser negativa")
     private int duracao;
 
-    @NotBlank(message = "explicito não pode estar em branco")
     private boolean explicito; //se é +18 ou não
 
-    @NotBlank(message = "faixa_numero não pode estar em branco")
-    @Positive(message = "faixa_numero não pode ser negativa")
+    @NotNull(message = "A faixa precisa ter um número")
+    @Min(value = 1, message = "O número da faixa deve ser pelo menos 1")
     private int faixa_numero;
 
     @NotBlank(message = "perfil_spotifynão pode estar vazio")
     private String perfil_spotify;
     private String letra;
 
-    @NotBlank(message = "album não pode estar vazio")
+    @NotNull(message = "O album não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_album")
     @JsonBackReference("album-musicas")
     private Album album;
 
-    @NotEmpty(message = ("playLists não pode estar vazia"))
     @ManyToMany(mappedBy = "musicas")
     @JsonIgnore
     private List<PlayList> playLists = new ArrayList<>();
 
     //Construtor
 
+    public Musica(){
+        this.id = IdGerador.Gerar();
+    }
 
 
     public Musica(String nome, int duracao, boolean explicito, int faixa_numero, String perfil_spotify, Album album, List<PlayList> playLists) {
