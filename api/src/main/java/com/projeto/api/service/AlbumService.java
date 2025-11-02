@@ -2,7 +2,7 @@ package com.projeto.api.service;
 
 // spotify-web-api-java
 import com.projeto.api.client.SpotifyClient;
-import com.projeto.api.dtos.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.models.Usuario;

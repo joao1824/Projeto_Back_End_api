@@ -1,12 +1,9 @@
 package com.projeto.api.service;
 
-import com.projeto.api.dtos.TagDTO;
+import com.projeto.api.dtos.TagDTOs.TagDTO;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
-import org.springframework.core.metrics.StartupStep;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -55,7 +52,6 @@ public class TagService {
 
         Tag tag = new Tag();
         tag.setNome(tagDTO.getNome());
-        tag.getReviews().addAll(tagDTO.getReviews());
         tagRepository.save(tag);
         return new TagDTO(tag);
     }

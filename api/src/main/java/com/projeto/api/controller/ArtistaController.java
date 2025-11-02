@@ -1,7 +1,7 @@
 package com.projeto.api.controller;
 
 
-import com.projeto.api.dtos.ArtistaDTO;
+import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.models.Artista;
 import com.projeto.api.service.ArtistaService;
 import org.springframework.data.web.PageableDefault;

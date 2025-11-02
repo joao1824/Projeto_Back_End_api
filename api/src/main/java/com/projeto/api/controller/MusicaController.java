@@ -1,7 +1,6 @@
 package com.projeto.api.controller;
 
-import com.projeto.api.dtos.MusicaDTO;
-import com.projeto.api.models.Musica;
+import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.service.MusicaService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;

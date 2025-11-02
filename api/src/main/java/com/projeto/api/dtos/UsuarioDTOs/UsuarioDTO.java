@@ -1,12 +1,11 @@
 package com.projeto.api.dtos.UsuarioDTOs;
 
-import com.projeto.api.models.PlayList;
-import com.projeto.api.models.Review;
+import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
+import com.projeto.api.dtos.PlaylistDTOs.PlayListResumoDTO;
+import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
+import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.security.UsuarioRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -26,9 +25,9 @@ public class UsuarioDTO {
     private LocalDateTime ultima_atualizacao_senha;
     private LocalDateTime ultima_atualizacao_email;
 
-    private List<Review> reviewList = new ArrayList<>();
+    private List<ReviewResumoDTO> reviewList = new ArrayList<>();
 
-    private List<PlayList> playLists = new ArrayList<>();
+    private List<PlayListResumoDTO> playLists = new ArrayList<>();
 
     //construtor
 
@@ -37,8 +36,8 @@ public class UsuarioDTO {
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.senha = usuario.getSenha();
-        this.reviewList = usuario.getReviewList();
-        this.playLists = usuario.getPlayLists();
+        this.reviewList = usuario.getReviewList().stream().map(ReviewResumoDTO::new).toList();
+        this.playLists = usuario.getPlayLists().stream().map(PlayListResumoDTO::new).toList();
         this.ultima_atualizacao_senha = usuario.getUltima_atualizacao_senha();
         this.ultima_atualizacao_email = usuario.getUltima_atualizacao_email();
         this.role = usuario.getRole();
@@ -89,19 +88,19 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public List<Review> getReviewList() {
+    public List<ReviewResumoDTO> getReviewList() {
         return reviewList;
     }
 
-    public void setReviewList(List<Review> reviewList) {
+    public void setReviewList(List<ReviewResumoDTO> reviewList) {
         this.reviewList = reviewList;
     }
 
-    public List<PlayList> getPlayLists() {
+    public List<PlayListResumoDTO> getPlayLists() {
         return playLists;
     }
 
-    public void setPlayLists(List<PlayList> playLists) {
+    public void setPlayLists(List<PlayListResumoDTO> playLists) {
         this.playLists = playLists;
     }
 

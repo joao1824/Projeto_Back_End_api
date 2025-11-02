@@ -1,6 +1,6 @@
 package com.projeto.api.service;
 
-import com.projeto.api.dtos.ArtistaDTO;
+import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
 import org.springframework.data.domain.Page;

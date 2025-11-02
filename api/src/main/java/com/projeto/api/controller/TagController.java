@@ -1,9 +1,7 @@
 package com.projeto.api.controller;
 
 
-import com.projeto.api.dtos.TagDTO;
-import com.projeto.api.models.Tag;
-import com.projeto.api.repository.TagRepository;
+import com.projeto.api.dtos.TagDTOs.TagDTO;
 import com.projeto.api.service.TagService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

@@ -1,11 +1,12 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.ReviewDTOs;
 
-import com.projeto.api.models.Album;
+import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumResumoDTO;
+import com.projeto.api.dtos.TagDTOs.TagDTO;
+import com.projeto.api.dtos.TagDTOs.TagResumoDTO;
+import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
+import com.projeto.api.dtos.UsuarioDTOs.UsuarioResumoDTO;
 import com.projeto.api.models.Review;
-import com.projeto.api.models.Tag;
-import com.projeto.api.models.Usuario;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -19,23 +20,23 @@ public class ReviewDTO {
     private String avaliacao;
     private int nota;
     private LocalDateTime data;
-    private Tag tag;
-    private Album album;
-    private Usuario usuario;
+    private TagResumoDTO tag;
+    private AlbumResumoDTO album;
+    private UsuarioResumoDTO usuario;
 
 
     //Construtor
+
 
     public ReviewDTO(Review review) {
         this.id = review.getId();
         this.avaliacao = review.getAvaliacao();
         this.nota = review.getNota();
         this.data = review.getData();
-        this.tag = review.getTag();
-        this.album = review.getAlbum();
-        this.usuario = review.getUsuario();
+        this.tag = new TagResumoDTO(review.getTag());
+        this.album = new AlbumResumoDTO(review.getAlbum());
+        this.usuario = new UsuarioResumoDTO(review.getUsuario());
     }
-
 
 
     //Geters e Setters
@@ -65,31 +66,32 @@ public class ReviewDTO {
         this.nota = nota;
     }
 
+
     public LocalDateTime getData() { return data; }
 
     public void setData(LocalDateTime data) { this.data = data; }
 
-    public Tag getTag() {
+    public TagResumoDTO getTag() {
         return tag;
     }
 
-    public void setTag(Tag tag) {
+    public void setTag(TagResumoDTO tag) {
         this.tag = tag;
     }
 
-    public Album getAlbum() {
+    public AlbumResumoDTO getAlbum() {
         return album;
     }
 
-    public void setAlbum(Album album) {
+    public void setAlbum(AlbumResumoDTO album) {
         this.album = album;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioResumoDTO getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(UsuarioResumoDTO usuario) {
         this.usuario = usuario;
     }
 }

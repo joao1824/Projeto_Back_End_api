@@ -1,12 +1,6 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.AlbumDTOs;
 
 import com.projeto.api.models.Album;
-import com.projeto.api.models.Artista;
-import com.projeto.api.models.Musica;
-import com.projeto.api.models.Review;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class AlbumDTO {
+public class AlbumResumoDTO {
+
     //Atributos
 
     private String id;
@@ -25,15 +20,12 @@ public class AlbumDTO {
     private String perfil_spotify;
     private int popularidade;
     private Float nota_media;
-    private List<String> imagens = new ArrayList<>();
-    private List<String> generos = new ArrayList<>();
-    private List<Artista> artistas = new ArrayList<>();
-    private List<Musica> musicas = new ArrayList<>();
-    private List<Review> reviews = new ArrayList<>();
-
+    private List<String> imagens;
+    private List<String> generos;
+    
 
     //Construtor
-    public AlbumDTO(Album album) {
+    public AlbumResumoDTO(Album album) {
         this.id = album.getId();
         this.nome = album.getNome();
         this.total_faixas = album.getTotal_faixas();
@@ -44,11 +36,7 @@ public class AlbumDTO {
         this.nota_media = album.getNota_media();
         this.imagens = album.getImagens();
         this.generos = album.getGeneros();
-        this.artistas = album.getArtistas();
-        this.musicas = album.getMusicas();
-        this.reviews = album.getReviews();
     }
-
 
     //Geters e Setters
 
@@ -109,6 +97,14 @@ public class AlbumDTO {
         this.popularidade = popularidade;
     }
 
+    public Float getNota_media() {
+        return nota_media;
+    }
+
+    public void setNota_media(Float nota_media) {
+        this.nota_media = nota_media;
+    }
+
     public List<String> getImagens() {
         return imagens;
     }
@@ -123,37 +119,5 @@ public class AlbumDTO {
 
     public void setGeneros(List<String> generos) {
         this.generos = generos;
-    }
-
-    public List<Artista> getArtistas() {
-        return artistas;
-    }
-
-    public void setArtistas(List<Artista> artistas) {
-        this.artistas = artistas;
-    }
-
-    public List<Musica> getMusicas() {
-        return musicas;
-    }
-
-    public void setMusicas(List<Musica> musicas) {
-        this.musicas = musicas;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public Float getNota_media() {
-        return nota_media;
-    }
-
-    public void setNota_media(Float nota_media) {
-        this.nota_media = nota_media;
     }
 }

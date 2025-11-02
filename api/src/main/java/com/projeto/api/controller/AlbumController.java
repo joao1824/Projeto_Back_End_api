@@ -1,6 +1,6 @@
 package com.projeto.api.controller;
 
-import com.projeto.api.dtos.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
 import com.projeto.api.models.Album;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.service.AlbumService;

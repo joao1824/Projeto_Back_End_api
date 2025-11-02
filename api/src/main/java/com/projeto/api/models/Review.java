@@ -9,7 +9,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.cglib.core.Local;
-
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -68,6 +67,7 @@ public class Review {
     public Review() {
         this.id = IdGerador.Gerar();
     }
+
 
 
     //Geters e Setters

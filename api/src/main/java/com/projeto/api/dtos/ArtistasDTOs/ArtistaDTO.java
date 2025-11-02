@@ -1,15 +1,13 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.ArtistasDTOs;
 
-import com.projeto.api.models.Album;
+import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumResumoDTO;
 import com.projeto.api.models.Artista;
-import com.projeto.api.util.IdGerador;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class ArtistaDTO {
@@ -22,7 +20,7 @@ public class ArtistaDTO {
     public String perfil_spotify;
     private List<String> generos = new ArrayList<>();
     private String imagem;
-    private List<Album> albuns = new ArrayList<>();
+    private List<AlbumResumoDTO> albuns = new ArrayList<>();
 
     //Construtor
 
@@ -34,7 +32,7 @@ public class ArtistaDTO {
         this.perfil_spotify = artista.getPerfil_spotify();
         this.imagem = artista.getImagem();
         this.generos = artista.getGeneros();
-        this.albuns = artista.getAlbuns();
+        this.albuns = artista.getAlbuns().stream().map(AlbumResumoDTO::new).collect(Collectors.toList());
     }
 
     //Geters e Setters
@@ -96,11 +94,11 @@ public class ArtistaDTO {
         this.imagem = imagem;
     }
 
-    public List<Album> getAlbuns() {
+    public List<AlbumResumoDTO> getAlbuns() {
         return albuns;
     }
 
-    public void setAlbuns(List<Album> albuns) {
+    public void setAlbuns(List<AlbumResumoDTO> albuns) {
         this.albuns = albuns;
     }
 }

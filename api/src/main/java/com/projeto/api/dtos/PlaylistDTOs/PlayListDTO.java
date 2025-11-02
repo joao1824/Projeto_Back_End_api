@@ -1,12 +1,15 @@
 package com.projeto.api.dtos.PlaylistDTOs;
 
-import com.projeto.api.models.Musica;
+import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
+import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
+import com.projeto.api.dtos.UsuarioDTOs.UsuarioResumoDTO;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class PlayListDTO {
@@ -15,8 +18,8 @@ public class PlayListDTO {
     private String id;
     private String nome;
     private String descricao;
-    private Usuario usuario;
-    private List<Musica> musicas = new ArrayList<>();
+    private UsuarioResumoDTO usuario;
+    private List<MusicaResumoDTO> musicas = new ArrayList<>();
 
     //Construtor
 
@@ -24,8 +27,8 @@ public class PlayListDTO {
         this.id = playList.getId();
         this.nome = playList.getNome();
         this.descricao = playList.getDescricao();
-        this.usuario = playList.getUsuario();
-        this.musicas = playList.getMusicas();
+        this.usuario = new UsuarioResumoDTO(playList.getUsuario());
+        this.musicas = playList.getMusicas().stream().map(MusicaResumoDTO::new).collect(Collectors.toList());
     }
 
     //Geters e Setters
@@ -55,19 +58,19 @@ public class PlayListDTO {
         this.descricao = descricao;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioResumoDTO getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(UsuarioResumoDTO usuario) {
         this.usuario = usuario;
     }
 
-    public List<Musica> getMusicas() {
+    public List<MusicaResumoDTO> getMusicas() {
         return musicas;
     }
 
-    public void setMusicas(List<Musica> musicas) {
+    public void setMusicas(List<MusicaResumoDTO> musicas) {
         this.musicas = musicas;
     }
 

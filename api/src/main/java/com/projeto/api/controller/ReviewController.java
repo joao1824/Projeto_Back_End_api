@@ -1,7 +1,7 @@
 package com.projeto.api.controller;
 
 
-import com.projeto.api.dtos.ReviewDTO;
+import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.service.ReviewService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -36,7 +36,7 @@ public class ReviewController {
     // Novo review
 
     @PostMapping
-    public ReviewDTO novaReview(ReviewDTO reviewDTO) {
+    public ReviewDTO novaReview(@RequestBody ReviewDTO reviewDTO) {
         return reviewService.novaReview(reviewDTO);
     }
 

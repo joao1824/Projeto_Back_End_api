@@ -2,10 +2,10 @@ package com.projeto.api.service;
 
 //aqui tem problema de divisão por zero quando deleta a ultima review de um album mas quando fizer a interface da pra evitar isso via tar tudo resolvido
 
-import com.projeto.api.controller.ReviewController;
-import com.projeto.api.dtos.ReviewDTO;
+import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Review;
+import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ReviewRepository;
@@ -55,6 +55,16 @@ public class ReviewService {
 
 
         Album album = albumRepository.getReferenceById(reviewDTO.getAlbum().getId());
+        Tag tag = tagRepository.getReferenceById(reviewDTO.getTag().getId());
+
+        for (Review r : album.getReviews()) {
+            if (r.getUsuario().getId().equals(usuarioLogado.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário já fez uma review para esse álbum.");
+            }
+        }
+
+
+
         //calculo da nova nota media
 
         List<Integer> notasExistentes = album.getReviews().stream()
@@ -72,10 +82,10 @@ public class ReviewService {
 
         review.setAvaliacao(reviewDTO.getAvaliacao());
         review.setNota(reviewDTO.getNota());
-        review.setAlbum(albumRepository.getReferenceById(reviewDTO.getAlbum().getId()));
+        review.setAlbum(album);
         review.setUsuario(usuarioLogado);
-        review.setTag(tagRepository.getReferenceById(reviewDTO.getTag().getId()));
         review.setData(LocalDateTime.now());
+        review.setTag(tag);
         reviewRepository.save(review);
         return new ReviewDTO(review);
     }
@@ -87,6 +97,7 @@ public class ReviewService {
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
         Review review = reviewRepository.getReferenceById(id);
         Album album = albumRepository.getReferenceById(review.getAlbum().getId());
+        Tag tag = tagRepository.getReferenceById(reviewDTO.getTag().getId());
 
         //Ve se é o mesmo id do usuário da review
         if (!usuarioLogado.getId().equals(review.getUsuario().getId())) {
@@ -106,6 +117,7 @@ public class ReviewService {
         album.setNota_media(novaNotaMedia);
         albumRepository.save(album);
 
+        review.setTag(tag);
         review.setAvaliacao(reviewDTO.getAvaliacao());
         review.setNota(reviewDTO.getNota());
         reviewRepository.save(review);

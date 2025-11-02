@@ -1,7 +1,7 @@
 package com.projeto.api.service;
 
 import com.projeto.api.client.SpotifyClient;
-import com.projeto.api.dtos.MusicaDTO;
+import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;

@@ -1,13 +1,13 @@
-package com.projeto.api.dtos;
+package com.projeto.api.dtos.TagDTOs;
 
-import com.projeto.api.models.Review;
+import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
+import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Tag;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class TagDTO {
@@ -18,14 +18,14 @@ public class TagDTO {
 
 
     private String nome;
-    private List<Review> reviews = new ArrayList<>();
+    private List<ReviewResumoDTO> reviews = new ArrayList<>();
 
     //Construtor
 
     public TagDTO(Tag tag) {
         this.id = tag.getId();
         this.nome = tag.getNome();
-        this.reviews = tag.getReviews();
+        this.reviews = tag.getReviews().stream().map(ReviewResumoDTO::new).collect(Collectors.toList());
     }
 
     //Geters e Setters
@@ -47,11 +47,11 @@ public class TagDTO {
         this.nome = nome;
     }
 
-    public List<Review> getReviews() {
+    public List<ReviewResumoDTO> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(List<ReviewResumoDTO> reviews) {
         this.reviews = reviews;
     }
 }

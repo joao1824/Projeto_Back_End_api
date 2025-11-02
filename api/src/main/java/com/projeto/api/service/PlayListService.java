@@ -1,5 +1,7 @@
 package com.projeto.api.service;
 
+import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
+import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
@@ -9,7 +11,6 @@ import com.projeto.api.repository.PlayListRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,7 +51,7 @@ public class PlayListService {
         playlist.setNome(data.getNome());
         playlist.setUsuario(usuarioLogado);
         playlist.setDescricao(data.getDescricao());
-        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(Musica::getId).collect(Collectors.toList()));
+        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(MusicaResumoDTO::getId).collect(Collectors.toList()));
         playlist.setMusicas(musicas);
 
         playListRepository.save(playlist);
@@ -74,7 +75,7 @@ public class PlayListService {
 
         playlist.setNome(data.getNome());
         playlist.setDescricao(data.getDescricao());
-        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(Musica::getId).collect(Collectors.toList()));
+        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(MusicaResumoDTO::getId).collect(Collectors.toList()));
         playlist.setMusicas(musicas);
 
         playListRepository.save(playlist);
