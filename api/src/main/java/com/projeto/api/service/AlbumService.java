@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -130,9 +131,10 @@ public class AlbumService {
 
         Album album = albumRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhum album encontrado."));
 
-        List<Artista> artistas = albumDTO.getArtistas().stream().map(artista -> {
+        List<Artista> artistas = new ArrayList<>(albumDTO.getArtistas().stream().map(artista -> {
             return artistaRepository.findById(artista.getId()).orElseThrow(() -> new RuntimeException("Artista com id " + artista.getId() + " não encontrado."));
-        }).toList();
+        }).toList()) ;
+
 
         album.setArtistas(artistas);
 
