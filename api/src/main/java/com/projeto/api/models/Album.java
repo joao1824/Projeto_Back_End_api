@@ -29,7 +29,7 @@ public class Album {
     @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
 
-    @Positive(message = "total_faixas não pode ser negativa")
+    @PositiveOrZero(message = "total_faixas não pode ser negativa")
     private int total_faixas;
 
     @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
@@ -42,7 +42,7 @@ public class Album {
     private String perfil_spotify;
 
 
-    @Positive(message = "popularidade não pode ser negativa")
+    @PositiveOrZero(message = "popularidade não pode ser negativa")
     private int popularidade;
 
     @PositiveOrZero
@@ -55,7 +55,7 @@ public class Album {
     @ElementCollection
     private List<String> generos = new ArrayList<>();
 
-    @NotEmpty(message = ("artistas não pode estar vazia"))
+    // @NotEmpty(message = ("artistas não pode estar vazia")) // revisar
     @ManyToMany
     @JoinTable(
             name = "album_artista",

@@ -3,6 +3,7 @@ package com.projeto.api.service;
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
+import com.projeto.api.util.IdGerador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -91,9 +92,11 @@ public class ArtistaService {
             throw new RuntimeException("Artista não encontrado no Spotify");
         }
 
+        IdGerador gerador = new IdGerador();
+        spotifyArtista.setId(gerador.Gerar()); // revisar
+
         return artistaRepository.save(spotifyArtista);
     }
-
 
     // Retorna todos os artistas com paginação
     public Page<ArtistaDTO> getAllArtistas(Pageable pageable) {

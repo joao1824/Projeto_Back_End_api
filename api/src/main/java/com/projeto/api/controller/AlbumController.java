@@ -20,12 +20,12 @@ public class AlbumController {
         this.albumService = albumService;
     }
 
-    @GetMapping("/spotify")
+    @GetMapping("/spotify/{nomeAlbum}")
     public ResponseEntity<AlbumDTO> buscarOuCriarAlbum(
-            @RequestParam String nomeAlbum,
-            @RequestParam String nomeArtista
+            @PathVariable String nomeAlbum
     ) {
-        Album album = albumService.getOrCreateAlbum(nomeAlbum, nomeArtista);
+        System.out.println("MAPPING FUNCIONOU");
+        Album album = albumService.getOrCreateAlbum(nomeAlbum);
         return ResponseEntity.ok(new AlbumDTO(album));
     }
 

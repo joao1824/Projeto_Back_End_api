@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -170,14 +171,11 @@ public class AlbumService {
         albumRepository.delete(album);
     }
 
-    public Album getOrCreateAlbum(String nomeAlbum, String nomeArtista) {
+    public Album getOrCreateAlbum(String nomeAlbum) {
         Optional<Album> albumExistente = albumRepository.findByNome(nomeAlbum);
         if (albumExistente.isPresent()) {
             return albumExistente.get();
         }
-
-        Artista artista = artistaRepository.findByNome(nomeArtista)
-                .orElseGet(() -> artistaService.getOrCreateArtista(nomeArtista));
 
         AlbumSimplified[] apiAlbums;
         try {
