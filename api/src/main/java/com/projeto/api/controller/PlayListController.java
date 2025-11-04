@@ -48,12 +48,12 @@ public class PlayListController {
         return playListService.update(id_playlist,data);
     }
     // Adiciona uma música à playlist
-    @PatchMapping("/{id_playlist}/add/{id_musica}")
+    @PostMapping("/{id_playlist}/musicas/{id_musica}")
     public PlayListDTO addMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
         return playListService.addMusica(id_playlist,id_musica);
     }
     // Remove uma música da playlist
-    @PatchMapping("/{id_playlist}/remove/{id_musica}")
+    @DeleteMapping("/{id_playlist}/musicas/{id_musica}")
     public void removerMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
         playListService.removeMusica(id_playlist,id_musica);
     }

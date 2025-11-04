@@ -44,27 +44,27 @@ public class UsuarioController {
 
     //mudar senha
 
-    @PostMapping("/usuario/trocar-senha")
+    @PostMapping("/usuario/senha")
     public ResponseEntity<String> mudarSenha(@RequestBody @Valid SenhaNovaDTO data){
         return usuarioService.MudarSenha(data);
     }
 
     //trocar email
 
-    @PostMapping("/usuario/troca-email")
-    public ResponseEntity<String> mudarSenha(@RequestBody @Valid EmailNovoDTO data){
+    @PostMapping("/usuario/email")
+    public ResponseEntity<String> mudarEmail(@RequestBody @Valid EmailNovoDTO data){
         return usuarioService.MudarEmail(data);
     }
 
     //trocar nome
 
-    @PostMapping("/usuario/trocar-nome")
+    @PostMapping("/usuario/nome")
     public ResponseEntity<String> mudarNome(@RequestBody UsuarioDTO data){
        return usuarioService.MudarNome(data);
     }
 
     //deletar usuario
-    @PostMapping("/usuario/deletar-usuario")
+    @DeleteMapping("/usuario")
     public ResponseEntity<String> deletarUsuario(@RequestBody UsuarioDTO data){
         return usuarioService.DeletarUsuario(data);
     }
