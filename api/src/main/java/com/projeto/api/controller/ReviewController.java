@@ -5,9 +5,13 @@ import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.service.ReviewService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/reviews")
@@ -51,6 +55,21 @@ public class ReviewController {
     public void deletarReview(@PathVariable String id) {
         reviewService.deletarReview(id);
     }
+
+    @GetMapping("/relatorio")
+    public ResponseEntity<Map<String, Object>> getRelatorio(
+            @RequestParam(required = false) String periodo) {
+
+        if (periodo != null && periodo.endsWith("dias")) {
+            int dias = Integer.parseInt(periodo.replace("dias", "").trim());
+            Map<String, Object> relatorio = reviewService.gerarRelatorioPorPeriodo(dias);
+            return ResponseEntity.ok(relatorio);
+        }
+
+        List<ReviewDTO> reviews = reviewService.listarTodos();
+        return ResponseEntity.ok(Map.of("reviews", reviews));
+    }
+
 
 
 

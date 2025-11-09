@@ -10,6 +10,8 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ReviewRepository;
 import com.projeto.api.repository.TagRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReviewService {
@@ -51,8 +56,6 @@ public class ReviewService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
         Review review = new Review();
-
-
 
         Album album = albumRepository.getReferenceById(reviewDTO.getAlbum().getId());
         Tag tag = tagRepository.getReferenceById(reviewDTO.getTag().getId());
@@ -153,6 +156,31 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public List<ReviewDTO> listarTodos() {
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream()
+                .map(r -> modelMapper.map(r, ReviewDTO.class))
+                .toList();
+    }
+
+    public Map<String, Object> gerarRelatorioPorPeriodo(int dias) {
+        LocalDateTime dataLimite = LocalDateTime.now().minusDays(dias);
+
+        long totalNoPeriodo = reviewRepository.countByDataAfter(dataLimite);
+        long totalGeral = reviewRepository.count();
+
+        Map<String, Object> relatorio = new HashMap<>();
+        relatorio.put("totalNoPeriodo", totalNoPeriodo);
+        relatorio.put("totalGeral", totalGeral);
+
+        return relatorio;
+    }
+
+
 
 
 

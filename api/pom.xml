@@ -102,7 +102,10 @@
 		</dependency>
 
 
-		<!-- security -->
+
+
+
+        <!-- security -->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
@@ -146,6 +149,13 @@
             <artifactId>spring-dotenv</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+
     </dependencies>
 
 
