@@ -26,6 +26,7 @@ public class Artista {
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
+    @Column(unique = true)
     private String nome;
 
     @Positive(message = "popularidade não pode ser negativa")

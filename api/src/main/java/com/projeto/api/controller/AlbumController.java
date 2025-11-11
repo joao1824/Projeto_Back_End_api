@@ -20,14 +20,15 @@ public class AlbumController {
         this.albumService = albumService;
     }
 
-    @GetMapping("/spotify/{nomeAlbum}")
+    @GetMapping("/spotify")
     public ResponseEntity<AlbumDTO> buscarOuCriarAlbum(
-            @PathVariable String nomeAlbum
+            @RequestParam String nomeAlbum,
+            @RequestParam String nomeArtista
     ) {
-        System.out.println("MAPPING FUNCIONOU");
-        Album album = albumService.getOrCreateAlbum(nomeAlbum);
+        Album album = albumService.getOrCreateAlbum(nomeAlbum, nomeArtista);
         return ResponseEntity.ok(new AlbumDTO(album));
     }
+
 
 
     // Retorna todos os albums com paginação

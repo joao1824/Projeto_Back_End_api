@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -171,38 +172,61 @@ public class AlbumService {
         albumRepository.delete(album);
     }
 
-    public Album getOrCreateAlbum(String nomeAlbum) {
-        Optional<Album> albumExistente = albumRepository.findByNome(nomeAlbum);
+    private LocalDate parseSpotifyDate(String dateString) {
+        try {
+            if (dateString.length() == 4) {
+                return LocalDate.of(Integer.parseInt(dateString), 1, 1);
+            } else if (dateString.length() == 7) {
+                return LocalDate.parse(dateString + "-01");
+            } else {
+                return LocalDate.parse(dateString);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Album getOrCreateAlbum(String nomeAlbum, String nomeArtista) {
+        Artista artista = artistaRepository.findByNome(nomeArtista)
+                .orElseGet(() -> artistaService.getOrCreateArtista(nomeArtista));
+
+        Optional<Album> albumExistente = albumRepository.findByNomeAndArtistas_Nome(nomeAlbum, nomeArtista);
         if (albumExistente.isPresent()) {
             return albumExistente.get();
         }
 
-        AlbumSimplified[] apiAlbums;
         try {
-            apiAlbums = spotifyApi.searchAlbums(nomeAlbum)
+            AlbumSimplified[] resultados = spotifyApi.searchAlbums(nomeAlbum)
                     .limit(1)
                     .build()
                     .execute()
                     .getItems();
+
+            if (resultados.length == 0) {
+                throw new RuntimeException("Álbum não encontrado no Spotify");
+            }
+
+            se.michaelthelin.spotify.model_objects.specification.Album spotifyAlbum =
+                    spotifyApi.getAlbum(resultados[0].getId()).build().execute();
+
+
+            Album novoAlbum = new Album();
+            novoAlbum.setNome(spotifyAlbum.getName());
+            novoAlbum.setLancamento(parseSpotifyDate(spotifyAlbum.getReleaseDate()));
+            novoAlbum.setPerfil_spotify(spotifyAlbum.getExternalUrls().get("spotify"));
+            novoAlbum.setNota_media(0);
+            novoAlbum.setTotal_faixas(spotifyAlbum.getTracks().getTotal());
+            novoAlbum.setGravadora(spotifyAlbum.getLabel());
+            novoAlbum.setArtistas(Collections.singletonList(artista));
+
+            return albumRepository.save(novoAlbum);
+
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar álbum no Spotify: " + e.getMessage(), e);
         }
-
-        if (apiAlbums.length == 0) {
-            throw new RuntimeException("Álbum não encontrado no Spotify");
-        }
-
-        AlbumSimplified spotifyAlbum = apiAlbums[0];
-
-        Album album = new Album();
-        album.setNome(spotifyAlbum.getName());
-        //album.setTotal_faixas(spotifyAlbum.getTotalTracks());
-        //album.setLancamento(spotifyAlbum.getReleaseDate());
-        album.setPerfil_spotify(spotifyAlbum.getExternalUrls().get("spotify"));
-        //album.setArtistas(Collections.singletonList(artista));
-        album.setNota_media(0);
-
-        return albumRepository.save(album);
     }
+
+
+
 
 }
