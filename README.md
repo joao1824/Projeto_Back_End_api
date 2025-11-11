@@ -31,19 +31,7 @@
 
 
 
-
-
 ### Documentação dos principais controladores e endpoints da API, incluindo operações CRUD e integrações externas.
-
----
-
-## Busca de Itens por Nome (Query Params)
-
-| Método | Endpoint       | Parâmetros     | Descrição                |
-|--------|----------------|----------------|--------------------------|
-| **GET** | `/api/artista` | `nome` (query) | Buscar artista pelo nome |
-| **GET** | `/api/album`   | `nome` (query) | Buscar álbum pelo nome   |
-| **GET** | `/api/musica`  | `nome` (query) | Buscar música pelo nome  |
 
 ---
 
@@ -93,6 +81,8 @@
 | **GET** | `/reviews/{id}`  | `id (path)`        | Buscar review por ID   |
 | **PUT** | `/reviews/{id}`  | `id (path), body`  | Atualizar review       |
 | **DELETE** | `/reviews/{id}` | `id (path)`      | Deletar review         |
+| **GET** | `/reviews/relatorio` | `periodo (query)`      | Gerar Relatório de quantas reviews tiverem em determinado tempo (em dias)|
+
 
 ---
 
@@ -105,6 +95,37 @@
 | **GET** | `/conta/usuarios/{id}`   | `id (path)`         | Buscar usuário por ID |
 | **PUT** | `/conta/usuarios/{id}`   | `id (path), body`   | Atualizar usuário     |
 | **DELETE** | `/conta/usuarios/{id}` | `id (path)`        | Deletar usuário       |
+
+
+
+
+## Cartão Desafio
+
+### Review Controller
+| Método | Endpoint         | Parâmetros         | Descrição              |
+|--------|------------------|--------------------|------------------------|
+| **GET** | `/reviews/relatorio` | `periodo (query)`      | Gerar Relatório de quantas reviews tiverem em determinado tempo (em dias)  |
+
+Endpoint que gera um **relatório de reviews** com base em um período de tempo (em dias).
+Se o parâmetro `periodo` não for informado, retorna todas as reviews.
+
+
+
+### `GET /relatorio`
+
+| Parâmetro     | Tipo      | Obrigatório      | Descrição              |
+|---------------|-----------|------------------|------------------------|
+| `periodo` | `String` | Não | Define o intervalo de tempo. Formato:`"Xdias"` (ex.: `"7dias"`). |
+
+
+
+### Exemplo
+
+| Situação           | Exemplo de resposta         |
+|--------------------|-----------------------------|
+| Com período |`{"totalNoPeriodo": 12, "totalGeral": 45 }` |
+| Sem período | `{ "reviews": [ ... ] }` |
+
 
 ---
 
