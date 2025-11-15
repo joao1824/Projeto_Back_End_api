@@ -1,6 +1,7 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
@@ -34,7 +35,7 @@ public class TagService {
 
     //Retorna por id
     public TagDTO getTagById(String id) {
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum tag encontrado."));
+        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new TagDTO(tag);
     }
 
@@ -64,7 +65,7 @@ public class TagService {
         if (!usuarioLogado.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
         }
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum tag encontrado."));
+        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         tag.setNome(tagDTO.getNome());
         tagRepository.save(tag);
         return new TagDTO(tag);
@@ -81,7 +82,7 @@ public class TagService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
         }
 
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum tag encontrado."));
+        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         tagRepository.delete(tag);
     }
 

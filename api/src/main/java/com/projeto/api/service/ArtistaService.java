@@ -1,6 +1,7 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.util.IdGerador;
@@ -107,7 +108,7 @@ public class ArtistaService {
 
     // Retorna um artista por ID
     public ArtistaDTO getArtistaById(String id) {
-        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new ArtistaDTO(artista);
     }
 
@@ -143,7 +144,7 @@ public class ArtistaService {
         }
 
 
-        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         artista.setNome(artistaDTO.getNome());
         artista.setPopularidade(artistaDTO.getPopularidade());
         artista.setSeguidores(artistaDTO.getSeguidores());
@@ -167,7 +168,7 @@ public class ArtistaService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem deletar tags.");
         }
 
-        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         artistaRepository.delete(artista);
     }
 }

@@ -2,6 +2,7 @@ package com.projeto.api.service;
 
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;
@@ -70,7 +71,7 @@ public class MusicaService {
 
     // Retorna uma música por ID
     public MusicaDTO getMusicaById(String id) {
-        Musica musica = musicaRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhuma música encontrada."));
+        Musica musica = musicaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new MusicaDTO(musica);
     }
 
@@ -94,7 +95,7 @@ public class MusicaService {
         musica.setFaixa_numero(musicaDTO.getFaixa_numero());
         musica.setPerfil_spotify(musicaDTO.getPerfil_spotify());
 
-        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(() -> new RuntimeException("Nenhum Album encontrado."));
+        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(EventIdNotFoundException::new);
 
         musica.setAlbum(album);
 
@@ -115,14 +116,14 @@ public class MusicaService {
         }
 
 
-        Musica musica = musicaRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhuma música encontrada."));
+        Musica musica = musicaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         musica.setNome(musicaDTO.getNome());
         musica.setDuracao(musicaDTO.getDuracao());
         musica.setExplicito(musicaDTO.isExplicito());
         musica.setFaixa_numero(musicaDTO.getFaixa_numero());
         musica.setPerfil_spotify(musicaDTO.getPerfil_spotify());
 
-        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(() -> new RuntimeException("Nenhum Album encontrado."));
+        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(EventIdNotFoundException::new);
         musica.setAlbum(album);
         musicaRepository.save(musica);
         return new MusicaDTO(musica);
@@ -142,7 +143,7 @@ public class MusicaService {
         }
 
 
-        Musica musica = musicaRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhuma música encontrada."));
+        Musica musica = musicaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         musicaRepository.delete(musica);
     }
 

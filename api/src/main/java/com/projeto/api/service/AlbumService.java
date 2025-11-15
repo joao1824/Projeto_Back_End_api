@@ -3,6 +3,7 @@ package com.projeto.api.service;
 // spotify-web-api-java
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.models.Usuario;
@@ -84,7 +85,7 @@ public class AlbumService {
 
     //Retorna por id
     public AlbumDTO getAlbumById(String id) {
-        Album album = albumRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhum album encontrado."));
+        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new AlbumDTO(album);
     }
 
@@ -113,7 +114,7 @@ public class AlbumService {
 
 
         List<Artista> artistas = albumDTO.getArtistas().stream().map(artista -> {
-            return artistaRepository.findById(artista.getId()).orElseThrow(() -> new RuntimeException("Artista com id " + artista.getId() + " não encontrado."));
+            return artistaRepository.findById(artista.getId()).orElseThrow(EventIdNotFoundException::new);
         }).toList();
 
         album.setArtistas(artistas);
@@ -135,10 +136,10 @@ public class AlbumService {
 
 
 
-        Album album = albumRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhum album encontrado."));
+        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
 
         List<Artista> artistas = new ArrayList<>(albumDTO.getArtistas().stream().map(artista -> {
-            return artistaRepository.findById(artista.getId()).orElseThrow(() -> new RuntimeException("Artista com id " + artista.getId() + " não encontrado."));
+            return artistaRepository.findById(artista.getId()).orElseThrow(EventIdNotFoundException::new);
         }).toList()) ;
 
 
@@ -168,7 +169,7 @@ public class AlbumService {
         }
 
 
-        Album album = albumRepository.findById(id).orElseThrow(() -> new RuntimeException("Nenhum album encontrado."));
+        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         albumRepository.delete(album);
     }
 

@@ -3,6 +3,7 @@ package com.projeto.api.service;
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
@@ -66,7 +67,7 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
@@ -90,7 +91,7 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
@@ -103,14 +104,14 @@ public class PlayListService {
     //buscar por id
 
     public PlayListDTO getPlayListById(String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new PlayListDTO(playlist);
     }
 
     //adicionar musica
 
     public PlayListDTO addMusica(String id_playlist, String id_musica){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -121,7 +122,7 @@ public class PlayListService {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
         }
 
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(EventIdNotFoundException::new);
         playList.addMusica(musica);
         playListRepository.save(playList);
 
@@ -131,7 +132,7 @@ public class PlayListService {
     //remover musica
 
     public void removeMusica(String id_playlist, String id_musica){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada com esse ID ); ."));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
@@ -141,7 +142,7 @@ public class PlayListService {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
         }
 
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma música encontrada com esse ID ); ."));
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(EventIdNotFoundException::new);
         playList.removeMusica(musica);
         playListRepository.save(playList);
     }

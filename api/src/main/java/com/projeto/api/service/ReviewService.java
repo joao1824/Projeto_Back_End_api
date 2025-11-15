@@ -3,6 +3,7 @@ package com.projeto.api.service;
 //aqui tem problema de divisão por zero quando deleta a ultima review de um album mas quando fizer a interface da pra evitar isso via tar tudo resolvido
 
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
+import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Tag;
@@ -46,7 +47,7 @@ public class ReviewService {
 
     // Retorna uma review por ID
     public ReviewDTO  getReviewById(String id) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhuma review encontrada."));
+        Review review = reviewRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         return new ReviewDTO(review);
     }
 
@@ -133,7 +134,7 @@ public class ReviewService {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhuma review encontrada."));
+        Review review = reviewRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
         Album album = albumRepository.getReferenceById(review.getAlbum().getId());
 
         //Ve se é o mesmo id do usuário da review
