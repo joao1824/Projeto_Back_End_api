@@ -3,7 +3,7 @@ package com.projeto.api.service;
 // spotify-web-api-java
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.models.Usuario;
@@ -53,11 +53,11 @@ public class AlbumService {
                                                       .execute()
                                                       .getItems();
             if (apiAlbum.length == 0) {
-                return null;
+                throw new EmptyException("Nenhum album encontrado com o nome: " + nome);
             }
             return mapApiParaAlbum(apiAlbum[0]); // mapApiParaAlbum(apiAlbum[0])
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar artista: " + e.getMessage(), e);
+            throw new ExternalApiException("Erro ao buscar Album: " + e.getMessage());
         }
     }
 
@@ -76,16 +76,12 @@ public class AlbumService {
     //Retorna todos os albums com paginação
     public Page<AlbumDTO> getAllAlbums(Pageable pageable) {
         Page<Album> albums = albumRepository.findAll(pageable);
-
-        if (albums.isEmpty()) {
-            throw new RuntimeException("Nenhum album encontrado.");
-        }
         return albums.map(AlbumDTO::new);
     }
 
     //Retorna por id
     public AlbumDTO getAlbumById(String id) {
-        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Album album = albumRepository.findById(id).orElseThrow(() -> new AlbumNotFoundException("Album não encontrado com o ID: " + id));
         return new AlbumDTO(album);
     }
 
@@ -98,7 +94,7 @@ public class AlbumService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
         Album album = new Album();
@@ -114,7 +110,7 @@ public class AlbumService {
 
 
         List<Artista> artistas = albumDTO.getArtistas().stream().map(artista -> {
-            return artistaRepository.findById(artista.getId()).orElseThrow(EventIdNotFoundException::new);
+            return artistaRepository.findById(artista.getId()).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + artista.getId()));
         }).toList();
 
         album.setArtistas(artistas);
@@ -131,15 +127,15 @@ public class AlbumService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
 
 
-        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Album album = albumRepository.findById(id).orElseThrow(() -> new AlbumNotFoundException("Album não encontrado com o ID: " + id));
 
         List<Artista> artistas = new ArrayList<>(albumDTO.getArtistas().stream().map(artista -> {
-            return artistaRepository.findById(artista.getId()).orElseThrow(EventIdNotFoundException::new);
+            return artistaRepository.findById(artista.getId()).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + artista.getId()));
         }).toList()) ;
 
 
@@ -149,6 +145,7 @@ public class AlbumService {
         album.setPopularidade(albumDTO.getPopularidade());
         album.setLancamento(albumDTO.getLancamento());
         album.setGravadora(albumDTO.getGravadora());
+        album.setGeneros(albumDTO.getGeneros());
         album.setPerfil_spotify(albumDTO.getPerfil_spotify());
         album.setTotal_faixas(albumDTO.getTotal_faixas());
         album.setImagens(albumDTO.getImagens());
@@ -165,11 +162,11 @@ public class AlbumService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
 
-        Album album = albumRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Album album = albumRepository.findById(id).orElseThrow(() -> new AlbumNotFoundException("Album não encontrado com o ID: " + id));
         albumRepository.delete(album);
     }
 
@@ -183,7 +180,7 @@ public class AlbumService {
                 return LocalDate.parse(dateString);
             }
         } catch (Exception e) {
-            return null;
+            throw new ExternalApiException("Erro ao converter Spotify date: " + e.getMessage());
         }
     }
 
@@ -204,7 +201,7 @@ public class AlbumService {
                     .getItems();
 
             if (resultados.length == 0) {
-                throw new RuntimeException("Álbum não encontrado no Spotify");
+                throw new ExternalApiException("Álbum não encontrado no Spotify");
             }
 
             se.michaelthelin.spotify.model_objects.specification.Album spotifyAlbum =
@@ -223,7 +220,7 @@ public class AlbumService {
             return albumRepository.save(novoAlbum);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar álbum no Spotify: " + e.getMessage(), e);
+            throw new ExternalApiException("Erro ao buscar álbum no Spotify: " + e.getMessage());
         }
     }
 

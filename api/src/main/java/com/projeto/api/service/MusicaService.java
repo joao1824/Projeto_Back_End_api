@@ -3,6 +3,9 @@ package com.projeto.api.service;
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.ExternalApiException;
+import com.projeto.api.exception.exceptions.MusicaNotFoundException;
+import com.projeto.api.exception.exceptions.UserNotAdminException;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;
@@ -43,7 +46,7 @@ public class MusicaService {
             return mapApiParaMusica(track[0]);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar músicas: " + e.getMessage(), e);
+            throw new ExternalApiException("Erro ao buscar músicas: " + e.getMessage());
         }
     }
 
@@ -62,16 +65,12 @@ public class MusicaService {
     public Page<MusicaDTO> getAllMusicas(Pageable pageable) {
 
         Page<Musica> musicas = musicaRepository.findAll(pageable);
-
-        if (musicas.isEmpty()) {
-            throw new RuntimeException("Nenhuma música encontrada.");
-        }
         return musicas.map(MusicaDTO::new);
     }
 
     // Retorna uma música por ID
     public MusicaDTO getMusicaById(String id) {
-        Musica musica = musicaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Musica musica = musicaRepository.findById(id).orElseThrow(() -> new MusicaNotFoundException("Música com ID " + id + " não encontrada."));
         return new MusicaDTO(musica);
     }
 
@@ -85,7 +84,7 @@ public class MusicaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
         Musica musica = new Musica();
@@ -95,7 +94,7 @@ public class MusicaService {
         musica.setFaixa_numero(musicaDTO.getFaixa_numero());
         musica.setPerfil_spotify(musicaDTO.getPerfil_spotify());
 
-        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(EventIdNotFoundException::new);
+        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(() -> new EventIdNotFoundException("Album com ID " + musicaDTO.getAlbum().getId() + " não encontrado."));
 
         musica.setAlbum(album);
 
@@ -112,7 +111,7 @@ public class MusicaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
 
@@ -123,7 +122,7 @@ public class MusicaService {
         musica.setFaixa_numero(musicaDTO.getFaixa_numero());
         musica.setPerfil_spotify(musicaDTO.getPerfil_spotify());
 
-        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(EventIdNotFoundException::new);
+        Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(() -> new EventIdNotFoundException("Album com ID " + musicaDTO.getAlbum().getId() + " não encontrado."));
         musica.setAlbum(album);
         musicaRepository.save(musica);
         return new MusicaDTO(musica);
@@ -139,11 +138,11 @@ public class MusicaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
 
-        Musica musica = musicaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Musica musica = musicaRepository.findById(id).orElseThrow(() -> new MusicaNotFoundException("Música com ID " + id + " não encontrada."));
         musicaRepository.delete(musica);
     }
 

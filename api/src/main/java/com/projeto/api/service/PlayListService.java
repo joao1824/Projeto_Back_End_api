@@ -3,7 +3,7 @@ package com.projeto.api.service;
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,9 +35,6 @@ public class PlayListService {
     public Page<PlayListDTO> getAll(Pageable pageable) {
         Page<PlayList> playlists = playListRepository.findAll(pageable);
 
-        if (playlists.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum playlist encontrada ); .");
-        }
         return playlists.map(PlayListDTO::new);
     }
 
@@ -52,9 +50,26 @@ public class PlayListService {
         playlist.setNome(data.getNome());
         playlist.setUsuario(usuarioLogado);
         playlist.setDescricao(data.getDescricao());
-        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(MusicaResumoDTO::getId).collect(Collectors.toList()));
-        playlist.setMusicas(musicas);
 
+        List<String> musicaIds = data.getMusicas().stream()
+                .map(MusicaResumoDTO::getId)
+                .collect(Collectors.toList());
+
+        List<Musica> musicas = musicaRepository.findAllById(musicaIds);
+
+        Set<String> encontrados = musicas.stream()
+                .map(Musica::getId)
+                .collect(Collectors.toSet());
+
+        List<String> naoEncontrados = musicaIds.stream()
+                .filter(id -> !encontrados.contains(id))
+                .toList();
+
+        if (!naoEncontrados.isEmpty()) {
+            throw new MusicaNotFoundException("Músicas não encontradas: " + naoEncontrados);
+        }
+
+        playlist.setMusicas(musicas);
         playListRepository.save(playlist);
 
         return new PlayListDTO(playlist);
@@ -67,16 +82,33 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
+        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da playlist");
+            throw new UserNotAdminException("Usuário " + usuarioLogado.getEmail() + " não é administrador da playlist");
         }
 
         playlist.setNome(data.getNome());
         playlist.setDescricao(data.getDescricao());
-        List<Musica> musicas = musicaRepository.findAllById(data.getMusicas().stream().map(MusicaResumoDTO::getId).collect(Collectors.toList()));
+        List<String> musicaIds = data.getMusicas().stream()
+                .map(MusicaResumoDTO::getId)
+                .collect(Collectors.toList());
+
+        List<Musica> musicas = musicaRepository.findAllById(musicaIds);
+
+        Set<String> encontrados = musicas.stream()
+                .map(Musica::getId)
+                .collect(Collectors.toSet());
+
+        List<String> naoEncontrados = musicaIds.stream()
+                .filter(id -> !encontrados.contains(id))
+                .toList();
+
+        if (!naoEncontrados.isEmpty()) {
+            throw new MusicaNotFoundException("Músicas não encontradas: " + naoEncontrados);
+        }
+
         playlist.setMusicas(musicas);
 
         playListRepository.save(playlist);
@@ -91,11 +123,11 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da playlist");
+            throw new UserNotAdminException("Usuário " + usuarioLogado.getEmail() + " não é administrador da playlist");
         }
 
         playListRepository.delete(playlist);
@@ -104,14 +136,14 @@ public class PlayListService {
     //buscar por id
 
     public PlayListDTO getPlayListById(String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
         return new PlayListDTO(playlist);
     }
 
     //adicionar musica
 
     public PlayListDTO addMusica(String id_playlist, String id_musica){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -119,10 +151,14 @@ public class PlayListService {
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playList.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
+            throw new UserNotAdminException("Usuário " + usuarioLogado.getEmail() + " não é administrador da playlist");
         }
 
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(EventIdNotFoundException::new);
+        if (playList.getMusicas().stream().anyMatch(musica -> musica.getId().equals(id_musica))) {
+            throw new MusicaRepetidaException();
+        }
+
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new MusicaNotFoundException("Música não encontrada: "+ id_musica));
         playList.addMusica(musica);
         playListRepository.save(playList);
 
@@ -132,17 +168,19 @@ public class PlayListService {
     //remover musica
 
     public void removeMusica(String id_playlist, String id_musica){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(EventIdNotFoundException::new);
+
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playList.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Usuário não é dono da playlist");
+            throw new UserNotAdminException("Usuário " + usuarioLogado.getEmail() + " não é administrador da playlist");
         }
 
-        Musica musica = musicaRepository.findById(id_musica).orElseThrow(EventIdNotFoundException::new);
+
+        Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new MusicaNotFoundException("Música não encontrada: "+ id_musica));
         playList.removeMusica(musica);
         playListRepository.save(playList);
     }

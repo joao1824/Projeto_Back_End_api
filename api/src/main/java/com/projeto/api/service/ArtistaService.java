@@ -1,7 +1,7 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.util.IdGerador;
@@ -46,11 +46,11 @@ public class ArtistaService {
                                              .getItems();
 
             if (apiArtistas.length == 0) {
-                return null;
+                throw new EmptyException("Artista não encontrado na API do Spotify");
             }
             return mapApiParaArtista(apiArtistas[0]);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar artista: " + e.getMessage(), e);
+            throw new ExternalApiException("Erro ao buscar artista: " + e.getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ public class ArtistaService {
 
     // Retorna um artista por ID
     public ArtistaDTO getArtistaById(String id) {
-        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + id));
         return new ArtistaDTO(artista);
     }
 
@@ -119,7 +119,7 @@ public class ArtistaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
         Artista artista = new Artista();
@@ -140,11 +140,11 @@ public class ArtistaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
 
-        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + id));
         artista.setNome(artistaDTO.getNome());
         artista.setPopularidade(artistaDTO.getPopularidade());
         artista.setSeguidores(artistaDTO.getSeguidores());
@@ -165,10 +165,10 @@ public class ArtistaService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem deletar tags.");
+            throw new UserNotAdminException();
         }
 
-        Artista artista = artistaRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Artista artista = artistaRepository.findById(id).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + id));
         artistaRepository.delete(artista);
     }
 }
