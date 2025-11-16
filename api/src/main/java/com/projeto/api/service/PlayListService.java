@@ -155,7 +155,7 @@ public class PlayListService {
         }
 
         if (playList.getMusicas().stream().anyMatch(musica -> musica.getId().equals(id_musica))) {
-            throw new MusicaRepetidaException();
+            throw new ReapetedMusicException();
         }
 
         Musica musica = musicaRepository.findById(id_musica).orElseThrow(() -> new MusicaNotFoundException("Música não encontrada: "+ id_musica));
