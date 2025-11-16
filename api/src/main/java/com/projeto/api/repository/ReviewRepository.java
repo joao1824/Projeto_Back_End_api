@@ -9,4 +9,5 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
 
     long countByDataAfter(LocalDateTime data);
 
+    boolean existsByAlbumIdAndUsuarioId(String id, String id1);
 }

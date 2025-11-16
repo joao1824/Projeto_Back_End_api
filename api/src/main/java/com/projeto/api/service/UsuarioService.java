@@ -2,16 +2,17 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.UsuarioDTOs.RegistrarDTO;
 import com.projeto.api.dtos.UsuarioDTOs.*;
+import com.projeto.api.exception.exceptions.CredentialsInvalidException;
+import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,11 +43,11 @@ public class UsuarioService {
 
     public ResponseEntity<String> RegistrarUsuario(RegistrarDTO data){
         if (this.usuarioRepository.findByEmail(data.email()) != null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário encontrado com este e-mail");
+            throw new EmailAlreadyExistsException("E-mail ja cadastrado");
         }
 
-        String password_encoder = this.password_encoder.encode(data.senha());
-        Usuario usuario = new Usuario(data.nome(),data.email(), password_encoder,data.role());
+        String senha = password_encoder.encode(data.senha());
+        Usuario usuario = new Usuario(data.nome(), data.email(), senha, data.role());
 
         this.usuarioRepository.save(usuario);
 
@@ -57,26 +58,35 @@ public class UsuarioService {
 
     public ResponseEntity LoginUsuario(AuthenticationDTO data){
 
-        var emailSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
-        var auth = this.authenticationManager.authenticate(emailSenha);
+        var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
 
-        Usuario usuario = (Usuario) auth.getPrincipal();
-        UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+        try {
+            var auth = authenticationManager.authenticate(authToken);
+            Usuario usuario = (Usuario) auth.getPrincipal();
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
 
+            var token = tokenService.generateToken(usuarioDTO);
 
-        var token = tokenService.generateToken(usuarioDTO);
+            return ResponseEntity.ok(new LoginDTO(token));
 
-        return ResponseEntity.ok(new LoginDTO(token));
-
+        } catch (BadCredentialsException e) {
+            throw new CredentialsInvalidException("Credenciais inválidas");
+        }
     }
 
     //mudar senha
 
     public ResponseEntity<String> MudarSenha(SenhaNovaDTO data){
-        // Autentica usuário com senha antiga
-        this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(data.email(), data.senha())
-        );
+
+        try {
+            // Autentica usuário com senha antiga
+            this.authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(data.email(), data.senha())
+            );
+        }catch (BadCredentialsException e){
+            throw new CredentialsInvalidException("Credenciais inválidas");
+        }
+
 
         // Pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -95,10 +105,19 @@ public class UsuarioService {
     // trocar email
     public ResponseEntity<String> MudarEmail(EmailNovoDTO data){
 
-        // Autentica usuário com senha
-        this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(data.email(), data.senha())
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(data.email(), data.senha())
+            );
+        } catch (BadCredentialsException e) {
+            throw new CredentialsInvalidException("Senha incorreta");
+        }
+
+        // Verifica se o novo e-mail já está em uso
+        if (usuarioRepository.findByEmail(data.email_novo()) != null) {
+            throw new EmailAlreadyExistsException("E-mail já está em uso");
+        }
+
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -116,10 +135,14 @@ public class UsuarioService {
     //trocar nome
 
     public ResponseEntity<String> MudarNome(UsuarioDTO data){
-
-        this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
-        );
+        // autentica usuario
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
+            );
+        } catch (BadCredentialsException e) {
+            throw new CredentialsInvalidException("Credenciais inválidas");
+        }
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -137,9 +160,13 @@ public class UsuarioService {
 
     public ResponseEntity<String> DeletarUsuario(UsuarioDTO data){
 
-        this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
+            );
+        } catch (BadCredentialsException e) {
+            throw new CredentialsInvalidException("Credenciais inválidas");
+        }
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();

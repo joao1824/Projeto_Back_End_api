@@ -3,7 +3,7 @@ package com.projeto.api.service;
 //aqui tem problema de divisão por zero quando deleta a ultima review de um album mas quando fizer a interface da pra evitar isso via tar tudo resolvido
 
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Tag;
@@ -13,14 +13,11 @@ import com.projeto.api.repository.ReviewRepository;
 import com.projeto.api.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -47,27 +44,39 @@ public class ReviewService {
 
     // Retorna uma review por ID
     public ReviewDTO  getReviewById(String id) {
-        Review review = reviewRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("Review não encontrada com o ID: " + id));
         return new ReviewDTO(review);
     }
 
     //Nova review (Alterar nota ainda não esta funcionado)
     public ReviewDTO novaReview(ReviewDTO reviewDTO) {
+
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
         Review review = new Review();
 
-        Album album = albumRepository.getReferenceById(reviewDTO.getAlbum().getId());
-        Tag tag = tagRepository.getReferenceById(reviewDTO.getTag().getId());
+        //validações
+        if (reviewDTO.getAlbum() == null || reviewDTO.getAlbum().getId() == null)
+            throw new EmptyException("O ID do álbum deve ser informado.");
 
-        for (Review r : album.getReviews()) {
-            if (r.getUsuario().getId().equals(usuarioLogado.getId())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário já fez uma review para esse álbum.");
-            }
+        if (reviewDTO.getTag() == null || reviewDTO.getTag().getId() == null)
+            throw new EmptyException("O ID da tag deve ser informado.");
+
+        if (reviewDTO.getNota() == null)
+            throw new EmptyException("A nota é obrigatória.");
+
+        //verifica se o album existe
+
+        Album album = albumRepository.findById(reviewDTO.getAlbum().getId()).orElseThrow(() -> new AlbumNotFoundException("Álbum não encontrado."));
+
+        Tag tag = tagRepository.findById(reviewDTO.getTag().getId()).orElseThrow(() -> new TagNotFoundException("Tag não encontrada."));
+
+        boolean existe = reviewRepository.existsByAlbumIdAndUsuarioId(album.getId(), usuarioLogado.getId());
+
+        if (existe) {
+            throw new ReviewExistenteException("Review já existente para este usuário e álbum.");
         }
-
-
 
         //calculo da nova nota media
 
@@ -99,22 +108,34 @@ public class ReviewService {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        Review review = reviewRepository.getReferenceById(id);
-        Album album = albumRepository.getReferenceById(review.getAlbum().getId());
-        Tag tag = tagRepository.getReferenceById(reviewDTO.getTag().getId());
+
+        //validações
+        if (reviewDTO.getTag() == null || reviewDTO.getTag().getId() == null)
+            throw new EmptyException("O ID da tag deve ser informado.");
+
+        if (reviewDTO.getNota() == null)
+            throw new EmptyException("A nota é obrigatória.");
+
+        //busca review, album e tag
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("Review não encontrada com o ID: " + id));
+        Album album = review.getAlbum();
+        Tag tag = tagRepository.findById(reviewDTO.getTag().getId()).orElseThrow(() -> new TagNotFoundException("Tag não encontrada."));
 
         //Ve se é o mesmo id do usuário da review
         if (!usuarioLogado.getId().equals(review.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da Review.");
+            throw new OwnerUserException();
         }
 
+        //calculo da nova nota media
         List<Integer> notasExistentes = album.getReviews().stream()
                 .map(Review::getNota)
                 .toList();
+
         //remove a nota antiga
         int soma = (notasExistentes.stream()
                 .mapToInt(Integer::intValue)
                 .sum()) - review.getNota();
+
         //calcula a nova nota media
         float novaNotaMedia = ((float) soma + reviewDTO.getNota()) / (notasExistentes.size());
 
@@ -134,12 +155,13 @@ public class ReviewService {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        Review review = reviewRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
-        Album album = albumRepository.getReferenceById(review.getAlbum().getId());
+
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("Review não encontrada com o ID: " + id));
+        Album album = review.getAlbum();
 
         //Ve se é o mesmo id do usuário da review
         if (!usuarioLogado.getId().equals(review.getUsuario().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuário não é dono da Review.");
+            throw new OwnerUserException();
         }
 
         List<Integer> notasExistentes = album.getReviews().stream()
@@ -150,12 +172,18 @@ public class ReviewService {
                 .mapToInt(Integer::intValue)
                 .sum()) - review.getNota();
         //calcula a nova nota media
-        float novaNotaMedia = ((float) soma) / (notasExistentes.size() - 1);
+        if (notasExistentes.size() == 1){
+            album.setNota_media(0);
+            albumRepository.save(album);
+            reviewRepository.delete(review);
+            return;
+        }else {
+            float novaNotaMedia = ((float) soma) / (notasExistentes.size() - 1);
+            album.setNota_media(novaNotaMedia);
+            albumRepository.save(album);
+            reviewRepository.delete(review);
+        }
 
-        album.setNota_media(novaNotaMedia);
-        albumRepository.save(album);
-
-        reviewRepository.delete(review);
     }
 
     @Autowired

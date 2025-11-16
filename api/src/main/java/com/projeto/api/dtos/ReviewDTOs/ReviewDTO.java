@@ -18,7 +18,7 @@ public class ReviewDTO {
 
     private String id;
     private String avaliacao;
-    private int nota;
+    private Integer nota;
     private LocalDateTime data;
     private TagResumoDTO tag;
     private AlbumResumoDTO album;
@@ -58,11 +58,11 @@ public class ReviewDTO {
         this.avaliacao = avaliacao;
     }
 
-    public int getNota() {
+    public Integer getNota() {
         return nota;
     }
 
-    public void setNota(int nota) {
+    public void setNota(Integer nota) {
         this.nota = nota;
     }
 

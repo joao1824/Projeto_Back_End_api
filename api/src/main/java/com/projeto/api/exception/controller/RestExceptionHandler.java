@@ -2,7 +2,6 @@ package com.projeto.api.exception.controller;
 
 import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.exception.models.RestErrorMensage;
-import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Empty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,18 +11,56 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(CredentialsInvalidException.class)
+    private ResponseEntity<RestErrorMensage> handleInvalidCredentialsException(CredentialsInvalidException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(restErrorMensage);
+    };
 
-    @ExceptionHandler(MusicaRepetidaException.class)
-    private ResponseEntity<RestErrorMensage> handleMusicaRepetidaException(MusicaRepetidaException exception) {
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    private ResponseEntity<RestErrorMensage> handleEmailAlreadyExistsException(EmailAlreadyExistsException exception) {
         RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.CONFLICT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(restErrorMensage);
     };
 
 
-    @ExceptionHandler(UsuarioNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> handleUsuarioNotFoundException(UsuarioNotFoundException exception) {
+    @ExceptionHandler(TokenGenerationException.class)
+    private ResponseEntity<RestErrorMensage> handleTokenGeracaoException(TokenGenerationException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(restErrorMensage);
+    };
+
+
+    @ExceptionHandler(TagExistenteException.class)
+    private ResponseEntity<RestErrorMensage> handleTagExistenteException(TagExistenteException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(restErrorMensage);
+    };
+
+
+    @ExceptionHandler(OwnerUserException.class)
+    private ResponseEntity<RestErrorMensage> handleUsuarioDonoException(OwnerUserException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.FORBIDDEN, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(restErrorMensage);
+    };
+
+    @ExceptionHandler(TagNotFoundException.class)
+    private ResponseEntity<RestErrorMensage> handleTagNotFoundException(TagNotFoundException exception) {
         RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
+    };
+
+    @ExceptionHandler(ReviewExistenteException.class)
+    private ResponseEntity<RestErrorMensage> handleReviewExistenteException(ReviewExistenteException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(restErrorMensage);
+    };
+
+    @ExceptionHandler(ReapetedMusicException.class)
+    private ResponseEntity<RestErrorMensage> handleMusicaRepetidaException(ReapetedMusicException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(restErrorMensage);
     };
 
 
@@ -83,35 +120,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
     };
 
-    @ExceptionHandler(UserNameNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> userNameNotFound(UserNameNotFoundException exception) {
-        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
-    };
-
-    @ExceptionHandler(EmailNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> emailNotFound(EmailNotFoundException exception) {
-        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
-    };
-
-    @ExceptionHandler(EntityListNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> entityListNotFound(EntityListNotFoundException exception) {
-        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
-    };
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> entityNotFound(EntityNotFoundException exception) {
-        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
-    };
-
-    @ExceptionHandler(AlbumArtistNotFoundException.class)
-    private ResponseEntity<RestErrorMensage> albumArtistNotFound(AlbumArtistNotFoundException exception) {
-        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restErrorMensage);
-    };
 
     @ExceptionHandler(UserNotAdminException.class)
     private ResponseEntity<RestErrorMensage> userNotAdmin(UserNotAdminException exception) {

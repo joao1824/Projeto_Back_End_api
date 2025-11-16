@@ -9,4 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public record EmailNovoDTO (
                             String email,
                             String senha,
-                            String email_novo) { }
+                            String email_novo) {
+    @Override
+    public String email() {
+        return email;
+    }
+
+    @Override
+    public String email_novo() {
+        return email_novo;
+    }
+}
