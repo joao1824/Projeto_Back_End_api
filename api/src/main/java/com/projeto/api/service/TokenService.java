@@ -5,12 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
+import com.projeto.api.exception.exceptions.InvalidTokenException;
+import com.projeto.api.exception.exceptions.TokenGenerationException;
+import com.projeto.api.exception.exceptions.UserEmailNotFoundException;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro na geração de token );");
+            throw new TokenGenerationException("Erro na geração do token");
         }
     }
 
@@ -57,21 +58,21 @@ public class TokenService {
             String ultima_atualizacao_senha = decoded.getClaim("ultimaSenha_data").asString();
             String ultimo_atualizacao_email = decoded.getClaim("ultimoEmail_data").asString();
 
-            Usuario usuario = usuarioRepository.findUsuarioByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+            Usuario usuario = usuarioRepository.findUsuarioByEmail(email).orElseThrow(() -> new UserEmailNotFoundException("Usuário com email " + email + " não encontrado"));
 
             if (ultima_atualizacao_senha == null || !ultima_atualizacao_senha.equals(usuario.getUltima_atualizacao_senha().toString())) {
-                throw new JWTVerificationException("Token inválido (senha atualizada)");
+                throw new InvalidTokenException("Token inválido (senha atualizada)");
             }
 
             if (ultimo_atualizacao_email == null || !ultimo_atualizacao_email.equals(usuario.getUltima_atualizacao_email().toString())){
-                throw new JWTVerificationException("Token inválido (email atualizado)");
+                throw new InvalidTokenException("Token inválido (email atualizado)");
             }
 
 
             return email;
 
         } catch (JWTVerificationException exception) {
-            return "";
+            throw new InvalidTokenException("Token inválido ou expirado");
         }
     }
 

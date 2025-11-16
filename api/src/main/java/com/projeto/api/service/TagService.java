@@ -2,6 +2,9 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
 import com.projeto.api.exception.exceptions.EventIdNotFoundException;
+import com.projeto.api.exception.exceptions.TagExistenteException;
+import com.projeto.api.exception.exceptions.TagNotFoundException;
+import com.projeto.api.exception.exceptions.UserNotAdminException;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
@@ -26,16 +29,12 @@ public class TagService {
     //Retorna todos
     public Page<TagDTO> getAllTags(Pageable pageable) {
         Page<Tag> tags = tagRepository.findAll(pageable);
-
-        if (tags.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhuma tag encontrada.");
-        }
         return tags.map(TagDTO::new);
     }
 
     //Retorna por id
     public TagDTO getTagById(String id) {
-        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException("Tag com id " + id + " não encontrada."));
         return new TagDTO(tag);
     }
 
@@ -48,8 +47,13 @@ public class TagService {
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
+
+        if (tagRepository.existsByNome(tagDTO.getNome())) {
+            throw new TagExistenteException("Tag com nome " + tagDTO.getNome() + " já existe.");
+        }
+
 
         Tag tag = new Tag();
         tag.setNome(tagDTO.getNome());
@@ -62,10 +66,21 @@ public class TagService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
+        // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
-        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new TagNotFoundException("Tag com id " + id + " não encontrada."));
+
+        // Se o nome foi alterado, verifica duplicidade
+        if (!tag.getNome().equals(tagDTO.getNome()) &&
+                tagRepository.existsByNome(tagDTO.getNome())) {
+
+            throw new TagExistenteException("Tag com nome " + tagDTO.getNome() + " já existe.");
+        }
+
         tag.setNome(tagDTO.getNome());
         tagRepository.save(tag);
         return new TagDTO(tag);
@@ -79,10 +94,10 @@ public class TagService {
 
         // verifica se é admin
         if (!usuarioLogado.getIsAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas administradores podem criar tags.");
+            throw new UserNotAdminException();
         }
 
-        Tag tag = tagRepository.findById(id).orElseThrow(EventIdNotFoundException::new);
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException("Tag com id " + id + " não encontrada."));
         tagRepository.delete(tag);
     }
 

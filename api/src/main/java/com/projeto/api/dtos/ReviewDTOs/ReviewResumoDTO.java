@@ -11,7 +11,7 @@ public class ReviewResumoDTO {
     //Atributos
     private String id;
     private String avaliacao;
-    private int nota;
+    private Integer nota;
     private TagDTO tag;
 
     //Construtor
@@ -41,11 +41,11 @@ public class ReviewResumoDTO {
         this.avaliacao = avaliacao;
     }
 
-    public int getNota() {
+    public Integer getNota() {
         return nota;
     }
 
-    public void setNota(int nota) {
+    public void setNota(Integer nota) {
         this.nota = nota;
     }
 

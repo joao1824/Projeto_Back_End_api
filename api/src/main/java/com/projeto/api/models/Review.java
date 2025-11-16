@@ -28,7 +28,8 @@ public class Review {
 
     @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
     @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
-    private int nota;
+    @NotNull
+    private Integer nota;
 
     private LocalDateTime data; // cartao-desafio
 
