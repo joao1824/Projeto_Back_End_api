@@ -33,7 +33,6 @@ public class Usuario implements UserDetails {
     @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
-    @Column(unique = true)
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
     @NotBlank(message = "nome não pode estar em vazio")
     private String nome;

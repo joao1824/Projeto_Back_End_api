@@ -6,6 +6,7 @@ import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.exception.exceptions.ExternalApiException;
 import com.projeto.api.exception.exceptions.MusicaNotFoundException;
 import com.projeto.api.exception.exceptions.UserNotAdminException;
+import com.projeto.api.mapper.dtos.MusicaMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;
@@ -27,12 +28,14 @@ public class MusicaService {
     private final AlbumService albumService;
     private final MusicaRepository musicaRepository;
     private final AlbumRepository albumRepository;
+    private final MusicaMapper musicaMapper;
 
-    public MusicaService(AlbumRepository albumRepository, MusicaRepository musicaRepository, SpotifyClient spotifyClient, AlbumService albumService) {
+    public MusicaService(AlbumRepository albumRepository, MusicaRepository musicaRepository, SpotifyClient spotifyClient, AlbumService albumService, MusicaMapper musicaMapper) {
         this.spotifyApi = spotifyClient.getApi();
         this.albumService = albumService;
         this.musicaRepository = musicaRepository;
         this.albumRepository = albumRepository;
+        this.musicaMapper = musicaMapper;
     }
 
     public Musica buscarMusica(String nome) {
@@ -63,15 +66,14 @@ public class MusicaService {
 
     // Retorna todas as músicas com paginação
     public Page<MusicaDTO> getAllMusicas(Pageable pageable) {
-
         Page<Musica> musicas = musicaRepository.findAll(pageable);
-        return musicas.map(MusicaDTO::new);
+        return musicas.map(musicaMapper::toDto);
     }
 
     // Retorna uma música por ID
     public MusicaDTO getMusicaById(String id) {
         Musica musica = musicaRepository.findById(id).orElseThrow(() -> new MusicaNotFoundException("Música com ID " + id + " não encontrada."));
-        return new MusicaDTO(musica);
+        return musicaMapper.toDto(musica);
     }
 
     // Cria uma nova música
@@ -99,7 +101,7 @@ public class MusicaService {
         musica.setAlbum(album);
 
         musicaRepository.save(musica);
-        return new MusicaDTO(musica);
+        return musicaMapper.toDto(musica);
     }
 
     // Atualiza uma música existente
@@ -125,7 +127,7 @@ public class MusicaService {
         Album album = albumRepository.findById(musicaDTO.getAlbum().getId()).orElseThrow(() -> new EventIdNotFoundException("Album com ID " + musicaDTO.getAlbum().getId() + " não encontrado."));
         musica.setAlbum(album);
         musicaRepository.save(musica);
-        return new MusicaDTO(musica);
+        return musicaMapper.toDto(musica);
     }
 
 

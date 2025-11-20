@@ -4,6 +4,7 @@ package com.projeto.api.service;
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
 import com.projeto.api.exception.exceptions.*;
+import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Artista;
 import com.projeto.api.models.Usuario;
@@ -34,13 +35,15 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final ArtistaRepository artistaRepository;
     private final ArtistaService artistaService;
+    private final AlbumMapper albumMapper;
 
 
-    public AlbumService(SpotifyClient spotifyClient, AlbumRepository albumRepository, ArtistaRepository artistaRepository, ArtistaService artistaService) {
+    public AlbumService(AlbumMapper albumMapper ,SpotifyClient spotifyClient, AlbumRepository albumRepository, ArtistaRepository artistaRepository, ArtistaService artistaService) {
         this.spotifyApi = spotifyClient.getApi();
         this.albumRepository = albumRepository;
         this.artistaRepository = artistaRepository;
         this.artistaService = artistaService;
+        this.albumMapper = albumMapper;
     }
 
     // GET ALBUM usando dependencia
@@ -76,13 +79,13 @@ public class AlbumService {
     //Retorna todos os albums com paginação
     public Page<AlbumDTO> getAllAlbums(Pageable pageable) {
         Page<Album> albums = albumRepository.findAll(pageable);
-        return albums.map(AlbumDTO::new);
+        return albums.map(albumMapper::toAlbumDTO);
     }
 
     //Retorna por id
     public AlbumDTO getAlbumById(String id) {
         Album album = albumRepository.findById(id).orElseThrow(() -> new AlbumNotFoundException("Album não encontrado com o ID: " + id));
-        return new AlbumDTO(album);
+        return albumMapper.toAlbumDTO(album);
     }
 
     //cria novo album
@@ -115,7 +118,7 @@ public class AlbumService {
 
         album.setArtistas(artistas);
         albumRepository.save(album);
-        return new AlbumDTO(album);
+        return albumMapper.toAlbumDTO(album);
     }
 
     //Atualiza album
@@ -150,7 +153,7 @@ public class AlbumService {
         album.setTotal_faixas(albumDTO.getTotal_faixas());
         album.setImagens(albumDTO.getImagens());
         albumRepository.save(album);
-        return new AlbumDTO(album);
+        return albumMapper.toAlbumDTO(album);
     }
 
     // Deleta um album por ID

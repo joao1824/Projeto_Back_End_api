@@ -3,7 +3,6 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
 import com.projeto.api.service.TagService;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ public class TagController {
 
     // Retorna todos as tags com paginação e ordenação
     @GetMapping
-    public Page<TagDTO> getAllTags(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Page<TagDTO> getAllTags(@PageableDefault(size = 10) Pageable pageable) {
         return tagService.getAllTags(pageable);
     }
 

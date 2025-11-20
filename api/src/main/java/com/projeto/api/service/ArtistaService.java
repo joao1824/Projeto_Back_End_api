@@ -2,6 +2,8 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.exception.exceptions.*;
+import com.projeto.api.mapper.dtos.AlbumMapper;
+import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.util.IdGerador;
@@ -31,10 +33,12 @@ public class ArtistaService {
 
     private final SpotifyApi spotifyApi;
     private final ArtistaRepository artistaRepository;
+    private final ArtistaMapper artistaMapper;
 
-    public ArtistaService(SpotifyClient spotifyClient, ArtistaRepository artistaRepository) {
+    public ArtistaService(SpotifyClient spotifyClient, ArtistaRepository artistaRepository, ArtistaMapper artistaMapper) {
         this.spotifyApi = spotifyClient.getApi();
         this.artistaRepository = artistaRepository;
+        this.artistaMapper = artistaMapper;
     }
 
     public Artista buscarArtista(String nome) {
@@ -101,15 +105,14 @@ public class ArtistaService {
 
     // Retorna todos os artistas com paginação
     public Page<ArtistaDTO> getAllArtistas(Pageable pageable) {
-          Page<Artista> Artistas = artistaRepository.findAll(pageable);
-
-          return Artistas.map(ArtistaDTO::new);
+          Page<Artista> artistas = artistaRepository.findAll(pageable);
+          return artistas.map(artistaMapper::toDto);
     }
 
     // Retorna um artista por ID
     public ArtistaDTO getArtistaById(String id) {
         Artista artista = artistaRepository.findById(id).orElseThrow(() -> new ArtistaNotFoundException("Artista não encontrado com o ID: " + id));
-        return new ArtistaDTO(artista);
+        return artistaMapper.toDto(artista);
     }
 
     public ArtistaDTO novoArtista(ArtistaDTO artistaDTO) {
@@ -130,7 +133,7 @@ public class ArtistaService {
         artista.setGeneros(artistaDTO.getGeneros());
         artista.setImagem(artistaDTO.getImagem());
         artistaRepository.save(artista);
-        return new ArtistaDTO(artista);
+        return artistaMapper.toDto(artista);
     }
 
     public ArtistaDTO atualizarArtista(String id, ArtistaDTO artistaDTO) {
@@ -152,7 +155,7 @@ public class ArtistaService {
         artista.setGeneros(artistaDTO.getGeneros());
         artista.setImagem(artistaDTO.getImagem());
         artistaRepository.save(artista);
-        return new ArtistaDTO(artista);
+        return artistaMapper.toDto(artista);
 
 
     }

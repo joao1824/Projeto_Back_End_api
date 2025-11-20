@@ -5,6 +5,7 @@ import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.exception.exceptions.TagExistenteException;
 import com.projeto.api.exception.exceptions.TagNotFoundException;
 import com.projeto.api.exception.exceptions.UserNotAdminException;
+import com.projeto.api.mapper.dtos.TagMapper;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
@@ -21,21 +22,23 @@ public class TagService {
 
     // Repositório de Tags
     private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
-    public TagService(TagRepository tagRepository) {
+    public TagService(TagRepository tagRepository, TagMapper tagMapper) {
         this.tagRepository = tagRepository;
+        this.tagMapper = tagMapper;
     }
 
     //Retorna todos
     public Page<TagDTO> getAllTags(Pageable pageable) {
         Page<Tag> tags = tagRepository.findAll(pageable);
-        return tags.map(TagDTO::new);
+        return tags.map(tagMapper::tagToTagDTO);
     }
 
     //Retorna por id
     public TagDTO getTagById(String id) {
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException("Tag com id " + id + " não encontrada."));
-        return new TagDTO(tag);
+        return tagMapper.tagToTagDTO(tag);
     }
 
 
@@ -58,7 +61,7 @@ public class TagService {
         Tag tag = new Tag();
         tag.setNome(tagDTO.getNome());
         tagRepository.save(tag);
-        return new TagDTO(tag);
+        return tagMapper.tagToTagDTO(tag);
     }
 
     //Atualiza tag
@@ -83,7 +86,7 @@ public class TagService {
 
         tag.setNome(tagDTO.getNome());
         tagRepository.save(tag);
-        return new TagDTO(tag);
+        return tagMapper.tagToTagDTO(tag);
     }
 
     //Deleta tag

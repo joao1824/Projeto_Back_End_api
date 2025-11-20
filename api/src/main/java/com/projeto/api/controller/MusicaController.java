@@ -2,6 +2,8 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.service.MusicaService;
+import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Default;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,7 @@ public class MusicaController {
     }
     // Retorna todas as músicas com paginação
     @GetMapping
-    public Page<MusicaDTO> getMusicas(Pageable pageable){
+    public Page<MusicaDTO> getMusicas(@PageableDefault(size = 15) Pageable pageable){
         return musicaService.getAllMusicas(pageable);
     }
     // Retorna uma música por ID

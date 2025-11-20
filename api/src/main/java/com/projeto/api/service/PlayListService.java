@@ -4,6 +4,7 @@ import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
 import com.projeto.api.exception.exceptions.*;
+import com.projeto.api.mapper.dtos.PlayListMapper;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
@@ -25,17 +26,27 @@ public class PlayListService {
 
     private final PlayListRepository playListRepository;
     private final MusicaRepository musicaRepository;
+    private final PlayListMapper playListMapper;
 
-    public PlayListService(PlayListRepository playListRepository, MusicaRepository musicaRepository) {
+    public PlayListService(PlayListRepository playListRepository, MusicaRepository musicaRepository, PlayListMapper playListMapper) {
         this.playListRepository = playListRepository;
         this.musicaRepository = musicaRepository;
+        this.playListMapper = playListMapper;
     }
 
     // Retorna todos
     public Page<PlayListDTO> getAll(Pageable pageable) {
         Page<PlayList> playlists = playListRepository.findAll(pageable);
 
-        return playlists.map(PlayListDTO::new);
+        return playlists.map(playListMapper::toPlayListDTO);
+    }
+
+
+    //buscar por id
+
+    public PlayListDTO getPlayListById(String id){
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
+        return playListMapper.toPlayListDTO(playlist);
     }
 
     // Adiciona um novo
@@ -72,7 +83,7 @@ public class PlayListService {
         playlist.setMusicas(musicas);
         playListRepository.save(playlist);
 
-        return new PlayListDTO(playlist);
+        return playListMapper.toPlayListDTO(playlist);
     }
 
     //Update
@@ -113,7 +124,7 @@ public class PlayListService {
 
         playListRepository.save(playlist);
 
-        return new PlayListDTO(playlist);
+        return playListMapper.toPlayListDTO(playlist);
     }
 
     //Deletar
@@ -133,12 +144,7 @@ public class PlayListService {
         playListRepository.delete(playlist);
     }
 
-    //buscar por id
 
-    public PlayListDTO getPlayListById(String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
-        return new PlayListDTO(playlist);
-    }
 
     //adicionar musica
 
@@ -162,7 +168,7 @@ public class PlayListService {
         playList.addMusica(musica);
         playListRepository.save(playList);
 
-        return new PlayListDTO(playList);
+        return playListMapper.toPlayListDTO(playList);
     }
 
     //remover musica

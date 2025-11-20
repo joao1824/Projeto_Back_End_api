@@ -4,6 +4,7 @@ import com.projeto.api.dtos.UsuarioDTOs.RegistrarDTO;
 import com.projeto.api.dtos.UsuarioDTOs.*;
 import com.projeto.api.exception.exceptions.CredentialsInvalidException;
 import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
+import com.projeto.api.mapper.dtos.UsuarioMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UsuarioService {
@@ -25,24 +26,26 @@ public class UsuarioService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final PasswordEncoder password_encoder;
+    private final UsuarioMapper usuarioMapper;
 
-    public UsuarioService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService, PasswordEncoder passwordEncoder) {
+    public UsuarioService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService, PasswordEncoder passwordEncoder, UsuarioMapper usuarioMapper) {
         this.authenticationManager = authenticationManager;
         this.usuarioRepository = usuarioRepository;
         this.tokenService = tokenService;
         this.password_encoder = passwordEncoder;
+        this.usuarioMapper = usuarioMapper;
     }
 
     //Retornar todos
-    public List<UsuarioDTO> GetAll(){
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        return usuarios.stream().map(UsuarioDTO::new).collect(Collectors.toList());
+    public Page<UsuarioDTO> GetAllUsuarios(Pageable pageable) {
+        Page<Usuario> usuarios = usuarioRepository.findAll(pageable);
+        return usuarios.map(usuarioMapper::usuarioToUsuarioDTO);
     }
 
     //novo usuario
 
     public ResponseEntity<String> RegistrarUsuario(RegistrarDTO data){
-        if (this.usuarioRepository.findByEmail(data.email()) != null){
+        if (this.usuarioRepository.findByEmail(data.email()).isPresent()){
             throw new EmailAlreadyExistsException("E-mail ja cadastrado");
         }
 
@@ -63,7 +66,7 @@ public class UsuarioService {
         try {
             var auth = authenticationManager.authenticate(authToken);
             Usuario usuario = (Usuario) auth.getPrincipal();
-            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+            UsuarioDTO usuarioDTO = usuarioMapper.usuarioToUsuarioDTO(usuario);
 
             var token = tokenService.generateToken(usuarioDTO);
 

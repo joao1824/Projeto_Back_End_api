@@ -1,4 +1,4 @@
-package com.projeto.api.config;
+package com.projeto.api.mapper.spotify;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

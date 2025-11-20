@@ -4,6 +4,7 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.exception.exceptions.*;
+import com.projeto.api.mapper.dtos.ReviewMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Review;
 import com.projeto.api.models.Tag;
@@ -30,22 +31,24 @@ public class ReviewService {
     private final TagRepository tagRepository;
     private final AlbumRepository albumRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
 
-    public ReviewService( TagRepository tagRepository, AlbumRepository albumRepository, ReviewRepository reviewRepository) {
+    public ReviewService(TagRepository tagRepository, AlbumRepository albumRepository, ReviewRepository reviewRepository, ReviewMapper reviewMapper) {
         this.tagRepository = tagRepository;
         this.albumRepository = albumRepository;
         this.reviewRepository = reviewRepository;
+        this.reviewMapper = reviewMapper;
     }
 
     // Retorna todas as reviews com paginação e ordenação
     public Page<ReviewDTO> getAllReviews(Pageable pageable) {
-        return reviewRepository.findAll(pageable).map(ReviewDTO::new);
+        return reviewRepository.findAll(pageable).map(reviewMapper::toReviewDTO);
     }
 
     // Retorna uma review por ID
     public ReviewDTO  getReviewById(String id) {
         Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("Review não encontrada com o ID: " + id));
-        return new ReviewDTO(review);
+        return reviewMapper.toReviewDTO(review);
     }
 
     //Nova review (Alterar nota ainda não esta funcionado)
@@ -100,7 +103,7 @@ public class ReviewService {
         review.setData(LocalDateTime.now());
         review.setTag(tag);
         reviewRepository.save(review);
-        return new ReviewDTO(review);
+        return reviewMapper.toReviewDTO(review);
     }
 
     //Atualiza review
@@ -147,7 +150,7 @@ public class ReviewService {
         review.setNota(reviewDTO.getNota());
         reviewRepository.save(review);
 
-        return (new ReviewDTO(review));
+        return reviewMapper.toReviewDTO(review);
     }
 
     //Deleta review

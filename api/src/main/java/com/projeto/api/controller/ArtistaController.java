@@ -28,7 +28,7 @@ public class ArtistaController {
 
     // Retorna todos os artistas com paginação
     @GetMapping
-    public Page<ArtistaDTO> getAllArtista(@PageableDefault Pageable pageable) {
+    public Page<ArtistaDTO> getAllArtista(@PageableDefault(size = 15) Pageable pageable) {
         return artistaService.getAllArtistas(pageable);
     }
 

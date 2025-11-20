@@ -33,7 +33,7 @@ public class AlbumController {
 
     // Retorna todos os albums com paginação
     @GetMapping
-    public Page<AlbumDTO> getAllAlbums(@PageableDefault Pageable pageable) {
+    public Page<AlbumDTO> getAllAlbums(@PageableDefault(size = 15) Pageable pageable) {
         return albumService.getAllAlbums(pageable);
     }
 

@@ -3,10 +3,12 @@ package com.projeto.api.controller;
 import com.projeto.api.dtos.UsuarioDTOs.*;
 import com.projeto.api.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
@@ -23,8 +25,8 @@ public class UsuarioController {
     // get all
 
     @GetMapping("/usuarios")
-    public List<UsuarioDTO> getAll(){
-        return usuarioService.GetAll();
+    public Page<UsuarioDTO> getAll(@PageableDefault(size = 10) Pageable pageable){
+        return usuarioService.GetAllUsuarios(pageable);
     }
 
 
@@ -44,21 +46,21 @@ public class UsuarioController {
 
     //mudar senha
 
-    @PostMapping("/usuario/senha")
+    @PatchMapping("/usuario/senha")
     public ResponseEntity<String> mudarSenha(@RequestBody @Valid SenhaNovaDTO data){
         return usuarioService.MudarSenha(data);
     }
 
     //trocar email
 
-    @PostMapping("/usuario/email")
+    @PatchMapping("/usuario/email")
     public ResponseEntity<String> mudarEmail(@RequestBody @Valid EmailNovoDTO data){
         return usuarioService.MudarEmail(data);
     }
 
     //trocar nome
 
-    @PostMapping("/usuario/nome")
+    @PatchMapping("/usuario/nome")
     public ResponseEntity<String> mudarNome(@RequestBody UsuarioDTO data){
        return usuarioService.MudarNome(data);
     }

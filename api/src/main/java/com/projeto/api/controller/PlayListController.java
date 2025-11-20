@@ -24,7 +24,7 @@ public class PlayListController {
 
     // Retorna todas as playlists com paginação e ordenação
     @GetMapping()
-    public Page<PlayListDTO> getPlayLists(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Page<PlayListDTO> getPlayLists(@PageableDefault(size = 10) Pageable pageable) {
         return playListService.getAll(pageable);
     }
     // Retorna uma playlist por ID
