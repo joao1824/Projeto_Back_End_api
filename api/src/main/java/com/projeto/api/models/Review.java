@@ -18,34 +18,21 @@ public class Review {
 
     //Atributos
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String avaliacao;
-
-    @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
-    @NotNull
     private Integer nota;
-
     private LocalDateTime data; // cartao-desafio
 
-    @NotNull(message = "O tag não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_tag")
     @JsonBackReference("tag-reviews")
     private Tag tag;
 
-    @NotNull(message = "O album não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_album")
     @JsonBackReference("album-reviews")
     private Album album;
 
-    @NotNull(message = "O usuario não pode ser nulo")
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @JsonBackReference("usuario-reviews")

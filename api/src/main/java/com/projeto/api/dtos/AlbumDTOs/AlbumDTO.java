@@ -4,6 +4,12 @@ import com.projeto.api.dtos.ArtistasDTOs.ArtistaResumoDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Album;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -15,37 +21,43 @@ import java.util.stream.Collectors;
 public class AlbumDTO {
     //Atributos
 
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar em vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @PositiveOrZero(message = "total_faixas não pode ser negativa")
     private int total_faixas;
+
+    @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
     private LocalDate lancamento;
+
+    @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
     private String gravadora;
+
+    @NotBlank(message = "O perfil_spotify não pode estar vazio")
     private String perfil_spotify;
+
+
+    @PositiveOrZero(message = "popularidade não pode ser negativa")
     private int popularidade;
-    private Float nota_media;
+
+    @PositiveOrZero
+    private float nota_media;
+
+
+    @ElementCollection
     private List<String> imagens = new ArrayList<>();
+
+    @ElementCollection
     private List<String> generos = new ArrayList<>();
     private List<ArtistaResumoDTO> artistas = new ArrayList<>();
     private List<MusicaResumoDTO> musicas = new ArrayList<>();
     private List<ReviewResumoDTO> reviews = new ArrayList<>();
-
-
-    //Construtor
-    public AlbumDTO(Album album) {
-        this.id = album.getId();
-        this.nome = album.getNome();
-        this.total_faixas = album.getTotal_faixas();
-        this.lancamento = album.getLancamento();
-        this.gravadora = album.getGravadora();
-        this.perfil_spotify = album.getPerfil_spotify();
-        this.popularidade = album.getPopularidade();
-        this.nota_media = album.getNota_media();
-        this.imagens = album.getImagens();
-        this.generos = album.getGeneros();
-        this.artistas = album.getArtistas().stream().map(ArtistaResumoDTO::new).collect(Collectors.toList());
-        this.musicas = album.getMusicas().stream().map(MusicaResumoDTO::new).collect(Collectors.toList());
-        this.reviews = album.getReviews().stream().map(ReviewResumoDTO::new).collect(Collectors.toList());
-    }
 
 
     //Geters e Setters

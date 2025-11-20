@@ -29,30 +29,12 @@ public class Usuario implements UserDetails {
     //Atributos
 
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @Column(unique = true)
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
-    @Email
     private String email;
-
-    @Size(min = 8,max = 100, message = "senha não é valido pois possui um tamanho não planejado")
-    @NotBlank(message = "senha não pode estar em vazio")
     private String senha;
-
-    @NotNull(message = "Role não pode ser nulo")
     private UsuarioRole role;
-
-
     private LocalDateTime ultima_atualizacao_senha;
-
     private LocalDateTime ultima_atualizacao_email;
 
     @OneToMany(mappedBy = "usuario")

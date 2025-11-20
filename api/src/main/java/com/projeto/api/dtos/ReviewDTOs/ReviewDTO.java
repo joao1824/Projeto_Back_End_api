@@ -7,6 +7,8 @@ import com.projeto.api.dtos.TagDTOs.TagResumoDTO;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioResumoDTO;
 import com.projeto.api.models.Review;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -16,27 +18,34 @@ public class ReviewDTO {
 
     //Atributos
 
+    //Atributos
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String avaliacao;
+
+    @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
+    @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
+    @NotNull
     private Integer nota;
+
+
     private LocalDateTime data;
+
+    @NotNull(message = "O tag não pode ser nulo")
     private TagResumoDTO tag;
+
+    @NotNull(message = "O album não pode ser nulo")
     private AlbumResumoDTO album;
+
+    @NotNull(message = "O usuario não pode ser nulo")
     private UsuarioResumoDTO usuario;
 
 
-    //Construtor
-
-
-    public ReviewDTO(Review review) {
-        this.id = review.getId();
-        this.avaliacao = review.getAvaliacao();
-        this.nota = review.getNota();
-        this.data = review.getData();
-        this.tag = new TagResumoDTO(review.getTag());
-        this.album = new AlbumResumoDTO(review.getAlbum());
-        this.usuario = new UsuarioResumoDTO(review.getUsuario());
-    }
 
 
     //Geters e Setters

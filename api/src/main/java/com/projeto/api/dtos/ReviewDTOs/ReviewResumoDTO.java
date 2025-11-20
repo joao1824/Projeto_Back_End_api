@@ -14,14 +14,7 @@ public class ReviewResumoDTO {
     private Integer nota;
     private TagDTO tag;
 
-    //Construtor
 
-    public ReviewResumoDTO(Review review) {
-        this.id = review.getId();
-        this.avaliacao = review.getAvaliacao();
-        this.nota = review.getNota();
-        this.tag = new TagDTO(review.getTag());
-    }
     //Geters e Setters
 
 

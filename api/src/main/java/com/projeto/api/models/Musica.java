@@ -22,29 +22,14 @@ public class Musica {
     //Atributos
 
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @NotNull(message = "A duração não pode ser nula")
-    @Positive(message = "duracao não pode ser negativa")
     private int duracao;
-
     private boolean explicito; //se é +18 ou não
-
-    @NotNull(message = "A faixa precisa ter um número")
-    @Min(value = 1, message = "O número da faixa deve ser pelo menos 1")
     private int faixa_numero;
-
-    @NotBlank(message = "perfil_spotifynão pode estar vazio")
     private String perfil_spotify;
-    private String letra;
 
-    @NotNull(message = "O album não pode ser nulo")
+
     @ManyToOne
     @JoinColumn(name = "id_album")
     @JsonBackReference("album-musicas")
@@ -81,7 +66,6 @@ public class Musica {
         this.faixa_numero = faixa_numero;
         this.perfil_spotify = perfil_spotify;
         this.album = album;
-        this.letra = letra;
     }
 
 

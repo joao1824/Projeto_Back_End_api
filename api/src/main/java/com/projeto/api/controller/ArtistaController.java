@@ -2,6 +2,7 @@ package com.projeto.api.controller;
 
 
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
+import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Artista;
 import com.projeto.api.service.ArtistaService;
 import org.springframework.data.web.PageableDefault;
@@ -14,16 +15,18 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping("/api/artistas")
 public class ArtistaController {
 
+    private final ArtistaMapper artistaMapper;
     private ArtistaService artistaService;
 
-    public ArtistaController(ArtistaService artistaService) {
+    public ArtistaController(ArtistaService artistaService, ArtistaMapper artistaMapper) {
         this.artistaService = artistaService;
+        this.artistaMapper = artistaMapper;
     }
 
     @GetMapping("/spotify")
     public ResponseEntity<ArtistaDTO> buscarOuCriarArtista(@RequestParam String nome) {
         Artista artista = artistaService.getOrCreateArtista(nome);
-        return ResponseEntity.ok(new ArtistaDTO(artista));
+        return ResponseEntity.ok(artistaMapper.toDto(artista));
     }
 
     // Retorna todos os artistas com paginação

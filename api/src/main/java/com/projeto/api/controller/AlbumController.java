@@ -1,6 +1,7 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.service.AlbumService;
@@ -15,9 +16,11 @@ import org.springframework.data.domain.Pageable;
 public class AlbumController {
 
     private final AlbumService albumService;
+    private final AlbumMapper albumMapper;
 
-    public AlbumController(AlbumService albumService) {
+    public AlbumController(AlbumService albumService, AlbumMapper albumMapper) {
         this.albumService = albumService;
+        this.albumMapper = albumMapper;
     }
 
     @GetMapping("/spotify")
@@ -26,7 +29,7 @@ public class AlbumController {
             @RequestParam String nomeArtista
     ) {
         Album album = albumService.getOrCreateAlbum(nomeAlbum, nomeArtista);
-        return ResponseEntity.ok(new AlbumDTO(album));
+        return ResponseEntity.ok(albumMapper.toAlbumDTO(album));
     }
 
 

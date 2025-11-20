@@ -20,29 +20,14 @@ public class Artista {
     //Atributos
 
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
-    @Column(unique = true)
     private String nome;
-
-    @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
-
-    @Positive(message = "seguidores não pode ser negativa")
     private int seguidores;
-
-    @NotBlank(message = "O perfil não pode estar vazio")
     public String perfil_spotify;
-
     @ElementCollection
     private List<String> generos = new ArrayList<>();
-
     private String imagem;
-
     @ManyToMany(mappedBy = "artistas")
     private List<Album> albuns = new ArrayList<>();
 

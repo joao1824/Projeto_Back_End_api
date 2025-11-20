@@ -5,6 +5,8 @@ import com.projeto.api.dtos.AlbumDTOs.AlbumResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListResumoDTO;
 import com.projeto.api.models.Musica;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -16,27 +18,33 @@ public class MusicaDTO {
 
     //Atributos
 
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @NotNull(message = "A duração não pode ser nula")
+    @Positive(message = "duracao não pode ser negativa")
     private int duracao;
-    private boolean explicito;
+
+    private boolean explicito; //se é +18 ou não
+
+    @NotNull(message = "A faixa precisa ter um número")
+    @Min(value = 1, message = "O número da faixa deve ser pelo menos 1")
     private int faixa_numero;
+
+    @NotBlank(message = "perfil_spotifynão pode estar vazio")
     private String perfil_spotify;
+
+    @NotNull(message = "O album não pode ser nulo")
     private AlbumResumoDTO album;
+
     private List<PlayListResumoDTO> playLists = new ArrayList<>();
 
-    //Construtor
-
-    public MusicaDTO(Musica musica) {
-        this.id = musica.getId();
-        this.nome = musica.getNome();
-        this.duracao = musica.getDuracao();
-        this.explicito = musica.isExplicito();
-        this.faixa_numero = musica.getFaixa_numero();
-        this.perfil_spotify = musica.getPerfil_spotify();
-        this.album = new AlbumResumoDTO(musica.getAlbum());
-        this.playLists = musica.getPlayLists().stream().map(PlayListResumoDTO::new).collect(Collectors.toList());
-    }
 
     //Geters e Setters
 

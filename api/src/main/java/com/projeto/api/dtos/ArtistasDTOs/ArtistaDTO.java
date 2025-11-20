@@ -3,6 +3,12 @@ package com.projeto.api.dtos.ArtistasDTOs;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
 import com.projeto.api.dtos.AlbumDTOs.AlbumResumoDTO;
 import com.projeto.api.models.Artista;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -13,27 +19,32 @@ import java.util.stream.Collectors;
 public class ArtistaDTO {
 
     //Atributos
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
+    @Column(unique = true)
     private String nome;
+
+    @Positive(message = "popularidade não pode ser negativa")
     private int popularidade;
+
+    @Positive(message = "seguidores não pode ser negativa")
     private int seguidores;
+
+    @NotBlank(message = "O perfil não pode estar vazio")
     public String perfil_spotify;
+
+    @ElementCollection
     private List<String> generos = new ArrayList<>();
+
     private String imagem;
+
     private List<AlbumResumoDTO> albuns = new ArrayList<>();
 
-    //Construtor
-
-    public ArtistaDTO(Artista artista) {
-        this.id = artista.getId();
-        this.nome = artista.getNome();
-        this.popularidade = artista.getPopularidade();
-        this.seguidores = artista.getSeguidores();
-        this.perfil_spotify = artista.getPerfil_spotify();
-        this.imagem = artista.getImagem();
-        this.generos = artista.getGeneros();
-        this.albuns = artista.getAlbuns().stream().map(AlbumResumoDTO::new).collect(Collectors.toList());
-    }
 
     //Geters e Setters
 

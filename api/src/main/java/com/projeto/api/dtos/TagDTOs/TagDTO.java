@@ -3,6 +3,9 @@ package com.projeto.api.dtos.TagDTOs;
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Tag;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -13,20 +16,16 @@ import java.util.stream.Collectors;
 public class TagDTO {
     //Atributos
 
-
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
 
-
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
     private List<ReviewResumoDTO> reviews = new ArrayList<>();
-
-    //Construtor
-
-    public TagDTO(Tag tag) {
-        this.id = tag.getId();
-        this.nome = tag.getNome();
-        this.reviews = tag.getReviews().stream().map(ReviewResumoDTO::new).collect(Collectors.toList());
-    }
 
     //Geters e Setters
 

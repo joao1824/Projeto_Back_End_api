@@ -21,37 +21,17 @@ public class Album {
     //Atributos
 
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar em vazio")
     private String id;
-
-    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
-    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
-
-    @PositiveOrZero(message = "total_faixas não pode ser negativa")
     private int total_faixas;
-
-    @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
     private LocalDate lancamento;
-
-    @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
     private String gravadora;
-
-    @NotBlank(message = "O perfil_spotify não pode estar vazio")
     private String perfil_spotify;
-
-
-    @PositiveOrZero(message = "popularidade não pode ser negativa")
     private int popularidade;
-
-    @PositiveOrZero
     private float nota_media;
-
 
     @ElementCollection
     private List<String> imagens = new ArrayList<>();
-
     @ElementCollection
     private List<String> generos = new ArrayList<>();
 

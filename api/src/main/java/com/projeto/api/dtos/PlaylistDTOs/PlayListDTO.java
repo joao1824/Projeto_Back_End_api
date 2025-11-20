@@ -5,6 +5,11 @@ import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioResumoDTO;
 import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,21 +20,26 @@ import java.util.stream.Collectors;
 public class PlayListDTO {
 
     //Atributos
+    @Id
+    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
+    @NotBlank(message = "ID não pode estar vazio")
     private String id;
+
+    @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "nome não pode estar em vazio")
     private String nome;
+
+    @Size(min = 0, max = 500,message = "nome possui um tamanho não planejado")
+    @NotBlank(message = "O lancamento não pode estar vazio")
     private String descricao;
+
+    @NotNull(message = ("usuario não pode ser nula"))
     private UsuarioResumoDTO usuario;
+
+    @NotNull(message = ("musicas não pode ser nula"))
+    @NotEmpty(message = ("musicas não pode estar vazia"))
     private List<MusicaResumoDTO> musicas = new ArrayList<>();
 
-    //Construtor
-
-    public PlayListDTO(PlayList playList) {
-        this.id = playList.getId();
-        this.nome = playList.getNome();
-        this.descricao = playList.getDescricao();
-        this.usuario = new UsuarioResumoDTO(playList.getUsuario());
-        this.musicas = playList.getMusicas().stream().map(MusicaResumoDTO::new).collect(Collectors.toList());
-    }
 
     //Geters e Setters
 
