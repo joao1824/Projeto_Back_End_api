@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/tags")
@@ -22,8 +24,8 @@ public class TagController {
 
     // Retorna todos as tags com paginação e ordenação
     @GetMapping
-    public Page<TagDTO> getAllTags(@PageableDefault(size = 10) Pageable pageable) {
-        return tagService.getAllTags(pageable);
+    public Page<TagDTO> getAllTags(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable) {
+        return tagService.getAllTags(filtros,pageable);
     }
 
     // Retorna uma tag por ID

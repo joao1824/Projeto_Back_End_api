@@ -5,6 +5,6 @@ public class PlaylistNotFoundException extends RuntimeException {
         super(message);
     }
     public PlaylistNotFoundException() {
-        super("Playlist não encontrada.");
+        super("PlayListSpecification não encontrada.");
     }
 }

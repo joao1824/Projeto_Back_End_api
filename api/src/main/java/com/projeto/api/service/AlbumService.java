@@ -75,7 +75,7 @@ public class AlbumService {
 
     //Retorna todos os albums com paginação
     public Page<AlbumDTO> getAllAlbums(Map<String, String> filtros, Pageable pageable) {
-        Specification<Album> specification = AlbumSpecification.aplicarFiltrosDinamicos(filtros);
+        Specification<Album> specification = AlbumSpecification.aplicarFiltros(filtros);
         Page<Album> albums = albumRepository.findAll(specification, pageable);
         return albums.map(albumMapper::toAlbumDTO);
     }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/musicas")
 public class MusicaController {
@@ -19,8 +21,8 @@ public class MusicaController {
     }
     // Retorna todas as músicas com paginação
     @GetMapping
-    public Page<MusicaDTO> getMusicas(@PageableDefault(size = 15) Pageable pageable){
-        return musicaService.getAllMusicas(pageable);
+    public Page<MusicaDTO> getMusicas(@RequestParam Map<String,String> filtros, @PageableDefault(size = 15) Pageable pageable){
+        return musicaService.getAllMusicas(filtros,pageable);
     }
     // Retorna uma música por ID
     @GetMapping("/{id}")

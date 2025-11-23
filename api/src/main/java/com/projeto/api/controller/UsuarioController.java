@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @RestController
@@ -25,8 +26,8 @@ public class UsuarioController {
     // get all
 
     @GetMapping("/usuarios")
-    public Page<UsuarioDTO> getAll(@PageableDefault(size = 10) Pageable pageable){
-        return usuarioService.GetAllUsuarios(pageable);
+    public Page<UsuarioDTO> getAll(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable){
+        return usuarioService.GetAllUsuarios(filtros,pageable);
     }
 
 

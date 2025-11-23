@@ -1,18 +1,16 @@
 package com.projeto.api.specification;
 
-import com.projeto.api.models.Album;
+import com.projeto.api.models.Review;
+import com.projeto.api.models.Usuario;
+import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.*;
 import java.util.Map;
 
-public class AlbumSpecification {
-
-
-
-    public static Specification<Album> aplicarFiltros(Map<String, String> filtros) {
+public class UsuarioSpecification {
+    public static Specification<Usuario> aplicarFiltros(Map<String, String> filtros) {
         return (root, query, builder) -> {
 
             //Vou ver se coloco exception, acho que sim
@@ -50,4 +48,5 @@ public class AlbumSpecification {
             return predicate;
         };
     }
+
 }

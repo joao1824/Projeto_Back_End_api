@@ -12,14 +12,18 @@ import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.MusicaRepository;
+import com.projeto.api.specification.MusicaSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Track;
+
+import java.util.Map;
 
 @Service
 public class MusicaService {
@@ -65,8 +69,9 @@ public class MusicaService {
     }
 
     // Retorna todas as músicas com paginação
-    public Page<MusicaDTO> getAllMusicas(Pageable pageable) {
-        Page<Musica> musicas = musicaRepository.findAll(pageable);
+    public Page<MusicaDTO> getAllMusicas(Map<String,String> filtros, Pageable pageable) {
+        Specification<Musica> specification = MusicaSpecification.aplicarFiltros(filtros);
+        Page<Musica> musicas = musicaRepository.findAll(specification,pageable);
         return musicas.map(musicaMapper::toDto);
     }
 

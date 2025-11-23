@@ -12,8 +12,10 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ReviewRepository;
 import com.projeto.api.repository.TagRepository;
+import com.projeto.api.specification.ReviewSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -41,8 +43,9 @@ public class ReviewService {
     }
 
     // Retorna todas as reviews com paginação e ordenação
-    public Page<ReviewDTO> getAllReviews(Pageable pageable) {
-        return reviewRepository.findAll(pageable).map(reviewMapper::toReviewDTO);
+    public Page<ReviewDTO> getAllReviews(Map<String,String> filtros,Pageable pageable) {
+        Specification<Review> specification = ReviewSpecification.aplicarFiltros(filtros);
+        return reviewRepository.findAll(specification,pageable).map(reviewMapper::toReviewDTO);
     }
 
     // Retorna uma review por ID

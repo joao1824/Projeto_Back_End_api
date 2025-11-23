@@ -27,8 +27,8 @@ public class ReviewController {
     // Retorna todas as reviews com paginação e ordenação
 
     @GetMapping
-    public Page<ReviewDTO> getAllReviews(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return  reviewService.getAllReviews(pageable);
+    public Page<ReviewDTO> getAllReviews(@RequestParam Map<String,String> filtros,@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return  reviewService.getAllReviews(filtros,pageable);
     }
 
     // Retorna uma review por ID

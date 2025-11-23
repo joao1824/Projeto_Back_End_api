@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/playlist")
@@ -24,8 +26,8 @@ public class PlayListController {
 
     // Retorna todas as playlists com paginação e ordenação
     @GetMapping()
-    public Page<PlayListDTO> getPlayLists(@PageableDefault(size = 10) Pageable pageable) {
-        return playListService.getAll(pageable);
+    public Page<PlayListDTO> getAllPlayLists(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable) {
+        return playListService.getAllPlaylist(filtros, pageable);
     }
     // Retorna uma playlist por ID
     @GetMapping("/{id}")

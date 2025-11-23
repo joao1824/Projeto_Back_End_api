@@ -10,14 +10,17 @@ import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.MusicaRepository;
 import com.projeto.api.repository.PlayListRepository;
+import com.projeto.api.specification.PlayListSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,8 +38,9 @@ public class PlayListService {
     }
 
     // Retorna todos
-    public Page<PlayListDTO> getAll(Pageable pageable) {
-        Page<PlayList> playlists = playListRepository.findAll(pageable);
+    public Page<PlayListDTO> getAllPlaylist(Map<String,String> filtros, Pageable pageable) {
+        Specification<PlayList> specification = PlayListSpecification.aplicarFiltros(filtros);
+        Page<PlayList> playlists = playListRepository.findAll(specification,pageable);
 
         return playlists.map(playListMapper::toPlayListDTO);
     }
@@ -45,7 +49,7 @@ public class PlayListService {
     //buscar por id
 
     public PlayListDTO getPlayListById(String id){
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id));
         return playListMapper.toPlayListDTO(playlist);
     }
 
@@ -93,7 +97,7 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
+        PlayList playlist = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id_playlist));
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
@@ -134,7 +138,7 @@ public class PlayListService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
-        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id));
+        PlayList playlist = playListRepository.findById(id).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id));
 
         //Ve se é o mesmo id do usuário da playlist
         if (!usuarioLogado.getId().equals(playlist.getUsuario().getId())) {
@@ -149,7 +153,7 @@ public class PlayListService {
     //adicionar musica
 
     public PlayListDTO addMusica(String id_playlist, String id_musica){
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id_playlist));
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -175,7 +179,7 @@ public class PlayListService {
 
     public void removeMusica(String id_playlist, String id_musica){
 
-        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada: "+ id_playlist));
+        PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id_playlist));
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();

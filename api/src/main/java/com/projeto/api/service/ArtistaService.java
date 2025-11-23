@@ -6,9 +6,11 @@ import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
+import com.projeto.api.specification.ArtistaSpecification;
 import com.projeto.api.util.IdGerador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,9 +107,10 @@ public class ArtistaService {
     }
 
     // Retorna todos os artistas com paginação
-    public Page<ArtistaDTO> getAllArtistas(Pageable pageable) {
-          Page<Artista> artistas = artistaRepository.findAll(pageable);
-          return artistas.map(artistaMapper::toDto);
+    public Page<ArtistaDTO> getAllArtistas(Map<String,String> filtros, Pageable pageable) {
+        Specification<Artista> specification = ArtistaSpecification.aplicarFiltros(filtros);
+        Page<Artista> artistas = artistaRepository.findAll(specification,pageable);
+        return artistas.map(artistaMapper::toDto);
     }
 
     // Retorna um artista por ID

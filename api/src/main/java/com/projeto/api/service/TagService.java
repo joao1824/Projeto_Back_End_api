@@ -9,12 +9,16 @@ import com.projeto.api.mapper.dtos.TagMapper;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
+import com.projeto.api.specification.TagSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 
 @Service
@@ -30,8 +34,9 @@ public class TagService {
     }
 
     //Retorna todos
-    public Page<TagDTO> getAllTags(Pageable pageable) {
-        Page<Tag> tags = tagRepository.findAll(pageable);
+    public Page<TagDTO> getAllTags(Map<String,String> filtros, Pageable pageable) {
+        Specification<Tag> specification = TagSpecification.aplicarFiltros(filtros);
+        Page<Tag> tags = tagRepository.findAll(specification,pageable);
         return tags.map(tagMapper::tagToTagDTO);
     }
 

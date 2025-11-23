@@ -7,6 +7,8 @@ import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
 import com.projeto.api.mapper.dtos.UsuarioMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
+import com.projeto.api.specification.UsuarioSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @Service
@@ -37,8 +40,9 @@ public class UsuarioService {
     }
 
     //Retornar todos
-    public Page<UsuarioDTO> GetAllUsuarios(Pageable pageable) {
-        Page<Usuario> usuarios = usuarioRepository.findAll(pageable);
+    public Page<UsuarioDTO> GetAllUsuarios(Map<String, String> filtros, Pageable pageable) {
+        Specification<Usuario> specification = UsuarioSpecification.aplicarFiltros(filtros);
+        Page<Usuario> usuarios = usuarioRepository.findAll(specification,pageable);
         return usuarios.map(usuarioMapper::usuarioToUsuarioDTO);
     }
 

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/artistas")
 public class ArtistaController {
@@ -31,8 +33,9 @@ public class ArtistaController {
 
     // Retorna todos os artistas com paginação
     @GetMapping
-    public Page<ArtistaDTO> getAllArtista(@PageableDefault(size = 15) Pageable pageable) {
-        return artistaService.getAllArtistas(pageable);
+    public Page<ArtistaDTO> getAllArtista(@RequestParam Map<String, String> filtros,
+                                          @PageableDefault (size = 15) Pageable pageable) {
+        return artistaService.getAllArtistas(filtros,pageable);
     }
 
     // Retorna um artista por ID
