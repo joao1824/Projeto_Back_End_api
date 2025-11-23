@@ -3,7 +3,6 @@ package com.projeto.api.service;
 // spotify-web-api-java
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
-import com.projeto.api.dtos.AlbumDTOs.AlbumFilter;
 import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
@@ -13,9 +12,7 @@ import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.specification.AlbumSpecification;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.server.ResponseStatusException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import org.springframework.data.domain.Page;
@@ -24,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -80,8 +74,8 @@ public class AlbumService {
     }
 
     //Retorna todos os albums com paginação
-    public Page<AlbumDTO> getAllAlbums(AlbumFilter filtros, Pageable pageable) {
-        Specification<Album> specification = AlbumSpecification.filtrosAplicados(filtros);
+    public Page<AlbumDTO> getAllAlbums(Map<String, String> filtros, Pageable pageable) {
+        Specification<Album> specification = AlbumSpecification.aplicarFiltrosDinamicos(filtros);
         Page<Album> albums = albumRepository.findAll(specification, pageable);
         return albums.map(albumMapper::toAlbumDTO);
     }

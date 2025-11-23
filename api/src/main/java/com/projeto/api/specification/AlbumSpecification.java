@@ -1,50 +1,53 @@
 package com.projeto.api.specification;
 
-import com.projeto.api.dtos.AlbumDTOs.AlbumFilter;
 import com.projeto.api.models.Album;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.StringUtils;
+
+import jakarta.persistence.criteria.*;
+import java.util.Map;
 
 public class AlbumSpecification {
 
-    public static Specification<Album> filtrosAplicados(AlbumFilter filtros) {
-        return (root, query, criteriaBuilder) -> {
-            var predicates = criteriaBuilder.conjunction();
 
-            if (StringUtils.hasText(filtros.id())) {
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(root.get("id"), filtros.id()));
-            }
-            if (StringUtils.hasText(filtros.nome())) {
-                predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("nome")), "%" + filtros.nome().toLowerCase() + "%"));
-            }
-            if (filtros.total_faixas() != null) {
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(root.get("total_faixas"), filtros.total_faixas()));
-            }
-            if (filtros.lancamento() != null) {
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(root.get("lancamento"), filtros.lancamento()));
-            }
-            if (StringUtils.hasText(filtros.gravadora())) {
-                predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("gravadora")), "%" + filtros.gravadora().toLowerCase() + "%"));
-            }
-            if (StringUtils.hasText(filtros.perfil_spotify())) {
-                predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("perfil_spotify")), "%" + filtros.perfil_spotify().toLowerCase() + "%"));
-            }
-            if (filtros.popularidade() != null) {
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(root.get("popularidade"), filtros.popularidade()));
-            }
-            if (filtros.nota_media() != null) {
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(root.get("nota_media"), filtros.nota_media()));
+
+    public static Specification<Album> aplicarFiltrosDinamicos(Map<String, String> filtros) {
+        return (root, query, builder) -> {
+
+            //Vou ver se coloco exception, acho que sim
+
+            query.distinct(true); // Evita resultados duplicados em joins
+            Predicate predicate = builder.conjunction();
+
+            for (Map.Entry<String, String> entry : filtros.entrySet()) {
+                String campo = entry.getKey();   // nome do campo a ser filtrado
+                String valor = entry.getValue();
+                if (valor == null || valor.isEmpty()) continue;
+
+                Path<?> path = root;
+                // Lidar com campos relacionados (joins)
+                if (campo.contains(".")) {
+                    String[] partes = campo.split("\\.");// Dividir o campo em partes para joins
+                    for (int i = 0; i < partes.length - 1; i++) {
+                        path = ((From<?, ?>) path).join(partes[i]);
+                    }
+
+
+                    path = path.get(partes[partes.length - 1]);
+                } else {
+                    path = root.get(campo);
+                }
+
+                // Verificar o tipo do campo para aplicar o filtro adequado
+                if (valor.matches("\\d+(\\.\\d+)?")) {// Se o valor for numérico
+                    predicate = builder.and(predicate, builder.equal(path, Double.parseDouble(valor)));
+                } else {//
+                    predicate = builder.and(predicate, builder.like(builder.lower(path.as(String.class)), "%" + valor.toLowerCase() + "%"));
+                }
             }
 
-            return predicates;
+            return predicate;
         };
     }
-
-
-
-
-
 }

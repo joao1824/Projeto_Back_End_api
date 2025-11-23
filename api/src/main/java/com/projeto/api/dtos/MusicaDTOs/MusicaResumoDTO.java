@@ -18,7 +18,7 @@ public class MusicaResumoDTO {
         this.id = musica.getId();
         this.nome = musica.getNome();
         this.duracao = musica.getDuracao();
-        this.explicito = musica.isExplicito();
+        this.explicito = musica.getExplicito();
         this.faixa_numero = musica.getFaixa_numero();
         this.perfil_spotify = musica.getPerfil_spotify();
     }

@@ -1,16 +1,16 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
-import com.projeto.api.dtos.AlbumDTOs.AlbumFilter;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
-import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.service.AlbumService;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/albums")
@@ -37,7 +37,7 @@ public class AlbumController {
 
     // Retorna todos os albums com paginação
     @GetMapping
-    public Page<AlbumDTO> getAllAlbums(AlbumFilter filtros, @PageableDefault(size = 15) Pageable pageable) {
+    public Page<AlbumDTO> getAllAlbums(@RequestParam Map<String, String> filtros, @PageableDefault(size = 15) Pageable pageable) {
         return albumService.getAllAlbums(filtros, pageable);
     }
 
