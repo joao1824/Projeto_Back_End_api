@@ -23,12 +23,12 @@ public class Album {
     @Id
     private String id;
     private String nome;
-    private int total_faixas;
+    private Integer total_faixas;
     private LocalDate lancamento;
     private String gravadora;
     private String perfil_spotify;
-    private int popularidade;
-    private float nota_media;
+    private Integer popularidade;
+    private Float nota_media;
 
     @ElementCollection
     private List<String> imagens = new ArrayList<>();
@@ -118,11 +118,11 @@ public class Album {
         this.nome = nome;
     }
 
-    public int getTotal_faixas() {
+    public Integer getTotal_faixas() {
         return total_faixas;
     }
 
-    public void setTotal_faixas(int total_faixas) {
+    public void setTotal_faixas(Integer total_faixas) {
         this.total_faixas = total_faixas;
     }
 
@@ -150,12 +150,20 @@ public class Album {
         this.perfil_spotify = perfil_spotify;
     }
 
-    public int getPopularidade() {
+    public Integer getPopularidade() {
         return popularidade;
     }
 
-    public void setPopularidade(int popularidade) {
+    public void setPopularidade(Integer popularidade) {
         this.popularidade = popularidade;
+    }
+
+    public Float getNota_media() {
+        return nota_media;
+    }
+
+    public void setNota_media(Float nota_media) {
+        this.nota_media = nota_media;
     }
 
     public List<String> getImagens() {
@@ -196,13 +204,5 @@ public class Album {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
-    }
-
-    public float getNota_media() {
-        return nota_media;
-    }
-
-    public void setNota_media(float nota_media) {
-        this.nota_media = nota_media;
     }
 }

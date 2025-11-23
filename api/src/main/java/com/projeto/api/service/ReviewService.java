@@ -176,7 +176,7 @@ public class ReviewService {
                 .sum()) - review.getNota();
         //calcula a nova nota media
         if (notasExistentes.size() == 1){
-            album.setNota_media(0);
+            album.setNota_media(null);
             albumRepository.save(album);
             reviewRepository.delete(review);
             return;
@@ -188,6 +188,7 @@ public class ReviewService {
         }
 
     }
+
 
     @Autowired
     private ModelMapper modelMapper;

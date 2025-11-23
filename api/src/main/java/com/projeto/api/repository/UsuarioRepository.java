@@ -2,11 +2,12 @@ package com.projeto.api.repository;
 
 import com.projeto.api.models.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+public interface UsuarioRepository extends JpaRepository<Usuario, String>, JpaSpecificationExecutor<Usuario> {
     Optional<UserDetails> findByEmail(String email);
     Optional<Usuario> findUsuarioByEmail(String email);
 

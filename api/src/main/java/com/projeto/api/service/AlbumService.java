@@ -3,6 +3,7 @@ package com.projeto.api.service;
 // spotify-web-api-java
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumFilter;
 import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
@@ -10,6 +11,8 @@ import com.projeto.api.models.Artista;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ArtistaRepository;
+import com.projeto.api.specification.AlbumSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
@@ -77,8 +80,9 @@ public class AlbumService {
     }
 
     //Retorna todos os albums com paginação
-    public Page<AlbumDTO> getAllAlbums(Pageable pageable) {
-        Page<Album> albums = albumRepository.findAll(pageable);
+    public Page<AlbumDTO> getAllAlbums(AlbumFilter filtros, Pageable pageable) {
+        Specification<Album> specification = AlbumSpecification.filtrosAplicados(filtros);
+        Page<Album> albums = albumRepository.findAll(specification, pageable);
         return albums.map(albumMapper::toAlbumDTO);
     }
 
@@ -107,7 +111,7 @@ public class AlbumService {
         album.setGravadora(albumDTO.getGravadora());
         album.setPerfil_spotify(albumDTO.getPerfil_spotify());
         album.setTotal_faixas(albumDTO.getTotal_faixas());
-        album.setNota_media(0);
+        album.setNota_media(null);
         album.setImagens(albumDTO.getImagens());
         album.setGeneros(albumDTO.getGeneros());
 
@@ -215,7 +219,7 @@ public class AlbumService {
             novoAlbum.setNome(spotifyAlbum.getName());
             novoAlbum.setLancamento(parseSpotifyDate(spotifyAlbum.getReleaseDate()));
             novoAlbum.setPerfil_spotify(spotifyAlbum.getExternalUrls().get("spotify"));
-            novoAlbum.setNota_media(0);
+            novoAlbum.setNota_media(null);
             novoAlbum.setTotal_faixas(spotifyAlbum.getTracks().getTotal());
             novoAlbum.setGravadora(spotifyAlbum.getLabel());
             novoAlbum.setArtistas(Collections.singletonList(artista));

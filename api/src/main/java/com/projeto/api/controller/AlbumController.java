@@ -1,6 +1,7 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.dtos.AlbumDTOs.AlbumFilter;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.repository.AlbumRepository;
@@ -36,8 +37,8 @@ public class AlbumController {
 
     // Retorna todos os albums com paginação
     @GetMapping
-    public Page<AlbumDTO> getAllAlbums(@PageableDefault(size = 15) Pageable pageable) {
-        return albumService.getAllAlbums(pageable);
+    public Page<AlbumDTO> getAllAlbums(AlbumFilter filtros, @PageableDefault(size = 15) Pageable pageable) {
+        return albumService.getAllAlbums(filtros, pageable);
     }
 
     // Retorna um album por ID
