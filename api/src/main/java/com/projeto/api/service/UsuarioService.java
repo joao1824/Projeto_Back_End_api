@@ -4,6 +4,7 @@ import com.projeto.api.dtos.UsuarioDTOs.RegistrarDTO;
 import com.projeto.api.dtos.UsuarioDTOs.*;
 import com.projeto.api.exception.exceptions.CredentialsInvalidException;
 import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
+import com.projeto.api.exception.exceptions.UsuarioNotFoundException;
 import com.projeto.api.mapper.dtos.UsuarioMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
@@ -40,15 +41,23 @@ public class UsuarioService {
     }
 
     //Retornar todos
-    public Page<UsuarioDTO> GetAllUsuarios(Map<String, String> filtros, Pageable pageable) {
+    public Page<UsuarioDTO> getAllUsuarios(Map<String, String> filtros, Pageable pageable) {
         Specification<Usuario> specification = UsuarioSpecification.aplicarFiltros(filtros);
         Page<Usuario> usuarios = usuarioRepository.findAll(specification,pageable);
         return usuarios.map(usuarioMapper::usuarioToUsuarioDTO);
     }
 
+    //Retornar por id
+
+    public UsuarioDTO getUsuarioById(String id){
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(UsuarioNotFoundException::new);
+        return usuarioMapper.usuarioToUsuarioDTO(usuario);
+    }
+
     //novo usuario
 
-    public ResponseEntity<String> RegistrarUsuario(RegistrarDTO data){
+    public ResponseEntity<String> registrarUsuario(RegistrarDTO data){
         if (this.usuarioRepository.findByEmail(data.email()).isPresent()){
             throw new EmailAlreadyExistsException("E-mail ja cadastrado");
         }
@@ -63,7 +72,7 @@ public class UsuarioService {
 
     //logar
 
-    public ResponseEntity LoginUsuario(AuthenticationDTO data){
+    public ResponseEntity loginUsuario(AuthenticationDTO data){
 
         var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
 
@@ -83,7 +92,7 @@ public class UsuarioService {
 
     //mudar senha
 
-    public ResponseEntity<String> MudarSenha(SenhaNovaDTO data){
+    public ResponseEntity<String> mudarSenha(String id,SenhaNovaDTO data){
 
         try {
             // Autentica usuário com senha antiga
@@ -98,6 +107,10 @@ public class UsuarioService {
         // Pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        if (!id.equals(usuarioLogado.getId())) {
+            throw new CredentialsInvalidException("Você só pode alterar sua própria senha");
+        }
+
 
         // Atuaiza a senha
         String senhaNova = password_encoder.encode(data.novasenha());
@@ -110,7 +123,7 @@ public class UsuarioService {
     }
 
     // trocar email
-    public ResponseEntity<String> MudarEmail(EmailNovoDTO data){
+    public ResponseEntity<String> mudarEmail(String id, EmailNovoDTO data){
 
         try {
             authenticationManager.authenticate(
@@ -130,6 +143,12 @@ public class UsuarioService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
+
+        if(!id.equals(usuarioLogado.getId())) {
+            throw new CredentialsInvalidException("Você só pode alterar seu próprio e-mail");
+        }
+
+
         // Atualiza e-mail
         usuarioLogado.setEmail(data.email_novo());
         usuarioLogado.setUltima_atualizacao_email(LocalDateTime.now());
@@ -141,7 +160,7 @@ public class UsuarioService {
 
     //trocar nome
 
-    public ResponseEntity<String> MudarNome(UsuarioDTO data){
+    public ResponseEntity<String> mudarNome(String id, UsuarioDTO data){
         // autentica usuario
         try {
             authenticationManager.authenticate(
@@ -155,6 +174,10 @@ public class UsuarioService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
+        if (!id.equals(usuarioLogado.getId())) {
+            throw new CredentialsInvalidException("Você só pode alterar seu próprio nome");
+        }
+
 
         usuarioLogado.setNome(data.getNome());
         this.usuarioRepository.save(usuarioLogado);
@@ -165,7 +188,7 @@ public class UsuarioService {
 
     //deletar usuario
 
-    public ResponseEntity<String> DeletarUsuario(UsuarioDTO data){
+    public ResponseEntity<String> deletarUsuario(String id, UsuarioDTO data){
 
         try {
             authenticationManager.authenticate(
@@ -178,6 +201,10 @@ public class UsuarioService {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+
+        if (!id.equals(usuarioLogado.getId())) {
+            throw new CredentialsInvalidException("Você só pode deletar sua própria conta");
+        }
 
         usuarioRepository.delete(usuarioLogado);
 

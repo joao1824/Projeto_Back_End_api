@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/conta")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -25,51 +25,57 @@ public class UsuarioController {
 
     // get all
 
-    @GetMapping("/usuarios")
-    public Page<UsuarioDTO> getAll(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable){
-        return usuarioService.GetAllUsuarios(filtros,pageable);
+    public Page<UsuarioDTO> getAllUsuario(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable){
+        return usuarioService.getAllUsuarios(filtros,pageable);
     }
 
-
-    //logar
-
-    @PostMapping("/logar")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-        return usuarioService.LoginUsuario(data);
+    //get by id
+    @GetMapping("/{id}")
+    public UsuarioDTO getUsuarioById(@PathVariable String id){
+        return usuarioService.getUsuarioById(id);
     }
+
 
     //registrar
 
-    @PostMapping("/registrar")
+    @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid RegistrarDTO data){
-        return usuarioService.RegistrarUsuario(data);
+        return usuarioService.registrarUsuario(data);
     }
+
+    //logar
+
+    @PostMapping("/auth/login")
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
+        return usuarioService.loginUsuario(data);
+    }
+
 
     //mudar senha
 
-    @PatchMapping("/usuario/senha")
-    public ResponseEntity<String> mudarSenha(@RequestBody @Valid SenhaNovaDTO data){
-        return usuarioService.MudarSenha(data);
+    @PatchMapping("/{id}/senha")
+    public ResponseEntity<String> mudarSenha(@RequestParam String id,@RequestBody @Valid SenhaNovaDTO data){
+        return usuarioService.mudarSenha(id,data);
     }
 
     //trocar email
 
-    @PatchMapping("/usuario/email")
-    public ResponseEntity<String> mudarEmail(@RequestBody @Valid EmailNovoDTO data){
-        return usuarioService.MudarEmail(data);
+    @PatchMapping("/{id}/email")
+    public ResponseEntity<String> mudarEmail(@RequestParam String id,@RequestBody @Valid EmailNovoDTO data){
+        return usuarioService.mudarEmail(id,data);
     }
 
     //trocar nome
 
-    @PatchMapping("/usuario/nome")
-    public ResponseEntity<String> mudarNome(@RequestBody UsuarioDTO data){
-       return usuarioService.MudarNome(data);
+    @PatchMapping("/{id}/nome")
+    public ResponseEntity<String> mudarNome(@RequestParam String id,@RequestBody UsuarioDTO data){
+       return usuarioService.mudarNome(id,data);
     }
 
     //deletar usuario
-    @DeleteMapping("/usuario")
-    public ResponseEntity<String> deletarUsuario(@RequestBody UsuarioDTO data){
-        return usuarioService.DeletarUsuario(data);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarUsuario(@RequestParam String id,@RequestBody UsuarioDTO data){
+        return usuarioService.deletarUsuario(id,data);
     }
 
 }

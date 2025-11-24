@@ -33,8 +33,8 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/conta/logar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/conta/registrar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/logar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/registrar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
