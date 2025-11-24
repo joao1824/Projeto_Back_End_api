@@ -16,10 +16,8 @@ import com.projeto.api.specification.MusicaSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
@@ -83,7 +81,7 @@ public class MusicaService {
 
     // Cria uma nova música
 
-    public MusicaDTO novaMusica(MusicaDTO musicaDTO) {
+    public MusicaDTO newMusica(MusicaDTO musicaDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -110,7 +108,7 @@ public class MusicaService {
     }
 
     // Atualiza uma música existente
-    public MusicaDTO atualizarMusica(String id, MusicaDTO musicaDTO) {
+    public MusicaDTO updateMusica(String id, MusicaDTO musicaDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -136,7 +134,7 @@ public class MusicaService {
     }
 
 
-    public void deletarMusica(String id) {
+    public void deleteMusica(String id) {
 
 
         // pega usuario logado

@@ -57,7 +57,7 @@ public class UsuarioService {
 
     //novo usuario
 
-    public ResponseEntity<String> registrarUsuario(RegistrarDTO data){
+    public ResponseEntity<String> registerUsuario(RegistrarDTO data){
         if (this.usuarioRepository.findByEmail(data.email()).isPresent()){
             throw new EmailAlreadyExistsException("E-mail ja cadastrado");
         }
@@ -92,7 +92,7 @@ public class UsuarioService {
 
     //mudar senha
 
-    public ResponseEntity<String> mudarSenha(String id,SenhaNovaDTO data){
+    public ResponseEntity<String> changeSenha(String id, SenhaNovaDTO data){
 
         try {
             // Autentica usuário com senha antiga
@@ -123,7 +123,7 @@ public class UsuarioService {
     }
 
     // trocar email
-    public ResponseEntity<String> mudarEmail(String id, EmailNovoDTO data){
+    public ResponseEntity<String> changeEmail(String id, EmailNovoDTO data){
 
         try {
             authenticationManager.authenticate(
@@ -160,7 +160,7 @@ public class UsuarioService {
 
     //trocar nome
 
-    public ResponseEntity<String> mudarNome(String id, UsuarioDTO data){
+    public ResponseEntity<String> changeNome(String id, UsuarioDTO data){
         // autentica usuario
         try {
             authenticationManager.authenticate(
@@ -188,7 +188,7 @@ public class UsuarioService {
 
     //deletar usuario
 
-    public ResponseEntity<String> deletarUsuario(String id, UsuarioDTO data){
+    public ResponseEntity<String> deleteUsuario(String id, UsuarioDTO data){
 
         try {
             authenticationManager.authenticate(

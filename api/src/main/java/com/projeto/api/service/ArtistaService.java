@@ -2,7 +2,6 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.exception.exceptions.*;
-import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
@@ -11,7 +10,6 @@ import com.projeto.api.util.IdGerador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,6 @@ import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.models.Artista;
 
 // spotify-web-api-java
-import org.springframework.web.server.ResponseStatusException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -119,7 +116,7 @@ public class ArtistaService {
         return artistaMapper.toDto(artista);
     }
 
-    public ArtistaDTO novoArtista(ArtistaDTO artistaDTO) {
+    public ArtistaDTO newArtista(ArtistaDTO artistaDTO) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
@@ -140,7 +137,7 @@ public class ArtistaService {
         return artistaMapper.toDto(artista);
     }
 
-    public ArtistaDTO atualizarArtista(String id, ArtistaDTO artistaDTO) {
+    public ArtistaDTO updateArtista(String id, ArtistaDTO artistaDTO) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
@@ -165,7 +162,7 @@ public class ArtistaService {
     }
 
 
-    public void deletarArtista(String id) {
+    public void deleteArtista(String id) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();

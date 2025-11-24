@@ -3,7 +3,6 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.service.ReviewService;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,20 +39,20 @@ public class ReviewController {
     // Novo review
 
     @PostMapping
-    public ReviewDTO novaReview(@RequestBody ReviewDTO reviewDTO) {
-        return reviewService.novaReview(reviewDTO);
+    public ReviewDTO newReview(@RequestBody ReviewDTO reviewDTO) {
+        return reviewService.newReview(reviewDTO);
     }
 
     // Atualiza uma review existente
     @PutMapping("/{id}")
-    public ReviewDTO atualizarReview(@PathVariable String id, @RequestBody ReviewDTO reviewDTO) {
-        return reviewService.atualizarReview(id, reviewDTO);
+    public ReviewDTO updateReview(@PathVariable String id, @RequestBody ReviewDTO reviewDTO) {
+        return reviewService.updateReview(id, reviewDTO);
     }
 
     // Deleta uma review por ID
     @DeleteMapping("/{id}")
-    public void deletarReview(@PathVariable String id) {
-        reviewService.deletarReview(id);
+    public void deleteReview(@PathVariable String id) {
+        reviewService.deleteReview(id);
     }
 
     @GetMapping("/relatorio")
@@ -69,12 +68,5 @@ public class ReviewController {
         List<ReviewDTO> reviews = reviewService.listarTodos();
         return ResponseEntity.ok(Map.of("reviews", reviews));
     }
-
-
-
-
-
-
-
 
 }

@@ -1,7 +1,6 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
 import com.projeto.api.exception.exceptions.TagExistenteException;
 import com.projeto.api.exception.exceptions.TagNotFoundException;
 import com.projeto.api.exception.exceptions.UserNotAdminException;
@@ -11,12 +10,10 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
 import com.projeto.api.specification.TagSpecification;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -48,7 +45,7 @@ public class TagService {
 
 
     //cria nova tag
-    public TagDTO novaTag(TagDTO tagDTO) {
+    public TagDTO newTag(TagDTO tagDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -70,7 +67,7 @@ public class TagService {
     }
 
     //Atualiza tag
-    public TagDTO atualizarTag(String id, TagDTO tagDTO) {
+    public TagDTO updateTag(String id, TagDTO tagDTO) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
 
@@ -95,7 +92,7 @@ public class TagService {
     }
 
     //Deleta tag
-    public void deletarTag(String id) {
+    public void deleteTag(String id) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();

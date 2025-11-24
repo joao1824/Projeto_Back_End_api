@@ -2,7 +2,6 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.service.MusicaService;
-import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/musicas")
+@RequestMapping("/musicas")
 public class MusicaController {
 
     private final MusicaService musicaService;
@@ -21,7 +20,7 @@ public class MusicaController {
     }
     // Retorna todas as músicas com paginação
     @GetMapping
-    public Page<MusicaDTO> getMusicas(@RequestParam Map<String,String> filtros, @PageableDefault(size = 15) Pageable pageable){
+    public Page<MusicaDTO> getAllMusicas(@RequestParam Map<String,String> filtros, @PageableDefault(size = 15) Pageable pageable){
         return musicaService.getAllMusicas(filtros,pageable);
     }
     // Retorna uma música por ID
@@ -32,20 +31,20 @@ public class MusicaController {
 
     // Cria uma nova música
     @PostMapping
-    public MusicaDTO novaMusica(@RequestBody MusicaDTO musicaDTO){
-        return musicaService.novaMusica(musicaDTO);
+    public MusicaDTO newMusica(@RequestBody MusicaDTO musicaDTO){
+        return musicaService.newMusica(musicaDTO);
     }
 
     // Atualiza uma música existente
     @PutMapping("/{id}")
-    public MusicaDTO atualizarMusica(@PathVariable String id, @RequestBody MusicaDTO musicaDTO) {
-        return musicaService.atualizarMusica(id, musicaDTO);
+    public MusicaDTO updateMusica(@PathVariable String id, @RequestBody MusicaDTO musicaDTO) {
+        return musicaService.updateMusica(id, musicaDTO);
     }
 
     // Deleta uma música por ID
     @DeleteMapping("/{id}")
-    public void deletarMusica(@PathVariable String id) {
-        musicaService.deletarMusica(id);
+    public void deleteMusica(@PathVariable String id) {
+        musicaService.deleteMusica(id);
     }
 
 }

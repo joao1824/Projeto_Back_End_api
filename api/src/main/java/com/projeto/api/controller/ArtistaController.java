@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/artistas")
+@RequestMapping("/artistas")
 public class ArtistaController {
 
     private final ArtistaMapper artistaMapper;
@@ -46,19 +46,19 @@ public class ArtistaController {
 
     // Adiciona um novo artista
     @PostMapping
-    public ArtistaDTO novoArtista(@RequestBody ArtistaDTO artistaDTO) {
-        return artistaService.novoArtista(artistaDTO);
+    public ArtistaDTO newArtista(@RequestBody ArtistaDTO artistaDTO) {
+        return artistaService.newArtista(artistaDTO);
     }
 
     // Atualiza um artista existente
     @PutMapping("/{id}")
-    public ArtistaDTO atualizarArtista(@PathVariable String id, @RequestBody ArtistaDTO artistaDTO) {
-        return artistaService.atualizarArtista(id, artistaDTO);
+    public ArtistaDTO updateArtista(@PathVariable String id, @RequestBody ArtistaDTO artistaDTO) {
+        return artistaService.updateArtista(id, artistaDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deletarArtista(@PathVariable String id) {
-        artistaService.deletarArtista(id);
+    public void deleteArtista(@PathVariable String id) {
+        artistaService.deleteArtista(id);
     }
 
 }

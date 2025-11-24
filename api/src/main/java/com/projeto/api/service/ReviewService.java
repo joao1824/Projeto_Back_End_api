@@ -55,7 +55,7 @@ public class ReviewService {
     }
 
     //Nova review (Alterar nota ainda não esta funcionado)
-    public ReviewDTO novaReview(ReviewDTO reviewDTO) {
+    public ReviewDTO newReview(ReviewDTO reviewDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -110,7 +110,7 @@ public class ReviewService {
     }
 
     //Atualiza review
-    public ReviewDTO atualizarReview(String id, ReviewDTO reviewDTO) {
+    public ReviewDTO updateReview(String id, ReviewDTO reviewDTO) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();
@@ -157,7 +157,7 @@ public class ReviewService {
     }
 
     //Deleta review
-    public void deletarReview(String id) {
+    public void deleteReview(String id) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();

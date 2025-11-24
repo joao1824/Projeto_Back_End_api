@@ -87,7 +87,7 @@ public class AlbumService {
     }
 
     //cria novo album
-    public AlbumDTO novoAlbum(AlbumDTO albumDTO) {
+    public AlbumDTO newAlbum(AlbumDTO albumDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -120,7 +120,7 @@ public class AlbumService {
     }
 
     //Atualiza album
-    public AlbumDTO atualizarAlbum(String id, AlbumDTO albumDTO) {
+    public AlbumDTO updateAlbum(String id, AlbumDTO albumDTO) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -155,7 +155,7 @@ public class AlbumService {
     }
 
     // Deleta um album por ID
-    public void deletarAlbum(String id) {
+    public void deleteAlbum(String id) {
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();

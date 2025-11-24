@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/tags")
+@RequestMapping("/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -35,21 +35,20 @@ public class TagController {
     }
 
     // Cria uma nova tag
-    @PostMapping()
-    public TagDTO novaTag(@RequestBody TagDTO tagDTO){
-        return tagService.novaTag(tagDTO);
+    @PostMapping
+    public TagDTO newTag(@RequestBody TagDTO tagDTO){
+        return tagService.newTag(tagDTO);
     }
 
     // Atualiza uma tag existente
     @PutMapping("/{id}")
-    public TagDTO atualizarTag(@PathVariable String id, @RequestBody TagDTO tagDTO) {
-        return tagService.atualizarTag(id, tagDTO);
+    public TagDTO updateTag(@PathVariable String id, @RequestBody TagDTO tagDTO) {
+        return tagService.updateTag(id, tagDTO);
     }
     // Deleta uma tag por ID
-
     @DeleteMapping("/{id}")
-    public void deletarTag(@PathVariable String id) {
-        tagService.deletarTag(id);
+    public void deleteTag(@PathVariable String id) {
+        tagService.deleteTag(id);
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/albums")
+@RequestMapping("/albums")
 public class AlbumController {
 
     private final AlbumService albumService;
@@ -33,8 +33,6 @@ public class AlbumController {
         return ResponseEntity.ok(albumMapper.toAlbumDTO(album));
     }
 
-
-
     // Retorna todos os albums com paginação
     @GetMapping
     public Page<AlbumDTO> getAllAlbums(@RequestParam Map<String, String> filtros, @PageableDefault(size = 15) Pageable pageable) {
@@ -50,20 +48,20 @@ public class AlbumController {
     // Cria um novo album
 
     @PostMapping
-    public AlbumDTO novoAlbum(@RequestBody AlbumDTO albumDTO){
-        return albumService.novoAlbum(albumDTO);
+    public AlbumDTO newAlbum(@RequestBody AlbumDTO albumDTO){
+        return albumService.newAlbum(albumDTO);
     }
 
     // Atualiza um album existente
     @PutMapping("/{id}")
-    public AlbumDTO atualizarAlbum(@PathVariable String id, @RequestBody AlbumDTO albumDTO) {
-        return albumService.atualizarAlbum(id, albumDTO);
+    public AlbumDTO updateAlbum(@PathVariable String id, @RequestBody AlbumDTO albumDTO) {
+        return albumService.updateAlbum(id, albumDTO);
     }
 
     // Deleta um album por ID
     @DeleteMapping("/{id}")
-    public void deletarAlbum(@PathVariable String id) {
-        albumService.deletarAlbum(id);
+    public void deleteAlbum(@PathVariable String id) {
+        albumService.deleteAlbum(id);
     }
 
 }

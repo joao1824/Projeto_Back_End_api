@@ -1,6 +1,5 @@
 package com.projeto.api.service;
 
-import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
 import com.projeto.api.exception.exceptions.*;
@@ -14,10 +13,8 @@ import com.projeto.api.specification.PlayListSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -54,7 +51,7 @@ public class PlayListService {
     }
 
     // Adiciona um novo
-    public PlayListDTO novaPlaylist(PlayListDTO data){
+    public PlayListDTO newPlayList(PlayListDTO data){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -91,7 +88,7 @@ public class PlayListService {
     }
 
     //Update
-    public PlayListDTO update(String id_playlist, PlayListDTO data){
+    public PlayListDTO updatePlayList(String id_playlist, PlayListDTO data){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -133,7 +130,7 @@ public class PlayListService {
 
     //Deletar
 
-    public void delete(String id){
+    public void deletePlayList(String id){
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuarioLogado = (Usuario) auth.getPrincipal();

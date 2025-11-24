@@ -40,7 +40,7 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid RegistrarDTO data){
-        return usuarioService.registrarUsuario(data);
+        return usuarioService.registerUsuario(data);
     }
 
     //logar
@@ -54,28 +54,28 @@ public class UsuarioController {
     //mudar senha
 
     @PatchMapping("/{id}/senha")
-    public ResponseEntity<String> mudarSenha(@RequestParam String id,@RequestBody @Valid SenhaNovaDTO data){
-        return usuarioService.mudarSenha(id,data);
+    public ResponseEntity<String> changeSenha(@RequestParam String id,@RequestBody @Valid SenhaNovaDTO data){
+        return usuarioService.changeSenha(id,data);
     }
 
     //trocar email
 
     @PatchMapping("/{id}/email")
-    public ResponseEntity<String> mudarEmail(@RequestParam String id,@RequestBody @Valid EmailNovoDTO data){
-        return usuarioService.mudarEmail(id,data);
+    public ResponseEntity<String> changeEmail(@RequestParam String id,@RequestBody @Valid EmailNovoDTO data){
+        return usuarioService.changeEmail(id,data);
     }
 
     //trocar nome
 
     @PatchMapping("/{id}/nome")
-    public ResponseEntity<String> mudarNome(@RequestParam String id,@RequestBody UsuarioDTO data){
-       return usuarioService.mudarNome(id,data);
+    public ResponseEntity<String> changeNome(@RequestParam String id,@RequestBody UsuarioDTO data){
+       return usuarioService.changeNome(id,data);
     }
 
     //deletar usuario
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarUsuario(@RequestParam String id,@RequestBody UsuarioDTO data){
-        return usuarioService.deletarUsuario(id,data);
+    public ResponseEntity<String> deleteUsuario(@RequestParam String id,@RequestBody UsuarioDTO data){
+        return usuarioService.deleteUsuario(id,data);
     }
 
 }
