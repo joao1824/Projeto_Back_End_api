@@ -6,7 +6,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    private SecurityFilter securityFilter;
+    private final SecurityFilter securityFilter;
 
     public SecurityConfigurations(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
@@ -33,8 +35,8 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/logar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/registrar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -52,5 +54,16 @@ public class SecurityConfigurations {
         return new BCryptPasswordEncoder();
     }
 
+    // Ignorar os endpoints do Swagger na configuração de segurança
 
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/swagger-resources/**",
+                "/webjars/**"
+        );
+    }
 }

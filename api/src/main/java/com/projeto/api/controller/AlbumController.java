@@ -4,6 +4,7 @@ import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.service.AlbumService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/albums")
 public class AlbumController {

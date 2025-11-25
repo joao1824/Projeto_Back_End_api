@@ -5,6 +5,7 @@ import com.projeto.api.dtos.ArtistasDTOs.ArtistaDTO;
 import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Artista;
 import com.projeto.api.service.ArtistaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/artistas")
 public class ArtistaController {

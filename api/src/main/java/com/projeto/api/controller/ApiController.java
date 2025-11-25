@@ -8,6 +8,7 @@ import com.projeto.api.service.AlbumService;
 // dependencia spotify-web-api-java
 import com.projeto.api.service.ArtistaService;
 import com.projeto.api.service.MusicaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api")
 public class ApiController {

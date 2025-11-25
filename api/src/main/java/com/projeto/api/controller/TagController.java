@@ -3,6 +3,8 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
 import com.projeto.api.service.TagService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -10,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
-
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -24,7 +26,7 @@ public class TagController {
 
     // Retorna todos as tags com paginação e ordenação
     @GetMapping
-    public Page<TagDTO> getAllTags(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable) {
+    public Page<TagDTO> getAllTags(@RequestParam Map<String, String> filtros, @PageableDefault(size = 10) Pageable pageable) {
         return tagService.getAllTags(filtros,pageable);
     }
 

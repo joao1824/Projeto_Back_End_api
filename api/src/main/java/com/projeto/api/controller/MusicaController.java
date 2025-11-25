@@ -2,6 +2,7 @@ package com.projeto.api.controller;
 
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
 import com.projeto.api.service.MusicaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/musicas")
 public class MusicaController {
