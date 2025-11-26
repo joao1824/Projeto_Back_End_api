@@ -8,6 +8,8 @@ import com.projeto.api.service.AlbumService;
 // dependencia spotify-web-api-java
 import com.projeto.api.service.ArtistaService;
 import com.projeto.api.service.MusicaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 
@@ -33,16 +35,34 @@ public class ApiController {
         this.musicaService = musicaService;
     }
 
+    @Operation(summary = "Buscar Artista, Álbum ou Música no Spotify",description = "Busca um artista pelo nome fornecido")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/artista")
     public Artista buscarArtista(@RequestParam String nome) {
         return artistaService.buscarArtista(nome);
     }
 
+    @Operation(summary = "Buscar Artista, Álbum ou Música no Spotify",description = "Busca um álbum pelo nome fornecido")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/album")
     public Album buscarAlbum(@RequestParam String nome) {
         return albumService.buscarAlbum(nome);
     }
 
+    @Operation(summary = "Buscar Artista, Álbum ou Música no Spotify",description = "Busca uma música pelo nome fornecido")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/musica")
     public Musica buscarMusica(@RequestParam String nome) {
         return musicaService.buscarMusica(nome);

@@ -3,6 +3,7 @@ package com.projeto.api.controller;
 import com.projeto.api.dtos.UsuarioDTOs.*;
 import com.projeto.api.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,13 @@ public class UsuarioController {
 
 
     // get all
+    @Operation(summary = "Obter todos os usuários com paginação e filtros opcionais", description = "Retorna uma lista paginada de usuários. É possível aplicar filtros opcionais através de parâmetros de consulta.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public Page<UsuarioDTO> getAllUsuario(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable){
@@ -33,6 +41,14 @@ public class UsuarioController {
     }
 
     //get by id
+    @Operation(summary = "Obter usuário por ID", description = "Retorna os detalhes de um usuário específico com base no ID fornecido.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuário retornado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public UsuarioDTO getUsuarioById(@PathVariable String id){
@@ -41,12 +57,24 @@ public class UsuarioController {
 
 
     //registrar
+    @Operation(summary = "Registrar um novo usuário", description = "Cria um novo usuário com as informações fornecidas.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid RegistrarDTO data){
         return usuarioService.registerUsuario(data);
     }
 
     //logar
+    @Operation(summary = "Autenticar usuário", description = "Autentica um usuário com as credenciais fornecidas e retorna um token de acesso.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Credenciais inválidas"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PostMapping("/auth/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         return usuarioService.loginUsuario(data);
@@ -54,6 +82,14 @@ public class UsuarioController {
 
 
     //mudar senha
+    @Operation (summary = "Alterar senha do usuário", description = "Permite que um usuário altere sua senha fornecendo a nova senha.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Senha alterada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/senha")
     public ResponseEntity<String> changeSenha(@PathVariable String id,@RequestBody @Valid SenhaNovaDTO data){
@@ -61,6 +97,14 @@ public class UsuarioController {
     }
 
     //trocar email
+    @Operation(summary = "Alterar email do usuário", description = "Permite que um usuário altere seu email fornecendo o novo email.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Email alterado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/email")
     public ResponseEntity<String> changeEmail(@PathVariable String id,@RequestBody @Valid EmailNovoDTO data){
@@ -68,6 +112,14 @@ public class UsuarioController {
     }
 
     //trocar nome
+    @Operation(summary = "Alterar nome do usuário", description = "Permite que um usuário altere seu nome fornecendo o novo nome.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Nome alterado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/nome")
     public ResponseEntity<String> changeNome(@PathVariable String id,@RequestBody UsuarioDTO data){
@@ -75,6 +127,14 @@ public class UsuarioController {
     }
 
     //deletar usuario
+    @Operation(summary = "Deletar usuário", description = "Permite que um usuário exclua sua conta fornecendo as credenciais necessárias.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUsuario(@PathVariable String id,@RequestBody UsuarioDTO data){
