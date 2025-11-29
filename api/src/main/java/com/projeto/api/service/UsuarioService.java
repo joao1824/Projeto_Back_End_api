@@ -5,12 +5,12 @@ import com.projeto.api.dtos.UsuarioDTOs.*;
 import com.projeto.api.exception.exceptions.CredentialsInvalidException;
 import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
 import com.projeto.api.exception.exceptions.UsuarioNotFoundException;
+import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.mapper.dtos.UsuarioMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
 import com.projeto.api.specification.UsuarioSpecification;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -31,13 +32,15 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final PasswordEncoder password_encoder;
     private final UsuarioMapper usuarioMapper;
+    private final AlbumMapper albumMapper;
 
-    public UsuarioService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService, PasswordEncoder passwordEncoder, UsuarioMapper usuarioMapper) {
+    public UsuarioService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService, PasswordEncoder passwordEncoder, UsuarioMapper usuarioMapper, AlbumMapper albumMapper) {
         this.authenticationManager = authenticationManager;
         this.usuarioRepository = usuarioRepository;
         this.tokenService = tokenService;
         this.password_encoder = passwordEncoder;
         this.usuarioMapper = usuarioMapper;
+        this.albumMapper = albumMapper;
     }
 
     //Retornar todos
@@ -57,7 +60,7 @@ public class UsuarioService {
 
     //novo usuario
 
-    public ResponseEntity<String> registerUsuario(RegistrarDTO data){
+    public UsuarioDTO registerUsuario(RegistrarDTO data){
         if (this.usuarioRepository.findByEmail(data.email()).isPresent()){
             throw new EmailAlreadyExistsException("E-mail ja cadastrado");
         }
@@ -67,12 +70,13 @@ public class UsuarioService {
 
         this.usuarioRepository.save(usuario);
 
-        return ResponseEntity.ok().body("Usuario registrado com sucesso");
+
+        return usuarioMapper.usuarioToUsuarioDTO(usuario);
     }
 
     //logar
 
-    public ResponseEntity loginUsuario(AuthenticationDTO data){
+    public LoginDTO loginUsuario(AuthenticationDTO data){
 
         var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
 
@@ -83,7 +87,7 @@ public class UsuarioService {
 
             var token = tokenService.generateToken(usuarioDTO);
 
-            return ResponseEntity.ok(new LoginDTO(token));
+            return new LoginDTO(token);
 
         } catch (BadCredentialsException e) {
             throw new CredentialsInvalidException("Credenciais inválidas");
@@ -92,7 +96,7 @@ public class UsuarioService {
 
     //mudar senha
 
-    public ResponseEntity<String> changeSenha(String id, SenhaNovaDTO data){
+    public void changeSenha(String id, SenhaNovaDTO data){
 
         try {
             // Autentica usuário com senha antiga
@@ -119,11 +123,10 @@ public class UsuarioService {
 
         usuarioRepository.save(usuarioLogado);
 
-        return ResponseEntity.ok("Senha atualizada com sucesso");
     }
 
     // trocar email
-    public ResponseEntity<String> changeEmail(String id, EmailNovoDTO data){
+    public void changeEmail(String id, EmailNovoDTO data){
 
         try {
             authenticationManager.authenticate(
@@ -134,7 +137,7 @@ public class UsuarioService {
         }
 
         // Verifica se o novo e-mail já está em uso
-        if (usuarioRepository.findByEmail(data.email_novo()) != null) {
+        if (usuarioRepository.findByEmail(data.email_novo()).isPresent()) {
             throw new EmailAlreadyExistsException("E-mail já está em uso");
         }
 
@@ -154,21 +157,12 @@ public class UsuarioService {
         usuarioLogado.setUltima_atualizacao_email(LocalDateTime.now());
         this.usuarioRepository.save(usuarioLogado);
 
-        return ResponseEntity.ok().body("Usuario atualizado com sucesso");
 
     }
 
     //trocar nome
 
-    public ResponseEntity<String> changeNome(String id, UsuarioDTO data){
-        // autentica usuario
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
-            );
-        } catch (BadCredentialsException e) {
-            throw new CredentialsInvalidException("Credenciais inválidas");
-        }
+    public void changeNome(String id, UsuarioNomeDTO data){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -179,24 +173,14 @@ public class UsuarioService {
         }
 
 
-        usuarioLogado.setNome(data.getNome());
+        usuarioLogado.setNome(data.nome());
         this.usuarioRepository.save(usuarioLogado);
-
-        return ResponseEntity.ok().body("Usuario atualizado com sucesso");
 
     }
 
     //deletar usuario
 
-    public ResponseEntity<String> deleteUsuario(String id, UsuarioDTO data){
-
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha())
-            );
-        } catch (BadCredentialsException e) {
-            throw new CredentialsInvalidException("Credenciais inválidas");
-        }
+    public void deleteUsuario(String id){
 
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -207,8 +191,6 @@ public class UsuarioService {
         }
 
         usuarioRepository.delete(usuarioLogado);
-
-        return ResponseEntity.ok().body("Usuario deletado com sucesso");
     }
 
 }

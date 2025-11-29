@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Map;
 
 
@@ -51,8 +52,8 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
-    public UsuarioDTO getUsuarioById(@PathVariable String id){
-        return usuarioService.getUsuarioById(id);
+    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable String id){
+        return ResponseEntity.ok().body(usuarioService.getUsuarioById(id));
     }
 
 
@@ -61,11 +62,14 @@ public class UsuarioController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Conflito - Usuário já existe")
     })
-    @PostMapping
-    public ResponseEntity<String> register(@RequestBody @Valid RegistrarDTO data){
-        return usuarioService.registerUsuario(data);
+    @PostMapping("/register")
+    public ResponseEntity<UsuarioDTO> register(@RequestBody @Valid RegistrarDTO data){
+        UsuarioDTO usuarioDTO = usuarioService.registerUsuario(data);
+        URI uri = URI.create("/usuarios/" + usuarioDTO.getId());
+        return ResponseEntity.created(uri).build();
     }
 
     //logar
@@ -75,16 +79,16 @@ public class UsuarioController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Credenciais inválidas"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
-    @PostMapping("/auth/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-        return usuarioService.loginUsuario(data);
+    @PostMapping("/login")
+    public ResponseEntity<LoginDTO> login(@RequestBody @Valid AuthenticationDTO data){
+        return ResponseEntity.ok().body(usuarioService.loginUsuario(data));
     }
 
 
     //mudar senha
     @Operation (summary = "Alterar senha do usuário", description = "Permite que um usuário altere sua senha fornecendo a nova senha.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Senha alterada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
@@ -92,14 +96,15 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/senha")
-    public ResponseEntity<String> changeSenha(@PathVariable String id,@RequestBody @Valid SenhaNovaDTO data){
-        return usuarioService.changeSenha(id,data);
+    public ResponseEntity<Void> changeSenha(@PathVariable String id,@RequestBody @Valid SenhaNovaDTO data){
+        usuarioService.changeSenha(id,data);
+        return ResponseEntity.noContent().build();
     }
 
     //trocar email
     @Operation(summary = "Alterar email do usuário", description = "Permite que um usuário altere seu email fornecendo o novo email.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Email alterado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Email alterado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
@@ -107,14 +112,15 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/email")
-    public ResponseEntity<String> changeEmail(@PathVariable String id,@RequestBody @Valid EmailNovoDTO data){
-        return usuarioService.changeEmail(id,data);
+    public ResponseEntity<Void> changeEmail(@PathVariable String id,@RequestBody @Valid EmailNovoDTO data){
+        usuarioService.changeEmail(id,data);
+        return ResponseEntity.noContent().build();
     }
 
     //trocar nome
     @Operation(summary = "Alterar nome do usuário", description = "Permite que um usuário altere seu nome fornecendo o novo nome.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Nome alterado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Nome alterado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
@@ -122,14 +128,15 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/nome")
-    public ResponseEntity<String> changeNome(@PathVariable String id,@RequestBody UsuarioDTO data){
-       return usuarioService.changeNome(id,data);
+    public ResponseEntity<Void> changeNome(@PathVariable String id,@RequestBody UsuarioNomeDTO data){
+        usuarioService.changeNome(id,data);
+        return ResponseEntity.noContent().build();
     }
 
     //deletar usuario
     @Operation(summary = "Deletar usuário", description = "Permite que um usuário exclua sua conta fornecendo as credenciais necessárias.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
@@ -137,8 +144,9 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUsuario(@PathVariable String id,@RequestBody UsuarioDTO data){
-        return usuarioService.deleteUsuario(id,data);
+    public ResponseEntity<Void> deleteUsuario(@PathVariable String id){
+        usuarioService.deleteUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
