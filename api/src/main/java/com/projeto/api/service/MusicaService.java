@@ -2,16 +2,14 @@ package com.projeto.api.service;
 
 import com.projeto.api.client.SpotifyClient;
 import com.projeto.api.dtos.MusicaDTOs.MusicaDTO;
-import com.projeto.api.exception.exceptions.EventIdNotFoundException;
-import com.projeto.api.exception.exceptions.ExternalApiException;
-import com.projeto.api.exception.exceptions.MusicaNotFoundException;
-import com.projeto.api.exception.exceptions.UserNotAdminException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.mapper.dtos.MusicaMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.models.Musica;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.MusicaRepository;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.MusicaSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +20,7 @@ import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class MusicaService {
@@ -68,8 +67,22 @@ public class MusicaService {
 
     // Retorna todas as músicas com paginação
     public Page<MusicaDTO> getAllMusicas(Map<String,String> filtros, Pageable pageable) {
+
+        // Valida os campos de filtro
+        Set<String> camposValidos = CamposValidos.MUSICA.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
+
         Specification<Musica> specification = MusicaSpecification.aplicarFiltros(filtros);
         Page<Musica> musicas = musicaRepository.findAll(specification,pageable);
+        if (musicas.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum musica encontrado");
+        }
         return musicas.map(musicaMapper::toDto);
     }
 

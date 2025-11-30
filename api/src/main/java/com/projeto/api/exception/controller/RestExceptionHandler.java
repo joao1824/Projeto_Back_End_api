@@ -2,15 +2,36 @@ package com.projeto.api.exception.controller;
 
 import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.exception.models.RestErrorMensage;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(illegalfilterException.class)
+    private ResponseEntity<RestErrorMensage> handleIllegalFilterException(illegalfilterException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restErrorMensage);
+    };
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    private ResponseEntity<RestErrorMensage> handleResourceNotFoundException(ResourceNotFoundException exception) {
+        RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.OK).body(restErrorMensage);
+    };
 
     @ExceptionHandler(UsuarioNotFoundException.class)
     private ResponseEntity<RestErrorMensage> handleUsuarioNotFoundException(UsuarioNotFoundException exception) {
@@ -133,6 +154,38 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         RestErrorMensage restErrorMensage = new RestErrorMensage(HttpStatus.FORBIDDEN, exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(restErrorMensage);
     };
+
+    // Tratamento de erros de validação de argumentos
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+
+        return ResponseEntity.badRequest().body(errors);
+    }
+    // Tratamento de erros de leitura de mensagens HTTP (ex: JSON mal formatado)
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", status.value());
+        body.put("error", "Erro na formatação do JSON");
+        body.put("message", ex.getMostSpecificCause().getMessage());
+        body.put("timestamp", LocalDateTime.now());
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 

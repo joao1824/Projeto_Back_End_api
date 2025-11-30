@@ -5,6 +5,7 @@ import com.projeto.api.dtos.AlbumDTOs.AlbumResumoDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListDTO;
 import com.projeto.api.dtos.PlaylistDTOs.PlayListResumoDTO;
 import com.projeto.api.models.Musica;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,9 @@ public class MusicaDTO {
 
     //Atributos
 
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
@@ -29,15 +30,14 @@ public class MusicaDTO {
 
     @NotNull(message = "A duração não pode ser nula")
     @Positive(message = "duracao não pode ser negativa")
-    private int duracao;
+    private Integer duracao;
 
     private boolean explicito; //se é +18 ou não
 
     @NotNull(message = "A faixa precisa ter um número")
     @Min(value = 1, message = "O número da faixa deve ser pelo menos 1")
-    private int faixa_numero;
+    private Integer faixa_numero;
 
-    @NotBlank(message = "perfil_spotifynão pode estar vazio")
     private String perfil_spotify;
 
     @NotNull(message = "O album não pode ser nulo")
@@ -65,11 +65,11 @@ public class MusicaDTO {
         this.nome = nome;
     }
 
-    public int getDuracao() {
+    public Integer getDuracao() {
         return duracao;
     }
 
-    public void setDuracao(int duracao) {
+    public void setDuracao(Integer duracao) {
         this.duracao = duracao;
     }
 
@@ -81,11 +81,11 @@ public class MusicaDTO {
         this.explicito = explicito;
     }
 
-    public int getFaixa_numero() {
+    public Integer getFaixa_numero() {
         return faixa_numero;
     }
 
-    public void setFaixa_numero(int faixa_numero) {
+    public void setFaixa_numero(Integer faixa_numero) {
         this.faixa_numero = faixa_numero;
     }
 

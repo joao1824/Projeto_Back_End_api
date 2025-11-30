@@ -3,6 +3,7 @@ package com.projeto.api.dtos.TagDTOs;
 import com.projeto.api.dtos.ReviewDTOs.ReviewDTO;
 import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Tag;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
 public class TagDTO {
     //Atributos
 
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")

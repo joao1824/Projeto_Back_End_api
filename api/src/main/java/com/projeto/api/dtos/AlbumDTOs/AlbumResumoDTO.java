@@ -14,11 +14,11 @@ public class AlbumResumoDTO {
 
     private String id;
     private String nome;
-    private int total_faixas;
+    private Integer total_faixas;
     private LocalDate lancamento;
     private String gravadora;
     private String perfil_spotify;
-    private int popularidade;
+    private Integer popularidade;
     private Float nota_media;
     private List<String> imagens;
     private List<String> generos;
@@ -57,11 +57,11 @@ public class AlbumResumoDTO {
         this.nome = nome;
     }
 
-    public int getTotal_faixas() {
+    public Integer getTotal_faixas() {
         return total_faixas;
     }
 
-    public void setTotal_faixas(int total_faixas) {
+    public void setTotal_faixas(Integer total_faixas) {
         this.total_faixas = total_faixas;
     }
 
@@ -89,11 +89,11 @@ public class AlbumResumoDTO {
         this.perfil_spotify = perfil_spotify;
     }
 
-    public int getPopularidade() {
+    public Integer getPopularidade() {
         return popularidade;
     }
 
-    public void setPopularidade(int popularidade) {
+    public void setPopularidade(Integer popularidade) {
         this.popularidade = popularidade;
     }
 

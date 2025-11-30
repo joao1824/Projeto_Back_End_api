@@ -9,6 +9,7 @@ import com.projeto.api.models.PlayList;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.MusicaRepository;
 import com.projeto.api.repository.PlayListRepository;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.PlayListSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +37,20 @@ public class PlayListService {
 
     // Retorna todos
     public Page<PlayListDTO> getAllPlaylist(Map<String,String> filtros, Pageable pageable) {
+
+        // Validação dos campos de filtro
+        Set<String> camposValidos = CamposValidos.PLAYLIST.getCampos();
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
         Specification<PlayList> specification = PlayListSpecification.aplicarFiltros(filtros);
         Page<PlayList> playlists = playListRepository.findAll(specification,pageable);
-
+        if (playlists.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum playlist encontrado");
+        }
         return playlists.map(playListMapper::toPlayListDTO);
     }
 

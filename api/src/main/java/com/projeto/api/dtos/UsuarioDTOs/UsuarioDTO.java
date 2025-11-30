@@ -23,9 +23,9 @@ public class UsuarioDTO {
 
     //Atributos
 
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")

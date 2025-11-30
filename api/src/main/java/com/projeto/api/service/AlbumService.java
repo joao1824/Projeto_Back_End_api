@@ -11,6 +11,7 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.specification.AlbumSpecification;
+import com.projeto.api.specification.CamposValidos;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -75,8 +76,21 @@ public class AlbumService {
 
     //Retorna todos os albums com paginação
     public Page<AlbumDTO> getAllAlbums(Map<String, String> filtros, Pageable pageable) {
+
+        Set<String> camposValidos = CamposValidos.ALBUM.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
+
         Specification<Album> specification = AlbumSpecification.aplicarFiltros(filtros);
         Page<Album> albums = albumRepository.findAll(specification, pageable);
+        if (albums.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum album encontrado");
+        }
         return albums.map(albumMapper::toAlbumDTO);
     }
 

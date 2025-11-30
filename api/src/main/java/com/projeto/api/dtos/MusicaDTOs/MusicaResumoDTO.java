@@ -8,9 +8,9 @@ public class MusicaResumoDTO {
     //Atributos
     private String id;
     private String nome;
-    private int duracao;
+    private Integer duracao;
     private boolean explicito;
-    private int faixa_numero;
+    private Integer faixa_numero;
     private String perfil_spotify;
 
     //Construtor
@@ -41,11 +41,11 @@ public class MusicaResumoDTO {
         this.nome = nome;
     }
 
-    public int getDuracao() {
+    public Integer getDuracao() {
         return duracao;
     }
 
-    public void setDuracao(int duracao) {
+    public void setDuracao(Integer duracao) {
         this.duracao = duracao;
     }
 
@@ -57,11 +57,11 @@ public class MusicaResumoDTO {
         this.explicito = explicito;
     }
 
-    public int getFaixa_numero() {
+    public Integer getFaixa_numero() {
         return faixa_numero;
     }
 
-    public void setFaixa_numero(int faixa_numero) {
+    public void setFaixa_numero(Integer faixa_numero) {
         this.faixa_numero = faixa_numero;
     }
 

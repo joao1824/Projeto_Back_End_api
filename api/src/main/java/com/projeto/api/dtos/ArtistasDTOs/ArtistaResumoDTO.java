@@ -10,8 +10,8 @@ public class ArtistaResumoDTO {
     //Atributos
     private String id;
     private String nome;
-    private int popularidade;
-    private int seguidores;
+    private Integer popularidade;
+    private Integer seguidores;
     public String perfil_spotify;
     private List<String> generos = new ArrayList<>();
     private String imagem;
@@ -46,19 +46,19 @@ public class ArtistaResumoDTO {
         this.nome = nome;
     }
 
-    public int getPopularidade() {
+    public Integer getPopularidade() {
         return popularidade;
     }
 
-    public void setPopularidade(int popularidade) {
+    public void setPopularidade(Integer popularidade) {
         this.popularidade = popularidade;
     }
 
-    public int getSeguidores() {
+    public Integer getSeguidores() {
         return seguidores;
     }
 
-    public void setSeguidores(int seguidores) {
+    public void setSeguidores(Integer seguidores) {
         this.seguidores = seguidores;
     }
 

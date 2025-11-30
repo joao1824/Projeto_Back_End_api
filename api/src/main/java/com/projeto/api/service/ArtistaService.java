@@ -6,6 +6,7 @@ import com.projeto.api.mapper.dtos.ArtistaMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.ArtistaRepository;
 import com.projeto.api.specification.ArtistaSpecification;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.util.IdGerador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +23,7 @@ import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,8 +103,20 @@ public class ArtistaService {
 
     // Retorna todos os artistas com paginação
     public Page<ArtistaDTO> getAllArtistas(Map<String,String> filtros, Pageable pageable) {
+
+        Set<String> camposValidos = CamposValidos.ARTISTA.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
         Specification<Artista> specification = ArtistaSpecification.aplicarFiltros(filtros);
         Page<Artista> artistas = artistaRepository.findAll(specification,pageable);
+        if (artistas.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum artista encontrado");
+        }
         return artistas.map(artistaMapper::toDto);
     }
 

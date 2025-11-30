@@ -7,6 +7,7 @@ import com.projeto.api.dtos.TagDTOs.TagResumoDTO;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
 import com.projeto.api.dtos.UsuarioDTOs.UsuarioResumoDTO;
 import com.projeto.api.models.Review;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,10 @@ public class ReviewDTO {
 
     //Atributos
 
-    //Atributos
+
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 1000,message = "nome possui um tamanho não planejado")
@@ -75,10 +76,13 @@ public class ReviewDTO {
         this.nota = nota;
     }
 
+    public LocalDateTime getData() {
+        return data;
+    }
 
-    public LocalDateTime getData() { return data; }
-
-    public void setData(LocalDateTime data) { this.data = data; }
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
 
     public TagResumoDTO getTag() {
         return tag;

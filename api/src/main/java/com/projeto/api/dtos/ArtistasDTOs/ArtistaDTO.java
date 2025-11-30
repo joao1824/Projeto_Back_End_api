@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ArtistaDTO {
 
-    //Atributos
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
@@ -30,12 +29,11 @@ public class ArtistaDTO {
     private String nome;
 
     @Positive(message = "popularidade não pode ser negativa")
-    private int popularidade;
+    private Integer popularidade;
 
     @Positive(message = "seguidores não pode ser negativa")
-    private int seguidores;
+    private Integer seguidores;
 
-    @NotBlank(message = "O perfil não pode estar vazio")
     public String perfil_spotify;
 
     @ElementCollection
@@ -65,19 +63,19 @@ public class ArtistaDTO {
         this.nome = nome;
     }
 
-    public int getPopularidade() {
+    public Integer getPopularidade() {
         return popularidade;
     }
 
-    public void setPopularidade(int popularidade) {
+    public void setPopularidade(Integer popularidade) {
         this.popularidade = popularidade;
     }
 
-    public int getSeguidores() {
+    public Integer getSeguidores() {
         return seguidores;
     }
 
-    public void setSeguidores(int seguidores) {
+    public void setSeguidores(Integer seguidores) {
         this.seguidores = seguidores;
     }
 

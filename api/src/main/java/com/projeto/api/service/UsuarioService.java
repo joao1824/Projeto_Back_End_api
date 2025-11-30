@@ -2,13 +2,12 @@ package com.projeto.api.service;
 
 import com.projeto.api.dtos.UsuarioDTOs.RegistrarDTO;
 import com.projeto.api.dtos.UsuarioDTOs.*;
-import com.projeto.api.exception.exceptions.CredentialsInvalidException;
-import com.projeto.api.exception.exceptions.EmailAlreadyExistsException;
-import com.projeto.api.exception.exceptions.UsuarioNotFoundException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.mapper.dtos.UsuarioMapper;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.UsuarioRepository;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.UsuarioSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 
 
 @Service
@@ -45,8 +45,20 @@ public class UsuarioService {
 
     //Retornar todos
     public Page<UsuarioDTO> getAllUsuarios(Map<String, String> filtros, Pageable pageable) {
+        // Validação dos campos de filtro
+        Set<String> camposValidos = CamposValidos.USUARIO.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
         Specification<Usuario> specification = UsuarioSpecification.aplicarFiltros(filtros);
         Page<Usuario> usuarios = usuarioRepository.findAll(specification,pageable);
+        if (usuarios.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum usuario encontrado");
+        }
         return usuarios.map(usuarioMapper::usuarioToUsuarioDTO);
     }
 

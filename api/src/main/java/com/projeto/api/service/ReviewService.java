@@ -12,6 +12,7 @@ import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.AlbumRepository;
 import com.projeto.api.repository.ReviewRepository;
 import com.projeto.api.repository.TagRepository;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.ReviewSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ReviewService {
@@ -44,8 +46,22 @@ public class ReviewService {
 
     // Retorna todas as reviews com paginação e ordenação
     public Page<ReviewDTO> getAllReviews(Map<String,String> filtros,Pageable pageable) {
+
+        // Valida os campos de filtro
+        Set<String> camposValidos = CamposValidos.REVIEW.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
         Specification<Review> specification = ReviewSpecification.aplicarFiltros(filtros);
-        return reviewRepository.findAll(specification,pageable).map(reviewMapper::toReviewDTO);
+        Page<Review> reviews = reviewRepository.findAll(specification,pageable);
+        if (reviews.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum review encontrado");
+        }
+        return reviews.map(reviewMapper::toReviewDTO);
     }
 
     // Retorna uma review por ID

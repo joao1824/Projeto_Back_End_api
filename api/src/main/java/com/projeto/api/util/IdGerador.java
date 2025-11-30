@@ -11,7 +11,7 @@ public class IdGerador {
     private static final String opcoes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
 
-    //Aida falta fazer ele impedir duplicidade mas preciso terminar o repository
+    //Duplicidade o repositório vai cuidar disso
     public static String Gerar(){
         char[] ArrayChar = opcoes.toCharArray();
         StringBuilder id = new StringBuilder();

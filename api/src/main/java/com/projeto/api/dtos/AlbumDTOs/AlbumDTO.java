@@ -4,6 +4,7 @@ import com.projeto.api.dtos.ArtistasDTOs.ArtistaResumoDTO;
 import com.projeto.api.dtos.MusicaDTOs.MusicaResumoDTO;
 import com.projeto.api.dtos.ReviewDTOs.ReviewResumoDTO;
 import com.projeto.api.models.Album;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
@@ -21,9 +22,9 @@ import java.util.stream.Collectors;
 public class AlbumDTO {
     //Atributos
 
+    //Não é nescessário validar o id pois ele é gerado automaticamente quando passa pelo mapper, atraves da função id gerador
     @Id
-    @Size(min = 22, max = 22, message = "ID deve possuir exatamente 27 caracteres")
-    @NotBlank(message = "ID não pode estar em vazio")
+    @Column(unique = true, nullable = false)
     private String id;
 
     @Size(min = 0, max = 100,message = "nome possui um tamanho não planejado")
@@ -31,7 +32,7 @@ public class AlbumDTO {
     private String nome;
 
     @PositiveOrZero(message = "total_faixas não pode ser negativa")
-    private int total_faixas;
+    private Integer total_faixas;
 
     @PastOrPresent(message = "Data de lancamento não pode estar no Futuro")
     private LocalDate lancamento;
@@ -39,15 +40,14 @@ public class AlbumDTO {
     @Size(min = 0, max = 100,message = "a gravadora possui um tamanho não planejado")
     private String gravadora;
 
-    @NotBlank(message = "O perfil_spotify não pode estar vazio")
     private String perfil_spotify;
 
 
     @PositiveOrZero(message = "popularidade não pode ser negativa")
-    private int popularidade;
+    private Integer popularidade;
 
     @PositiveOrZero
-    private float nota_media;
+    private Float nota_media;
 
 
     @ElementCollection

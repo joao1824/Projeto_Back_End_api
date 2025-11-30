@@ -1,13 +1,12 @@
 package com.projeto.api.service;
 
 import com.projeto.api.dtos.TagDTOs.TagDTO;
-import com.projeto.api.exception.exceptions.TagExistenteException;
-import com.projeto.api.exception.exceptions.TagNotFoundException;
-import com.projeto.api.exception.exceptions.UserNotAdminException;
+import com.projeto.api.exception.exceptions.*;
 import com.projeto.api.mapper.dtos.TagMapper;
 import com.projeto.api.models.Tag;
 import com.projeto.api.models.Usuario;
 import com.projeto.api.repository.TagRepository;
+import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.TagSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
+import java.util.Set;
 
 
 @Service
@@ -32,8 +32,20 @@ public class TagService {
 
     //Retorna todos
     public Page<TagDTO> getAllTags(Map<String,String> filtros, Pageable pageable) {
+        // Validação dos campos de filtro
+        Set<String> camposValidos = CamposValidos.TAG.getCampos();
+
+        for (String campo : filtros.keySet()) {
+            if (!camposValidos.contains(campo)) {
+                throw new illegalfilterException("Campo de filtro inválido: " + campo);
+            }
+        }
+
         Specification<Tag> specification = TagSpecification.aplicarFiltros(filtros);
         Page<Tag> tags = tagRepository.findAll(specification,pageable);
+        if (tags.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum tag encontrado");
+        }
         return tags.map(tagMapper::tagToTagDTO);
     }
 
