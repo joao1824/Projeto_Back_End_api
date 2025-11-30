@@ -149,7 +149,7 @@ public class PlayListService {
 
     //adicionar musica
 
-    public PlayListDTO addMusica(String id_playlist, String id_musica){
+    public void addMusica(String id_playlist, String id_musica){
         PlayList playList  = playListRepository.findById(id_playlist).orElseThrow(() -> new PlaylistNotFoundException("PlayListSpecification não encontrada: "+ id_playlist));
 
         // pega usuario logado
@@ -169,7 +169,6 @@ public class PlayListService {
         playList.addMusica(musica);
         playListRepository.save(playList);
 
-        return playListMapper.toPlayListDTO(playList);
     }
 
     //remover musica

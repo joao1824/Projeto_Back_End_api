@@ -8,12 +8,14 @@ import com.projeto.api.service.ArtistaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.net.URI;
 import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -48,7 +50,8 @@ public class ArtistaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de artistas retornada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping
     public Page<ArtistaDTO> getAllArtista(@RequestParam Map<String, String> filtros,
@@ -61,11 +64,12 @@ public class ArtistaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Artista retornado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Artista não encontrado"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping("/{id}")
-    public ArtistaDTO getArtistaById(@PathVariable String id) {
-        return artistaService.getArtistaById(id);
+    public ResponseEntity<ArtistaDTO> getArtistaById(@PathVariable String id) {
+        return ResponseEntity.ok(artistaService.getArtistaById(id));
     }
 
     // Adiciona um novo artista
@@ -73,11 +77,14 @@ public class ArtistaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Artista criado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @PostMapping
-    public ArtistaDTO newArtista(@RequestBody ArtistaDTO artistaDTO) {
-        return artistaService.newArtista(artistaDTO);
+    public ResponseEntity<ArtistaDTO> newArtista(@Valid @RequestBody ArtistaDTO dados) {
+        ArtistaDTO artista = artistaService.newArtista( dados );
+        URI uri = URI.create("/artistas/" + artista.getId());
+        return ResponseEntity.created(uri).body(artista);
     }
 
     // Atualiza um artista existente
@@ -90,19 +97,21 @@ public class ArtistaController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public ArtistaDTO updateArtista(@PathVariable String id, @RequestBody ArtistaDTO artistaDTO) {
-        return artistaService.updateArtista(id, artistaDTO);
+    public ResponseEntity<ArtistaDTO> updateArtista(@PathVariable String id, @Valid @RequestBody ArtistaDTO artistaDTO) {
+        return ResponseEntity.ok(artistaService.updateArtista(id, artistaDTO));
     }
 
     @Operation(summary = "Exclui um artista do sistema.", description = "Este endpoint permite a exclusão de um artista existente identificado pelo ID fornecido na URL.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Artista excluído com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Artista não encontrado"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @DeleteMapping("/{id}")
-    public void deleteArtista(@PathVariable String id) {
+    public ResponseEntity<Void> deleteArtista(@PathVariable String id) {
         artistaService.deleteArtista(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

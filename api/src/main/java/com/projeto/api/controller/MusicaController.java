@@ -5,7 +5,9 @@ import com.projeto.api.service.MusicaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class MusicaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de músicas retornada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
@@ -39,13 +41,13 @@ public class MusicaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Música retornada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Música não encontrada"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public MusicaDTO getMusicaById(@PathVariable String id){
-        return musicaService.getMusicaById(id);
+    public ResponseEntity<MusicaDTO> getMusicaById(@PathVariable String id){
+        return ResponseEntity.ok(musicaService.getMusicaById(id));
     }
 
     // Cria uma nova música
@@ -53,12 +55,13 @@ public class MusicaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Música criada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping
-    public MusicaDTO newMusica(@RequestBody MusicaDTO musicaDTO){
-        return musicaService.newMusica(musicaDTO);
+    public ResponseEntity<MusicaDTO> newMusica(@Valid @RequestBody MusicaDTO dados){
+        MusicaDTO musica = musicaService.newMusica(dados);
+        return ResponseEntity.status(201).body(musica);
     }
 
     // Atualiza uma música existente
@@ -66,13 +69,13 @@ public class MusicaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Música atualizada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Música não encontrada"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public MusicaDTO updateMusica(@PathVariable String id, @RequestBody MusicaDTO musicaDTO) {
-        return musicaService.updateMusica(id, musicaDTO);
+    public ResponseEntity<MusicaDTO> updateMusica(@PathVariable String id, @Valid @RequestBody MusicaDTO musicaDTO) {
+        return ResponseEntity.ok(musicaService.updateMusica(id, musicaDTO));
     }
 
     // Deleta uma música por ID
@@ -80,13 +83,14 @@ public class MusicaController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Música deletada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Música não encontrada"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public void deleteMusica(@PathVariable String id) {
+    public ResponseEntity<Void> deleteMusica(@PathVariable String id) {
         musicaService.deleteMusica(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

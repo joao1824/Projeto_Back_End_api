@@ -5,11 +5,14 @@ import com.projeto.api.service.PlayListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.net.URI;
 import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -47,9 +50,11 @@ public class PlayListController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public PlayListDTO getPlayListById(@PathVariable String id){
-        return playListService.getPlayListById(id);
+    public ResponseEntity<PlayListDTO> getPlayListById(@PathVariable String id){
+        return ResponseEntity.ok(playListService.getPlayListById(id));
     }
+
+
     // Cria uma nova playlist
 
     @Operation(summary = "Cria uma nova playlist",description = "Cria uma nova playlist com os dados fornecidos no corpo da requisição.")
@@ -60,24 +65,11 @@ public class PlayListController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping()
-    public PlayListDTO addPlayList(@RequestBody PlayListDTO playListDTO){
-        return playListService.newPlayList(playListDTO);
+    public ResponseEntity<PlayListDTO> addPlayList(@Valid @RequestBody PlayListDTO dados){
+        PlayListDTO createdPlayList = playListService.newPlayList(dados);
+        URI uri = URI.create("/playlists/" + createdPlayList.getId());
+        return ResponseEntity.created(uri).body(createdPlayList);
     }
-    // Deleta uma playlist por ID
-
-    @Operation (summary = "Deleta uma playlist por ID",description = "Deleta uma playlist existente especificada pelo ID da playlist.")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Playlist deletada com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Playlist não encontrada"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/{id}")
-    public void deletePlayList(@PathVariable String id){
-        playListService.deletePlayList(id);
-    }
-
 
 
     // Atualiza uma playlist existente
@@ -89,10 +81,11 @@ public class PlayListController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Playlist não encontrada"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
-    @PutMapping("/{id_playlist}/musicas")
-    public PlayListDTO updatePlayList(@PathVariable String id_playlist, @RequestBody PlayListDTO data){
-        return playListService.updatePlayList(id_playlist,data);
+    @PutMapping("/{id_playlist}")
+    public ResponseEntity<PlayListDTO> updatePlayList(@PathVariable String id_playlist, @Valid @RequestBody  PlayListDTO data){
+        return ResponseEntity.ok(playListService.updatePlayList(id_playlist,data));
     }
+
 
     // Adiciona uma música à playlist
 
@@ -105,9 +98,11 @@ public class PlayListController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping("/{id_playlist}/musicas/{id_musica}")
-    public PlayListDTO addMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
-        return playListService.addMusica(id_playlist,id_musica);
+    public ResponseEntity<Void> addMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
+        playListService.addMusica(id_playlist,id_musica);
+        return ResponseEntity.noContent().build();
     }
+
 
 
     // Remove uma música da playlist
@@ -115,13 +110,30 @@ public class PlayListController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Música removida com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Não autorizado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Playlist ou música não encontrada"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id_playlist}/musicas/{id_musica}")
-    public void removeMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
+    public ResponseEntity<Void> removeMusica(@PathVariable String id_playlist, @PathVariable String id_musica){
         playListService.removeMusica(id_playlist,id_musica);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Deleta uma playlist por ID
+
+    @Operation (summary = "Deleta uma playlist por ID",description = "Deleta uma playlist existente especificada pelo ID da playlist.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Playlist deletada com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Playlist não encontrada"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePlayList(@PathVariable String id){
+        playListService.deletePlayList(id);
+        return ResponseEntity.noContent().build();
     }
 
 

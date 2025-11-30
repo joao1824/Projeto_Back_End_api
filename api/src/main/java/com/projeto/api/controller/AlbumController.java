@@ -1,18 +1,21 @@
 package com.projeto.api.controller;
 
 import com.projeto.api.dtos.AlbumDTOs.AlbumDTO;
+import com.projeto.api.dtos.UsuarioDTOs.UsuarioDTO;
 import com.projeto.api.mapper.dtos.AlbumMapper;
 import com.projeto.api.models.Album;
 import com.projeto.api.service.AlbumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.net.URI;
 import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -47,7 +50,8 @@ public class AlbumController {
     @Operation(summary = "Retorna todos os álbuns com paginação e filtros opcionais", description = "Retorna uma lista paginada de todos os álbuns, permitindo filtros opcionais através de parâmetros de consulta.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de álbuns retornada com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping
     public Page<AlbumDTO> getAllAlbums(@RequestParam Map<String, String> filtros, @PageableDefault(size = 15) Pageable pageable) {
@@ -59,11 +63,12 @@ public class AlbumController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Álbum retornado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Álbum não encontrado"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping("/{id}")
-    public AlbumDTO getAlbumById(@PathVariable String id){
-        return albumService.getAlbumById(id);
+    public ResponseEntity<AlbumDTO> getAlbumById(@PathVariable String id){
+        return ResponseEntity.ok().body(albumService.getAlbumById(id));
     }
 
     // Cria um novo album
@@ -71,11 +76,14 @@ public class AlbumController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Álbum criado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @PostMapping
-    public AlbumDTO newAlbum(@RequestBody AlbumDTO albumDTO){
-        return albumService.newAlbum(albumDTO);
+    public ResponseEntity<AlbumDTO> newAlbum(@Valid @RequestBody AlbumDTO dados){
+        AlbumDTO albumDTO = albumService.newAlbum(dados);
+        URI uri = URI.create("/albums/" + albumDTO.getId());
+        return ResponseEntity.created(uri).body(albumDTO);
     }
 
     // Atualiza um album existente
@@ -84,11 +92,12 @@ public class AlbumController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Álbum atualizado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Álbum não encontrado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @PutMapping("/{id}")
-    public AlbumDTO updateAlbum(@PathVariable String id, @RequestBody AlbumDTO albumDTO) {
-        return albumService.updateAlbum(id, albumDTO);
+    public ResponseEntity<AlbumDTO> updateAlbum(@PathVariable String id,@Valid @RequestBody AlbumDTO albumDTO) {
+        return ResponseEntity.ok(albumService.updateAlbum(id, albumDTO));
     }
 
     // Deleta um album por ID
@@ -96,11 +105,13 @@ public class AlbumController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Álbum deletado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Álbum não encontrado"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
     })
     @DeleteMapping("/{id}")
-    public void deleteAlbum(@PathVariable String id) {
+    public ResponseEntity<Void> deleteAlbum(@PathVariable String id) {
         albumService.deleteAlbum(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

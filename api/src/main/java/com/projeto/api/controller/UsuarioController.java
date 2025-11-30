@@ -66,7 +66,7 @@ public class UsuarioController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Conflito - Usuário já existe")
     })
     @PostMapping("/register")
-    public ResponseEntity<UsuarioDTO> register(@RequestBody @Valid RegistrarDTO data){
+    public ResponseEntity<UsuarioDTO> register(@Valid @RequestBody RegistrarDTO data){
         UsuarioDTO usuarioDTO = usuarioService.registerUsuario(data);
         URI uri = URI.create("/usuarios/" + usuarioDTO.getId());
         return ResponseEntity.created(uri).build();
@@ -80,7 +80,7 @@ public class UsuarioController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@RequestBody @Valid AuthenticationDTO data){
+    public ResponseEntity<LoginDTO> login(@Valid @RequestBody AuthenticationDTO data){
         return ResponseEntity.ok().body(usuarioService.loginUsuario(data));
     }
 
@@ -90,13 +90,13 @@ public class UsuarioController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/senha")
-    public ResponseEntity<Void> changeSenha(@PathVariable String id,@RequestBody @Valid SenhaNovaDTO data){
+    public ResponseEntity<Void> changeSenha(@PathVariable String id, @Valid @RequestBody SenhaNovaDTO data){
         usuarioService.changeSenha(id,data);
         return ResponseEntity.noContent().build();
     }
@@ -106,13 +106,13 @@ public class UsuarioController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Email alterado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/email")
-    public ResponseEntity<Void> changeEmail(@PathVariable String id,@RequestBody @Valid EmailNovoDTO data){
+    public ResponseEntity<Void> changeEmail(@PathVariable String id,@Valid @RequestBody  EmailNovoDTO data){
         usuarioService.changeEmail(id,data);
         return ResponseEntity.noContent().build();
     }
@@ -122,13 +122,13 @@ public class UsuarioController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Nome alterado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/nome")
-    public ResponseEntity<Void> changeNome(@PathVariable String id,@RequestBody UsuarioNomeDTO data){
+    public ResponseEntity<Void> changeNome(@PathVariable String id,@Valid @RequestBody UsuarioNomeDTO data){
         usuarioService.changeNome(id,data);
         return ResponseEntity.noContent().build();
     }
@@ -138,7 +138,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
