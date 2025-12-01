@@ -11,6 +11,22 @@
   <b>API dedicada à organização de artistas, álbuns e músicas. Suporte a reviews, notas e playlists enviadas por usuários. </b><br>
   (Entretenimento e Cultura)
 
+### Como executar
+
+- Utilize Java 17 ou Java 22
+   - Recomendamos uma dessas versões para garantir a compatibilidade.
+
+- Abra o projeto na IDE IntelliJ
+   - Essa foi a IDE utilizada durante o desenvolvimento, garantindo melhor suporte e configuração automática.
+
+- Configure as variáveis de ambiente
+   - Acesse o arquivo Variaveis de ambiente.txt no repositório.
+
+  - Copie as variáveis contidas nele.
+  - Substitua no arquivo application.properties ou crie um arquivo .env com esses valores.
+
+- Execute o projeto
+   - Após configurar as variáveis e garantir a versão correta do Java, basta rodar a aplicação.
 ### Variaveis de Ambiente
 
 Variaveis de ambiente se encontram no [Arquivo TXT](https://github.com/joao1824/Projeto_Back_End_api/blob/main/Variaveis%20de%20ambiente.txt)
