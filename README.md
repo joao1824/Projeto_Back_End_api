@@ -27,6 +27,26 @@ Variaveis de ambiente se encontram no [Arquivo TXT](https://github.com/joao1824/
 
   - Sistema de pesquisa com filtros:
     - Popularidade, com mais reviews positivas/negativas, quantidade de acessos, etc...
+   
+### Tecnologias Utilizadas
+
+Java (Rodando no 22 e 17)
+Linguagem principal da aplicação.
+
+Spring Boot 3.2.12
+Framework para criação rápida de aplicações Java modernas.
+
+Spring Web (spring-boot-starter-web)
+Usado para criar APIs REST.
+
+Spring Data JPA
+Persistência de dados usando JPA/Hibernate.
+
+Spring Validation
+Para validações de dados recebidos no backend.
+
+Spring Security
+Autenticação e autorização da aplicação.
 
 ### Modelo
 
