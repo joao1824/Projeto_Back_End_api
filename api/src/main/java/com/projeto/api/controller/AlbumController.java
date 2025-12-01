@@ -37,7 +37,7 @@ public class AlbumController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
-    @GetMapping("/spotify")
+    @PostMapping("/spotify")
     public ResponseEntity<AlbumDTO> buscarOuCriarAlbum(
             @RequestParam String nomeAlbum,
             @RequestParam String nomeArtista

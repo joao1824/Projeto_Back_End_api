@@ -23,7 +23,7 @@ public class SwaggerConfigurations {
         .info(new Info()
             .title("Projeto API")
             .version("1.0")
-            .description("Documentação da API do projeto de Backend - Requer Java 17 ou superior (testado com Java 17 e Java 24). Utiliza Spring Boot 3.1.4, Spring Security, JWT para autenticação, JPA/Hibernate para persistência de dados, e H2 como banco de dados em memória para desenvolvimento e testes.")
+            .description("Documentação da API do projeto de Backend - Requer Java 17 ou superior (testado com Java 17 e Java 22). Utiliza Spring Boot 3.1.4, Spring Security, JWT para autenticação, JPA/Hibernate para persistência de dados, e H2 como banco de dados em memória para desenvolvimento e testes.")
                 );
     }
 
