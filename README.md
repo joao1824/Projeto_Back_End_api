@@ -10,7 +10,11 @@
 ### Geral
   <b>API dedicada à organização de artistas, álbuns e músicas. Suporte a reviews, notas e playlists enviadas por usuários. </b><br>
   (Entretenimento e Cultura)
-  
+
+### Variaveis de Ambiente
+
+Variaveis de ambiente se encontram no [Arquivo TXT](https://github.com/joao1824/Projeto_Back_End_api/blob/main/Variaveis%20de%20ambiente.txt)
+
 ### Objetivos
   - Dispor de sistema de usuários, com suas respectivas reviews e playlists. Com capacidade de:
     - Armazenar usuários (perfil customizável, exibindo reviews e playlists adicionadas, página de estatísticas específicas);
