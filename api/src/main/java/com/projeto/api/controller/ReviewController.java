@@ -115,7 +115,8 @@ public class ReviewController {
             return ResponseEntity.ok(relatorio);
         }
 
-        List<ReviewDTO> reviews = reviewService.listarTodos();
+        Map<String, Object> reviews = reviewService.gerarRelatorioPorPeriodo(Integer.parseInt(periodo));
+
         return ResponseEntity.ok(Map.of("reviews", reviews));
     }
 

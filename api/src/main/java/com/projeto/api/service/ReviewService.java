@@ -185,6 +185,8 @@ public class ReviewService {
         long totalNoPeriodo = reviewRepository.countByDataAfter(dataLimite);
         long totalGeral = reviewRepository.count();
 
+
+
         Map<String, Object> relatorio = new HashMap<>();
         relatorio.put("totalNoPeriodo", totalNoPeriodo);
         relatorio.put("totalGeral", totalGeral);
