@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class MusicaService {
 
-
+    private final SpotifyApi spotifyApi;
     private final AlbumService albumService;
     private final MusicaRepository musicaRepository;
     private final AlbumRepository albumRepository;

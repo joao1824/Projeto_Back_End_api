@@ -24,7 +24,7 @@ public class Artista {
     private String nome;
     private Integer popularidade;
     private Integer seguidores;
-    public String perfil_spotify;
+    private String perfil_spotify;
     @ElementCollection
     private List<String> generos = new ArrayList<>();
     private String imagem;
