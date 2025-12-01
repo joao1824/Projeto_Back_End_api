@@ -54,8 +54,8 @@ public class AlbumController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping
-    public Page<AlbumDTO> getAllAlbums(@RequestParam Map<String, String> filtros, @PageableDefault(size = 15) Pageable pageable) {
-        return albumService.getAllAlbums(filtros, pageable);
+    public Page<AlbumDTO> getAllAlbums(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros) {
+        return albumService.getAllAlbums(pageable, filtros);
     }
 
     // Retorna um album por ID

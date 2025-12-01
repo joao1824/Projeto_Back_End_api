@@ -29,7 +29,7 @@ public class MusicaDTO {
     private String nome;
 
     @NotNull(message = "A duração não pode ser nula")
-    @Positive(message = "duracao não pode ser negativa")
+    @PositiveOrZero(message = "duracao não pode ser negativa")
     private Integer duracao;
 
     private boolean explicito; //se é +18 ou não

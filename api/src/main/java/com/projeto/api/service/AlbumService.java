@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -75,23 +76,22 @@ public class AlbumService {
     }
 
     //Retorna todos os albums com paginação
-    public Page<AlbumDTO> getAllAlbums(Map<String, String> filtros, Pageable pageable) {
-
+    public Page<AlbumDTO> getAllAlbums(Pageable pageable , Map<String,String> filtros) {
         Set<String> camposValidos = CamposValidos.ALBUM.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+        Specification<Album> specification = AlbumSpecification.aplicarFiltros(filtrosValidos);
 
-        Specification<Album> specification = AlbumSpecification.aplicarFiltros(filtros);
-        Page<Album> albums = albumRepository.findAll(specification, pageable);
-        if (albums.isEmpty()) {
+        Page<Album> page = albumRepository.findAll(specification, pageable);
+
+        if (page.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum album encontrado");
         }
-        return albums.map(albumMapper::toAlbumDTO);
+
+        return page.map(albumMapper::toAlbumDTO);
     }
 
     //Retorna por id

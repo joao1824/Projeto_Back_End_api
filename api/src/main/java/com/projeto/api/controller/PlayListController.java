@@ -37,8 +37,8 @@ public class PlayListController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping()
-    public Page<PlayListDTO> getAllPlayLists(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable) {
-        return playListService.getAllPlaylist(filtros, pageable);
+    public Page<PlayListDTO> getAllPlayLists(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros) {
+        return playListService.getAllPlaylist(pageable, filtros);
     }
     // Retorna uma playlist por ID
     @Operation(summary = "Retorna uma playlist por ID", description = "Retorna os detalhes de uma playlist específica com base no ID fornecido.")

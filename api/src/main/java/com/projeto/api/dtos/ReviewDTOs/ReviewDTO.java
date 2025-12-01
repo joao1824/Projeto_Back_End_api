@@ -29,8 +29,8 @@ public class ReviewDTO {
     @NotBlank(message = "nome não pode estar em vazio")
     private String avaliacao;
 
-    @Max(value = 100, message = "ID não é valido pois possui um tamanho não planejado")
-    @Min(value = 0, message = "ID não é valido pois possui um tamanho não planejado")
+    @Max(value = 100, message = "não é valido pois possui um tamanho não planejado")
+    @Min(value = 0, message = "não é valido pois possui um tamanho não planejado")
     @NotNull
     private Integer nota;
 
@@ -43,7 +43,7 @@ public class ReviewDTO {
     @NotNull(message = "O album não pode ser nulo")
     private AlbumResumoDTO album;
 
-    @NotNull(message = "O usuario não pode ser nulo")
+    // Não é necessário validar o usuário, pois será atribuído automaticamente com base no usuário autenticado
     private UsuarioResumoDTO usuario;
 
 

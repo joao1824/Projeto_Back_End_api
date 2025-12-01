@@ -30,6 +30,9 @@ public class Album {
     private Integer popularidade;
     private Float nota_media;
 
+    private Integer totalNotas = 0;   // soma de todas as notas
+    private Integer qtdReviews = 0;   // número total de reviews
+
     @ElementCollection
     private List<String> imagens = new ArrayList<>();
     @ElementCollection
@@ -61,7 +64,9 @@ public class Album {
     }
 
 
-    public Album(String nome, int total_faixas, LocalDate lancamento, String gravadora, String perfil_spotify, int popularidade,Float nota_media, List<String> imagens, List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews) {
+    public Album(String nome, int total_faixas, LocalDate lancamento, String gravadora,
+                 String perfil_spotify, int popularidade,Float nota_media, List<String> imagens,
+                 List<String> generos, List<Artista> artistas, List<Musica> musicas, List<Review> reviews, Integer totalNotas, Integer qtdReviews) {
         this.id = IdGerador.Gerar();
         this.nome = nome;
         this.total_faixas = total_faixas;
@@ -75,6 +80,8 @@ public class Album {
         this.artistas = artistas;
         this.musicas = musicas;
         this.reviews = reviews;
+        this.totalNotas = totalNotas;
+        this.qtdReviews = qtdReviews;
     }
 
     public Album(String nome, int total_faixas, LocalDate lancamento, String gravadora, String perfil_spotify, int popularidade) {
@@ -164,6 +171,22 @@ public class Album {
 
     public void setNota_media(Float nota_media) {
         this.nota_media = nota_media;
+    }
+
+    public Integer getTotalNotas() {
+        return totalNotas;
+    }
+
+    public void setTotalNotas(Integer totalNotas) {
+        this.totalNotas = totalNotas;
+    }
+
+    public Integer getQtdReviews() {
+        return qtdReviews;
+    }
+
+    public void setQtdReviews(Integer qtdReviews) {
+        this.qtdReviews = qtdReviews;
     }
 
     public List<String> getImagens() {

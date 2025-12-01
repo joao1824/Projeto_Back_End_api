@@ -20,6 +20,8 @@ public class AlbumResumoDTO {
     private String perfil_spotify;
     private Integer popularidade;
     private Float nota_media;
+    private Integer totalNotas = 0;   // soma de todas as notas
+    private Integer qtdReviews = 0;   // número total de reviews
     private List<String> imagens;
     private List<String> generos;
     
@@ -34,6 +36,8 @@ public class AlbumResumoDTO {
         this.perfil_spotify = album.getPerfil_spotify();
         this.popularidade = album.getPopularidade();
         this.nota_media = album.getNota_media();
+        this.totalNotas = album.getTotalNotas();
+        this.qtdReviews = album.getQtdReviews();
         this.imagens = album.getImagens();
         this.generos = album.getGeneros();
     }
@@ -103,6 +107,22 @@ public class AlbumResumoDTO {
 
     public void setNota_media(Float nota_media) {
         this.nota_media = nota_media;
+    }
+
+    public Integer getTotalNotas() {
+        return totalNotas;
+    }
+
+    public void setTotalNotas(Integer totalNotas) {
+        this.totalNotas = totalNotas;
+    }
+
+    public Integer getQtdReviews() {
+        return qtdReviews;
+    }
+
+    public void setQtdReviews(Integer qtdReviews) {
+        this.qtdReviews = qtdReviews;
     }
 
     public List<String> getImagens() {

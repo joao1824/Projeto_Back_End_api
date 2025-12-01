@@ -36,17 +36,15 @@ public class PlayListService {
     }
 
     // Retorna todos
-    public Page<PlayListDTO> getAllPlaylist(Map<String,String> filtros, Pageable pageable) {
+    public Page<PlayListDTO> getAllPlaylist(Pageable pageable,Map<String,String> filtros) {
 
-        // Validação dos campos de filtro
         Set<String> camposValidos = CamposValidos.PLAYLIST.getCampos();
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
 
-        Specification<PlayList> specification = PlayListSpecification.aplicarFiltros(filtros);
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Specification<PlayList> specification = PlayListSpecification.aplicarFiltros(filtrosValidos);
         Page<PlayList> playlists = playListRepository.findAll(specification,pageable);
         if (playlists.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum playlist encontrado");

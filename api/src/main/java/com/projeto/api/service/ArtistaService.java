@@ -102,21 +102,22 @@ public class ArtistaService {
     }
 
     // Retorna todos os artistas com paginação
-    public Page<ArtistaDTO> getAllArtistas(Map<String,String> filtros, Pageable pageable) {
-
+    public Page<ArtistaDTO> getAllArtistas(Pageable pageable , Map<String, String> filtros) {
         Set<String> camposValidos = CamposValidos.ARTISTA.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Specification<Artista> specification = ArtistaSpecification.aplicarFiltros(filtros);
+
+        Specification<Artista> specification = ArtistaSpecification.aplicarFiltros(filtrosValidos);
+
         Page<Artista> artistas = artistaRepository.findAll(specification,pageable);
+
         if (artistas.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum artista encontrado");
         }
+
         return artistas.map(artistaMapper::toDto);
     }
 

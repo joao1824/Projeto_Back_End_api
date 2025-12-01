@@ -33,11 +33,10 @@ public class PlayListDTO {
     @NotBlank(message = "O lancamento não pode estar vazio")
     private String descricao;
 
-    @NotNull(message = ("usuario não pode ser nula"))
+    //Não é nescessário validar o usuario pois ele é pego atraves do token de autenticação
     private UsuarioResumoDTO usuario;
 
-    @NotNull(message = ("musicas não pode ser nula"))
-    @NotEmpty(message = ("musicas não pode estar vazia"))
+    //Não é nescessário validar a lista de musicas, pois uma playlist pode ser criada sem musicas
     private List<MusicaResumoDTO> musicas = new ArrayList<>();
 
 

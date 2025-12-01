@@ -21,11 +21,12 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MusicaService {
 
-    private final SpotifyApi spotifyApi;
+
     private final AlbumService albumService;
     private final MusicaRepository musicaRepository;
     private final AlbumRepository albumRepository;
@@ -66,19 +67,16 @@ public class MusicaService {
     }
 
     // Retorna todas as músicas com paginação
-    public Page<MusicaDTO> getAllMusicas(Map<String,String> filtros, Pageable pageable) {
-
-        // Valida os campos de filtro
+    public Page<MusicaDTO> getAllMusicas(Pageable pageable , Map<String, String> filtros) {
         Set<String> camposValidos = CamposValidos.MUSICA.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 
-        Specification<Musica> specification = MusicaSpecification.aplicarFiltros(filtros);
+        Specification<Musica> specification = MusicaSpecification.aplicarFiltros(filtrosValidos);
+
         Page<Musica> musicas = musicaRepository.findAll(specification,pageable);
         if (musicas.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum musica encontrado");

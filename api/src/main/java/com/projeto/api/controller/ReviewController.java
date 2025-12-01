@@ -38,8 +38,8 @@ public class ReviewController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public Page<ReviewDTO> getAllReviews(@RequestParam Map<String,String> filtros,@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return reviewService.getAllReviews(filtros,pageable);
+    public Page<ReviewDTO> getAllReviews(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros) {
+        return reviewService.getAllReviews(pageable, filtros);
     }
 
     // Retorna uma review por ID

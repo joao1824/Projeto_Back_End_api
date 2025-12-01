@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -44,17 +45,14 @@ public class UsuarioService {
     }
 
     //Retornar todos
-    public Page<UsuarioDTO> getAllUsuarios(Map<String, String> filtros, Pageable pageable) {
-        // Validação dos campos de filtro
+    public Page<UsuarioDTO> getAllUsuarios(Pageable pageable , Map<String, String> filtros) {
         Set<String> camposValidos = CamposValidos.USUARIO.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Specification<Usuario> specification = UsuarioSpecification.aplicarFiltros(filtros);
+        Specification<Usuario> specification = UsuarioSpecification.aplicarFiltros(filtrosValidos);
         Page<Usuario> usuarios = usuarioRepository.findAll(specification,pageable);
         if (usuarios.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum usuario encontrado");

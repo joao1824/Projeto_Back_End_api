@@ -33,8 +33,8 @@ public class MusicaController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public Page<MusicaDTO> getAllMusicas(@RequestParam Map<String,String> filtros, @PageableDefault(size = 15) Pageable pageable){
-        return musicaService.getAllMusicas(filtros,pageable);
+    public Page<MusicaDTO> getAllMusicas(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros){
+        return musicaService.getAllMusicas(pageable, filtros);
     }
     // Retorna uma música por ID
     @Operation(summary = "Retorna uma música por ID", description = "Busca e retorna uma música específica com base no ID fornecido.")

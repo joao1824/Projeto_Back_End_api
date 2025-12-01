@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,17 +32,14 @@ public class TagService {
     }
 
     //Retorna todos
-    public Page<TagDTO> getAllTags(Map<String,String> filtros, Pageable pageable) {
-        // Validação dos campos de filtro
+    public Page<TagDTO> getAllTags(Pageable pageable , Map<String, String> filtros) {
         Set<String> camposValidos = CamposValidos.TAG.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Specification<Tag> specification = TagSpecification.aplicarFiltros(filtros);
+        Specification<Tag> specification = TagSpecification.aplicarFiltros(filtrosValidos);
         Page<Tag> tags = tagRepository.findAll(specification,pageable);
         if (tags.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum tag encontrado");

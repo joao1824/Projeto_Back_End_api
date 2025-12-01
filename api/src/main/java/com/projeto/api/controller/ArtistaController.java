@@ -32,7 +32,6 @@ public class ArtistaController {
     }
 
 
-
     @Operation(summary = "Busca um artista no Spotify pelo nome. Se não existir, cria um novo artista no sistema.", description = "Este endpoint busca um artista no Spotify pelo nome fornecido. Se o artista não for encontrado, um novo artista é criado no sistema com base nas informações obtidas do Spotify.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Artista encontrado ou criado com sucesso"),
@@ -54,9 +53,8 @@ public class ArtistaController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Proibido")
     })
     @GetMapping
-    public Page<ArtistaDTO> getAllArtista(@RequestParam Map<String, String> filtros,
-                                          @PageableDefault (size = 15) Pageable pageable) {
-        return artistaService.getAllArtistas(filtros,pageable);
+    public Page<ArtistaDTO> getAllArtista(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros) {
+        return artistaService.getAllArtistas(pageable, filtros);
     }
 
     // Retorna um artista por ID

@@ -14,6 +14,7 @@ import com.projeto.api.repository.ReviewRepository;
 import com.projeto.api.repository.TagRepository;
 import com.projeto.api.specification.CamposValidos;
 import com.projeto.api.specification.ReviewSpecification;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -45,18 +47,16 @@ public class ReviewService {
     }
 
     // Retorna todas as reviews com paginação e ordenação
-    public Page<ReviewDTO> getAllReviews(Map<String,String> filtros,Pageable pageable) {
+    public Page<ReviewDTO> getAllReviews(Pageable pageable , Map<String, String> filtros) {
 
-        // Valida os campos de filtro
         Set<String> camposValidos = CamposValidos.REVIEW.getCampos();
 
-        for (String campo : filtros.keySet()) {
-            if (!camposValidos.contains(campo)) {
-                throw new illegalfilterException("Campo de filtro inválido: " + campo);
-            }
-        }
+        Map<String, String> filtrosValidos = filtros.entrySet().stream()
+                .filter(entry -> camposValidos.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Specification<Review> specification = ReviewSpecification.aplicarFiltros(filtros);
+        Specification<Review> specification = ReviewSpecification.aplicarFiltros(filtrosValidos);
+
         Page<Review> reviews = reviewRepository.findAll(specification,pageable);
         if (reviews.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum review encontrado");
@@ -71,6 +71,7 @@ public class ReviewService {
     }
 
     //Nova review (Alterar nota ainda não esta funcionado)
+    @Transactional
     public ReviewDTO newReview(ReviewDTO reviewDTO) {
 
         // pega usuario logado
@@ -89,11 +90,8 @@ public class ReviewService {
             throw new EmptyException("A nota é obrigatória.");
 
         //verifica se o album existe
-
-        Album album = albumRepository.findById(reviewDTO.getAlbum().getId()).orElseThrow(() -> new AlbumNotFoundException("Álbum não encontrado."));
-
         Tag tag = tagRepository.findById(reviewDTO.getTag().getId()).orElseThrow(() -> new TagNotFoundException("Tag não encontrada."));
-
+        Album album = albumRepository.findById(reviewDTO.getAlbum().getId()).orElseThrow(() -> new AlbumNotFoundException("Álbum não encontrado."));
         boolean existe = reviewRepository.existsByAlbumIdAndUsuarioId(album.getId(), usuarioLogado.getId());
 
         if (existe) {
@@ -102,30 +100,21 @@ public class ReviewService {
 
         //calculo da nova nota media
 
-        List<Integer> notasExistentes = album.getReviews().stream()
-                .map(Review::getNota)
-                .toList();
-        //soma das notas existentes
-        int soma = notasExistentes.stream()
-                .mapToInt(Integer::intValue)
-                .sum();
-        //calcula a nova nota media
-        float novaNotaMedia = ((float) soma + reviewDTO.getNota()) / (notasExistentes.size() + 1);
-
-        album.setNota_media(novaNotaMedia);
-        albumRepository.save(album);
+        albumRepository.incrementarNota(album.getId(), reviewDTO.getNota());
+        Album album_atulizado = albumRepository.findById(reviewDTO.getAlbum().getId()).orElseThrow(() -> new AlbumNotFoundException("Álbum não encontrado."));
 
         review.setAvaliacao(reviewDTO.getAvaliacao());
         review.setNota(reviewDTO.getNota());
-        review.setAlbum(album);
         review.setUsuario(usuarioLogado);
         review.setData(LocalDateTime.now());
         review.setTag(tag);
+        review.setAlbum(album_atulizado);
         reviewRepository.save(review);
         return reviewMapper.toReviewDTO(review);
     }
 
     //Atualiza review
+    @Transactional
     public ReviewDTO updateReview(String id, ReviewDTO reviewDTO) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -148,31 +137,20 @@ public class ReviewService {
             throw new OwnerUserException();
         }
 
-        //calculo da nova nota media
-        List<Integer> notasExistentes = album.getReviews().stream()
-                .map(Review::getNota)
-                .toList();
-
-        //remove a nota antiga
-        int soma = (notasExistentes.stream()
-                .mapToInt(Integer::intValue)
-                .sum()) - review.getNota();
-
-        //calcula a nova nota media
-        float novaNotaMedia = ((float) soma + reviewDTO.getNota()) / (notasExistentes.size());
-
-        album.setNota_media(novaNotaMedia);
-        albumRepository.save(album);
+        //atualiza a nota media
+        albumRepository.atualizarNota(album.getId(), review.getNota(), reviewDTO.getNota());
 
         review.setTag(tag);
         review.setAvaliacao(reviewDTO.getAvaliacao());
         review.setNota(reviewDTO.getNota());
+
         reviewRepository.save(review);
 
         return reviewMapper.toReviewDTO(review);
     }
 
     //Deleta review
+    @Transactional
     public void deleteReview(String id) {
         // pega usuario logado
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -186,26 +164,8 @@ public class ReviewService {
             throw new OwnerUserException();
         }
 
-        List<Integer> notasExistentes = album.getReviews().stream()
-                .map(Review::getNota)
-                .toList();
-        //remove a nota
-        int soma = (notasExistentes.stream()
-                .mapToInt(Integer::intValue)
-                .sum()) - review.getNota();
-        //calcula a nova nota media
-        if (notasExistentes.size() == 1){
-            album.setNota_media(null);
-            albumRepository.save(album);
-            reviewRepository.delete(review);
-            return;
-        }else {
-            float novaNotaMedia = ((float) soma) / (notasExistentes.size() - 1);
-            album.setNota_media(novaNotaMedia);
-            albumRepository.save(album);
-            reviewRepository.delete(review);
-        }
-
+        albumRepository.decrementarNota(album.getId(), review.getNota());
+        reviewRepository.delete(review);
     }
 
 
@@ -231,16 +191,6 @@ public class ReviewService {
 
         return relatorio;
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }

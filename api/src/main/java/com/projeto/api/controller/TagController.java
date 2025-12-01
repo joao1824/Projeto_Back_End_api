@@ -39,8 +39,8 @@ public class TagController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public Page<TagDTO> getAllTags(@RequestParam Map<String, String> filtros, @PageableDefault(size = 10) Pageable pageable) {
-        return tagService.getAllTags(filtros,pageable);
+    public Page<TagDTO> getAllTags(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros) {
+        return tagService.getAllTags(pageable, filtros);
     }
 
     // Retorna uma tag por ID

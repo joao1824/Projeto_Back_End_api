@@ -37,8 +37,8 @@ public class UsuarioController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public Page<UsuarioDTO> getAllUsuario(@RequestParam Map<String,String> filtros, @PageableDefault(size = 10) Pageable pageable){
-        return usuarioService.getAllUsuarios(filtros,pageable);
+    public Page<UsuarioDTO> getAllUsuario(@PageableDefault(size = 15) Pageable pageable,@RequestParam Map<String, String> filtros){
+        return usuarioService.getAllUsuarios(pageable, filtros);
     }
 
     //get by id

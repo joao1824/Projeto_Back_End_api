@@ -8,6 +8,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
 
@@ -28,10 +29,10 @@ public class ArtistaDTO {
     @Column(unique = true)
     private String nome;
 
-    @Positive(message = "popularidade não pode ser negativa")
+    @PositiveOrZero(message = "popularidade não pode ser negativa")
     private Integer popularidade;
 
-    @Positive(message = "seguidores não pode ser negativa")
+    @PositiveOrZero(message = "seguidores não pode ser negativa")
     private Integer seguidores;
 
     public String perfil_spotify;

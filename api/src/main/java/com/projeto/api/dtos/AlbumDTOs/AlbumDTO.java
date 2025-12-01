@@ -7,10 +7,7 @@ import com.projeto.api.models.Album;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -47,7 +44,15 @@ public class AlbumDTO {
     private Integer popularidade;
 
     @PositiveOrZero
+    @Max(value = 100, message = "não é valido pois possui um tamanho não planejado")
+    @Min(value = 0, message = "não é valido pois possui um tamanho não planejado")
     private Float nota_media;
+
+    @PositiveOrZero
+    private Integer totalNotas = 0;   // soma de todas as notas
+
+    @PositiveOrZero
+    private Integer qtdReviews = 0;   // número total de reviews
 
 
     @ElementCollection
@@ -79,11 +84,11 @@ public class AlbumDTO {
         this.nome = nome;
     }
 
-    public int getTotal_faixas() {
+    public Integer getTotal_faixas() {
         return total_faixas;
     }
 
-    public void setTotal_faixas(int total_faixas) {
+    public void setTotal_faixas(Integer total_faixas) {
         this.total_faixas = total_faixas;
     }
 
@@ -111,12 +116,36 @@ public class AlbumDTO {
         this.perfil_spotify = perfil_spotify;
     }
 
-    public int getPopularidade() {
+    public Integer getPopularidade() {
         return popularidade;
     }
 
-    public void setPopularidade(int popularidade) {
+    public void setPopularidade(Integer popularidade) {
         this.popularidade = popularidade;
+    }
+
+    public Float getNota_media() {
+        return nota_media;
+    }
+
+    public void setNota_media(Float nota_media) {
+        this.nota_media = nota_media;
+    }
+
+    public Integer getTotalNotas() {
+        return totalNotas;
+    }
+
+    public void setTotalNotas(Integer totalNotas) {
+        this.totalNotas = totalNotas;
+    }
+
+    public Integer getQtdReviews() {
+        return qtdReviews;
+    }
+
+    public void setQtdReviews(Integer qtdReviews) {
+        this.qtdReviews = qtdReviews;
     }
 
     public List<String> getImagens() {
@@ -157,13 +186,5 @@ public class AlbumDTO {
 
     public void setReviews(List<ReviewResumoDTO> reviews) {
         this.reviews = reviews;
-    }
-
-    public Float getNota_media() {
-        return nota_media;
-    }
-
-    public void setNota_media(Float nota_media) {
-        this.nota_media = nota_media;
     }
 }
