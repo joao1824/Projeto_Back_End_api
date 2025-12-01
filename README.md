@@ -28,10 +28,14 @@
 
   <img width="750" height="590" alt="image" src="https://github.com/user-attachments/assets/476812ee-9c61-4cbc-b90f-cf2f3d2d8a28" />
 
-
-
-
 ### Documentação dos principais controladores e endpoints da API, incluindo operações CRUD e integrações externas.
+
+API de gerenciamento de músicas, artistas, álbuns, playlists, reviews, tags e usuários, com integração externa ao Spotify.
+
+Tecnologias: Java 17+, Spring Boot 3.1.4, Spring Security + JWT, JPA/Hibernate, H2 (dev/teste).
+
+Autenticação: Bearer Token para endpoints protegidos.
+
 
 ## Album Controller (CRUD)
 
@@ -160,9 +164,6 @@ Se o parâmetro `periodo` não for informado, retorna todas as reviews.
 | Tipo         | Descrição                            |
 |---------------|-------------------------------------|
 | **Bearer Token** | Autorização para endpoints protegidos |
-
-
-
 
 
 
