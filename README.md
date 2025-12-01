@@ -33,70 +33,96 @@
 
 ### Documentação dos principais controladores e endpoints da API, incluindo operações CRUD e integrações externas.
 
----
+## Album Controller (CRUD)
 
-## Tag Controller (CRUD)
+| Método | Endpoint              | Parâmetros                                    | Descrição |
+|--------|---------------------|----------------------------------------------|-----------|
+| GET    | `/albums/spotify`    | `nomeAlbum` (query), `nomeArtista` (query) | Busca um álbum no Spotify ou cria se não existir |
+| GET    | `/albums`            | Query params: filtros opcionais, `page`, `size` | Lista todos os álbuns com paginação |
+| GET    | `/albums/{id}`       | `id` (path)                                 | Retorna um álbum específico por ID |
+| POST   | `/albums`            | Body: `AlbumDTO`                             | Cria um novo álbum |
+| PUT    | `/albums/{id}`       | `id` (path), Body: `AlbumDTO`               | Atualiza um álbum existente |
+| DELETE | `/albums/{id}`       | `id` (path)                                 | Deleta um álbum existente |
 
-| Método | Endpoint         | Parâmetros              | Descrição            |
-|--------|------------------|-------------------------|----------------------|
-| **GET** | `/api/tags`      | —                       | Listar todas as tags |
-| **POST** | `/api/tags`      | `body (TagDTO)`         | Criar nova tag       |
-| **GET** | `/api/tags/{id}` | `id (path)`             | Buscar tag por ID    |
-| **PUT** | `/api/tags/{id}` | `id (path), body`       | Atualizar tag        |
-| **DELETE** | `/api/tags/{id}` | `id (path)`          | Deletar tag          |
+## API Controller (Spotify)
 
----
+| Método | Endpoint       | Parâmetros       | Descrição |
+|--------|---------------|----------------|-----------|
+| GET    | `/api/artista` | `nome` (query) | Busca um artista pelo nome no Spotify |
+| GET    | `/api/album`   | `nome` (query) | Busca um álbum pelo nome no Spotify |
+| GET    | `/api/musica`  | `nome` (query) | Busca uma música pelo nome no Spotify |
 
-## Album Controller (CRUD + Integração com Spotify)
 
-| Método | Endpoint                 |  Parâmetros                         |   Descrição                             |
-|--------|--------------------------|------------------------------------|------------------------------------------|
-| **GET** | `/api/albums/spotify`    | `nomeAlbum`, `nomeArtista` (query) | Buscar ou criar álbum pelo Spotify       |
-| **GET** | `/api/albums`            | —                                  | Listar todos os álbuns                   |
-| **POST** | `/api/albums`            | `body (AlbumDTO)`                  | Criar novo álbum                         |
-| **GET** | `/api/albums/{id}`       | `id (path)`                        | Buscar álbum por ID                      |
-| **PUT** | `/api/albums/{id}`       | `id (path), body`                  | Atualizar álbum                          |
-| **DELETE** | `/api/albums/{id}`    | `id (path)`                        | Deletar álbum                            |
+## Artista Controller (CRUD)
 
----
+| Método | Endpoint               | Parâmetros                         | Descrição |
+|--------|-----------------------|-----------------------------------|-----------|
+| GET    | `/artistas/spotify`   | `nome` (query)                    | Busca um artista no Spotify pelo nome ou cria se não existir |
+| GET    | `/artistas`           | Query params: filtros opcionais, `page`, `size` | Lista todos os artistas com paginação |
+| GET    | `/artistas/{id}`      | `id` (path)                       | Retorna um artista específico por ID |
+| POST   | `/artistas`           | Body: `ArtistaDTO`                 | Cria um novo artista |
+| PUT    | `/artistas/{id}`      | `id` (path), Body: `ArtistaDTO`   | Atualiza um artista existente |
+| DELETE | `/artistas/{id}`      | `id` (path)                       | Deleta um artista existente |
 
-## Música Controller (CRUD)
 
-| Método | Endpoint             | Parâmetros         | Descrição              |
-|--------|----------------------|--------------------|------------------------|
-| **GET** | `/api/musicas`       | —                  | Listar todas as músicas |
-| **POST** | `/api/musicas`       | `body (MusicaDTO)` | Criar nova música      |
-| **GET** | `/api/musicas/{id}`  | `id (path)`        | Buscar música por ID   |
-| **PUT** | `/api/musicas/{id}`  | `id (path), body`  | Atualizar música       |
-| **DELETE** | `/api/musicas/{id}` | `id (path)`      | Deletar música         |
+## Musica Controller (CRUD)
 
----
+| Método | Endpoint           | Parâmetros                      | Descrição |
+|--------|------------------|--------------------------------|-----------|
+| GET    | `/musicas`        | Query params: filtros opcionais, `page`, `size` | Lista todas as músicas com paginação |
+| GET    | `/musicas/{id}`   | `id` (path)                     | Retorna uma música específica por ID |
+| POST   | `/musicas`        | Body: `MusicaDTO`               | Cria uma nova música |
+| PUT    | `/musicas/{id}`   | `id` (path), Body: `MusicaDTO` | Atualiza uma música existente |
+| DELETE | `/musicas/{id}`   | `id` (path)                     | Deleta uma música existente |
+
+
+## PlayList Controller (CRUD)
+
+| Método | Endpoint                                      | Parâmetros                                      | Descrição |
+|--------|----------------------------------------------|------------------------------------------------|-----------|
+| GET    | `/playlists`                                 | Query params: filtros opcionais, `page`, `size` | Lista todas as playlists com paginação e ordenação |
+| GET    | `/playlists/{id}`                            | `id` (path)                                   | Retorna uma playlist específica por ID |
+| POST   | `/playlists`                                 | Body: `PlayListDTO`                            | Cria uma nova playlist |
+| PUT    | `/playlists/{id_playlist}`                   | `id_playlist` (path), Body: `PlayListDTO`     | Atualiza uma playlist existente |
+| POST   | `/playlists/{id_playlist}/musicas/{id_musica}` | `id_playlist` e `id_musica` (path)           | Adiciona uma música à playlist |
+| DELETE | `/playlists/{id_playlist}/musicas/{id_musica}` | `id_playlist` e `id_musica` (path)           | Remove uma música da playlist |
+| DELETE | `/playlists/{id}`                            | `id` (path)                                   | Deleta uma playlist existente |
 
 ## Review Controller (CRUD)
 
-| Método | Endpoint         | Parâmetros         | Descrição              |
-|--------|------------------|--------------------|------------------------|
-| **GET** | `/reviews`       | —                  | Listar todas as reviews |
-| **POST** | `/reviews`       | `body (ReviewDTO)` | Criar nova review      |
-| **GET** | `/reviews/{id}`  | `id (path)`        | Buscar review por ID   |
-| **PUT** | `/reviews/{id}`  | `id (path), body`  | Atualizar review       |
-| **DELETE** | `/reviews/{id}` | `id (path)`      | Deletar review         |
-| **GET** | `/reviews/relatorio` | `periodo (query)`      | Gerar Relatório de quantas reviews tiverem em determinado tempo (em dias)|
+| Método | Endpoint             | Parâmetros                               | Descrição |
+|--------|--------------------|-----------------------------------------|-----------|
+| GET    | `/reviews`          | Query params: filtros opcionais, `page`, `size` | Lista todas as reviews com paginação e filtros |
+| GET    | `/reviews/{id}`     | `id` (path)                              | Retorna uma review específica por ID |
+| POST   | `/reviews`          | Body: `ReviewDTO`                         | Cria uma nova review |
+| PUT    | `/reviews/{id}`     | `id` (path), Body: `ReviewDTO`           | Atualiza uma review existente |
+| DELETE | `/reviews/{id}`     | `id` (path)                              | Deleta uma review existente |
+| GET    | `/reviews/relatorio`| `periodo` (query, opcional)              | Retorna um relatório de reviews por período ou lista todas se não informado |
 
 
----
+## Tag Controller (CRUD)
 
-## Usuário Controller (CRUD)
-
-| Método | Endpoint                 | Parâmetros          | Descrição             |
-|--------|--------------------------|---------------------|-----------------------|
-| **GET** | `/conta/usuarios`        | —                   | Listar usuários       |
-| **POST** | `/conta/usuarios`        | `body (UsuarioDTO)` | Criar novo usuário    |
-| **GET** | `/conta/usuarios/{id}`   | `id (path)`         | Buscar usuário por ID |
-| **PUT** | `/conta/usuarios/{id}`   | `id (path), body`   | Atualizar usuário     |
-| **DELETE** | `/conta/usuarios/{id}` | `id (path)`        | Deletar usuário       |
+| Método | Endpoint       | Parâmetros                  | Descrição |
+|--------|----------------|----------------------------|-----------|
+| GET    | `/tags`        | Query params: filtros, `page`, `size` | Lista todas as tags com paginação e filtros opcionais |
+| GET    | `/tags/{id}`   | `id` (path)                | Retorna uma tag específica por ID |
+| POST   | `/tags`        | Body: `TagDTO`             | Cria uma nova tag |
+| PUT    | `/tags/{id}`   | `id` (path), Body: `TagDTO` | Atualiza uma tag existente |
+| DELETE | `/tags/{id}`   | `id` (path)                | Deleta uma tag existente |
 
 
+## Usuario Controller (CRUD + Autenticação)
+
+| Método | Endpoint                | Parâmetros                          | Descrição |
+|--------|------------------------|------------------------------------|-----------|
+| GET    | `/usuarios`             | Query params: filtros, `page`, `size` | Lista todos os usuários com paginação e filtros opcionais |
+| GET    | `/usuarios/{id}`        | `id` (path)                        | Retorna um usuário específico por ID |
+| POST   | `/usuarios/register`    | Body: `RegistrarDTO`                | Registra um novo usuário |
+| POST   | `/usuarios/login`       | Body: `AuthenticationDTO`           | Autentica usuário e retorna token de acesso |
+| PATCH  | `/usuarios/{id}/senha`  | `id` (path), Body: `SenhaNovaDTO`   | Altera a senha de um usuário |
+| PATCH  | `/usuarios/{id}/email`  | `id` (path), Body: `EmailNovoDTO`   | Altera o email de um usuário |
+| PATCH  | `/usuarios/{id}/nome`   | `id` (path), Body: `UsuarioNomeDTO` | Altera o nome de um usuário |
+| DELETE | `/usuarios/{id}`        | `id` (path)                        | Deleta um usuário |
 
 
 ## Cartão Desafio
