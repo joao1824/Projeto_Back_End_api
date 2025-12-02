@@ -1,4 +1,4 @@
-# LASTHEARDAPI
+# LASTHEARD API
 
 ## Integrantes
 
@@ -11,25 +11,7 @@
   <b>API dedicada à organização de artistas, álbuns e músicas. Suporte a reviews, notas e playlists enviadas por usuários. </b><br>
   (Entretenimento e Cultura)
 
-### Como executar
-
-- Utilize Java 17 ou Java 22
-   - Recomendamos uma dessas versões para garantir a compatibilidade.
-
-- Abra o projeto na IDE IntelliJ
-   - Essa foi a IDE utilizada durante o desenvolvimento, garantindo melhor suporte e configuração automática.
-
-- Configure as variáveis de ambiente
-   - Acesse o arquivo Variaveis de ambiente.txt no repositório.
-
-  - Copie as variáveis contidas nele.
-  - Substitua no arquivo application.properties ou crie um arquivo .env com esses valores.
-
-- Execute o projeto
-   - Após configurar as variáveis e garantir a versão correta do Java, basta rodar a aplicação.
-### Variaveis de Ambiente
-
-Variaveis de ambiente se encontram no [Arquivo TXT](https://github.com/joao1824/Projeto_Back_End_api/blob/main/Variaveis%20de%20ambiente.txt)
+<br>
 
 ### Objetivos
   - Dispor de sistema de usuários, com suas respectivas reviews e playlists. Com capacidade de:
@@ -43,30 +25,62 @@ Variaveis de ambiente se encontram no [Arquivo TXT](https://github.com/joao1824/
 
   - Sistema de pesquisa com filtros:
     - Popularidade, com mais reviews positivas/negativas, quantidade de acessos, etc...
-   
+
+<br>
+
+### Instruções de execução
+
+- Utilize Java 17 ou Java 22
+   - Recomendamos uma dessas versões para garantir a compatibilidade.
+
+- Crie uma aplicação Spotify Web API
+    - Através do link [Spotify for Developers](https://developer.spotify.com/dashboard/create).
+    - Após cadastro, salve as variáveis `Client ID` e `Client Secret`.
+ 
+- Configure as variáveis de ambiente
+    - Acesse o arquivo [Variaveis de ambiente.txt](https://github.com/joao1824/Projeto_Back_End_api/blob/main/Variaveis%20de%20ambiente.txt) na raiz do repositório.
+    - Substitua as variáveis `SPOTIFY_CLIENT_ID` e `SPOTIFY_CLIENT_SECRET` com seus respectivos dados salvos.
+    - As variáveis referentes ao banco de dados expiram a cada mês. Enquanto funcionais, podem permanecer como estão.
+    - Substitua no arquivo `application.properties` <b>ou</b> crie um arquivo `.env` com esses valores.
+
+- Abra o projeto na IDE IntelliJ
+   - Essa foi a IDE utilizada durante o desenvolvimento, garantindo melhor suporte e configuração automática.
+
+- Execute o projeto
+   - Após configurar as variáveis e garantir a versão correta do Java, basta rodar a aplicação.
+
+<br>
+
 ### Tecnologias Utilizadas
 
-Java (Rodando no 22 e 17)
-Linguagem principal da aplicação.
+- Java (Rodando no 22 e 17)
+  - Linguagem principal da aplicação.
 
-Spring Boot 3.2.12
-Framework para criação rápida de aplicações Java modernas.
+- Spring Boot 3.2.12
+  - Framework para criação rápida de aplicações Java modernas.
 
-Spring Web (spring-boot-starter-web)
-Usado para criar APIs REST.
+- Spring Web (spring-boot-starter-web)
+  - Usado para criar APIs REST.
 
-Spring Data JPA
-Persistência de dados usando JPA/Hibernate.
+- Spring Data JPA
+  - Persistência de dados usando JPA/Hibernate.
 
-Spring Validation
-Para validações de dados recebidos no backend.
+- Spring Validation
+  - Para validações de dados recebidos no backend.
 
-Spring Security
-Autenticação e autorização da aplicação.
+- Spring Security
+  - Autenticação e autorização da aplicação.
+
+<br>
 
 ### Modelo
 
   <img width="750" height="590" alt="image" src="https://github.com/user-attachments/assets/476812ee-9c61-4cbc-b90f-cf2f3d2d8a28" />
+
+<br>
+<br>
+<br>
+
 
 ### Documentação dos principais controladores e endpoints da API, incluindo operações CRUD e integrações externas.
 
